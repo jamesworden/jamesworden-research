@@ -22,5 +22,3 @@ functions:
                   path: /{proxy+}
                   method: any
                   cors: true
-    timeout: 60 # Seconds
-    memorySize: 256 # Mb
