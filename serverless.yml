@@ -7,8 +7,7 @@ provider:
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
     # Enviornment variables are managed through AWS
-    enviornment:
-        GOOGLE_MAPS_API_KEY: ${ssm:/GOOGLE_MAPS_API_KEY} #-GOOGLE_MAPS_API_KEY
+    # Check './src/enviornment.js' for more details
 
 stage: dev
 region: us-east-1

@@ -1,6 +1,6 @@
-const { json } = require('body-parser');
 const express = require('express');
 const axios = require('axios');
+const { getAwsSecret } = require('../awsSecretManager');
 
 // All route routes
 const routes = express.Router({
@@ -12,8 +12,6 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
-
-	console.log(origin, destination);
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -37,16 +35,11 @@ routes.get('/', async function (req, res) {
 		});
 	}
 
-	// Get key from enviornment variable
-	const key = process.env.GOOGLE_MAPS_API_KEY;
-
-	// Ensure the API key contains a value
+	// Get Google Maps API key from .env file
+	let key = process.env.GOOGLE_MAPS_API_KEY;
+	// Key is undefined, check AWS Secrets for API Key
 	if (key == undefined) {
-		return res.status(422).send({
-			error: 'Unable to locate the Google Maps API Key!',
-			solution: 'Contact James for assistance.',
-			route: [],
-		});
+		key = getAwsSecret('GOOGLE_MAPS_API_KEY');
 	}
 
 	// Fetch data from google directions using query data
