@@ -6,8 +6,6 @@ provider:
     name: aws
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
-    environment:
-        appName: James Worden Research
 
 stage: dev
 region: us-east-1
