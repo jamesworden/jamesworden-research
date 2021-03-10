@@ -1,10 +1,14 @@
-// Get AWS secret data from AWS Secret Manager
-const getAwsSecret = (secretName) => {
+module.exports.secretManager = (secretName) => {
+	// Use this code snippet in your app.
+	// If you need more information about configurations or implementing the sample code, visit the AWS docs:
+	// https://aws.amazon.com/developers/getting-started/nodejs/
+
 	// Load the AWS SDK
 	var AWS = require('aws-sdk'),
 		region = 'us-east-1',
-		secretName;
-	secret, decodedBinarySecret;
+		secretName = secretName,
+		secret,
+		decodedBinarySecret;
 
 	// Create a Secrets Manager client
 	var client = new AWS.SecretsManager({
@@ -14,6 +18,7 @@ const getAwsSecret = (secretName) => {
 	// In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
 	// See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
 	// We rethrow the exception by default.
+
 	client.getSecretValue({ SecretId: secretName }, function (err, data) {
 		if (err) {
 			if (err.code === 'DecryptionFailureException')
@@ -47,11 +52,7 @@ const getAwsSecret = (secretName) => {
 			}
 		}
 
+		// Your code goes here.
 		return secret;
 	});
-};
-
-// Export function
-module.exports = {
-	getAwsSecret,
 };

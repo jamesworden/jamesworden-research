@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { getAwsSecret } = require('../awsSecretManager');
+const secretManager = require('secretManager');
 
 // All route routes
 const routes = express.Router({
@@ -39,7 +39,7 @@ routes.get('/', async function (req, res) {
 	let key = process.env.GOOGLE_MAPS_API_KEY;
 	// Key is undefined, check AWS Secrets for API Key
 	if (key == undefined) {
-		key = getAwsSecret('GOOGLE_MAPS_API_KEY');
+		key = secretManager.secretManager('GOOGLE_MAPS_API_KEY');
 	}
 
 	// Fetch data from google directions using query data
