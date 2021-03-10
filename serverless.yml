@@ -14,10 +14,10 @@ region: us-east-1
 
 iamRoleStatements:
     - Effect: "Allow"
-    Action:
-        - "secretsmanager:GetSecretValue"
-    Resource:
-        "arn:aws:secretsmanager:us-east-1:390078892229:secret:GOOGLE_MAPS_API_KEY-Hga0iu"
+        Action:
+            - "secretsmanager:GetSecretValue"
+        Resource:
+            "arn:aws:secretsmanager:us-east-1:390078892229:secret:GOOGLE_MAPS_API_KEY-Hga0iu"
 
 functions:
     api:
