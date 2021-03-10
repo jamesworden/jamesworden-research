@@ -2,16 +2,12 @@ service: james-worden-research
 
 frameworkVersion: '2'
 
-custom:
-    defaultStage: dev
-    environment: ${file(env.yml):${self:provider.stage}, file(env.yml):default}
-
 provider:
     name: aws
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
     environment:
-        appName: ${self:custom.environment.APP_NAME}
+        appName: James Worden Research
 
 stage: dev
 region: us-east-1
