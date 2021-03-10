@@ -8,6 +8,7 @@ provider:
     lambdaHashingVersion: 20201221
     enviornment:
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        SLS_DEBUG: *
 
 stage: dev
 region: us-east-1
