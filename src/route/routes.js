@@ -16,6 +16,8 @@ routes.get('/', (req, res) => {
 	// Get key from enviornment variable
 	const key = process.env.GOOGLE_MAPS_API_KEY;
 
+	console.log(key);
+
 	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
 	const queries = `?origin="${origin}"&destination="${destination}"&key=${key}`;
@@ -33,6 +35,9 @@ routes.get('/', (req, res) => {
 
 	let fetchRequest;
 	let fetchResponse;
+
+	console.log(fetchRequest);
+	console.log(fetchResponse);
 
 	// Fetch data from url with specified data
 	fetch(url, data)
