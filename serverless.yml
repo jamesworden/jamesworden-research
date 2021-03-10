@@ -20,8 +20,13 @@ functions:
     api:
         handler: handler.handler
         events:
+            # Default route
+            # - http:
+            #       path: /
+            #       method: get
+            #       cors: true
             - http:
-                  path: /
+                  path: /{proxy+}
                   method: get
                   cors: true
 

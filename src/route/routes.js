@@ -1,58 +1,40 @@
 const { json } = require('body-parser');
 const express = require('express');
-const fetch = require('node-fetch');
+const axios = require('axios');
 
+// All route routes
 const routes = express.Router({
 	mergeParams: true,
 });
 
-routes.get('/', (req, res) => {
+// Get route
+routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
 
-	console.log(origin, destination);
-
 	// Get key from enviornment variable
 	const key = process.env.GOOGLE_MAPS_API_KEY;
-
-	console.log(key);
 
 	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
 	const queries = `?origin="${origin}"&destination="${destination}"&key=${key}`;
-	const url = baseUrl + queries;
-
-	// Data that goes with fetch
-	const data = {
-		mode: 'cors',
-		cache: 'no-cache',
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json; charset=UTF-8',
-		},
-	};
-
-	let fetchRequest;
-	let fetchResponse;
-
-	console.log(fetchRequest);
-	console.log(fetchResponse);
+	let url = baseUrl + queries;
 
 	// Fetch data from url with specified data
-	fetch(url, data)
-		.then((req) => {
-			fetchRequest = JSON.stringify(req.body);
-		})
-		.catch((res) => {
-			fetchResponse = JSON.stringify(res.body);
-		});
+	response = await axios.get(url);
+	data = response.data;
 
+	// If there is no body to Google's response, inform user
+	// Double !'s convert variable to boolean value if it is set or not
+	googleReturnedData = typeof responseBody == undefined ? false : true;
+
+	// Send the response back
 	res.status(200).send({
-		'Origin Query': origin,
-		'Destination Query': destination,
-		'Fetch Request': fetchRequest,
-		'Fetch Response': fetchResponse,
+		'Origin address': origin,
+		'Destination address': destination,
+		'Successfully connected to Google Maps API': googleReturnedData,
+		'Response Body': data,
 	});
 });
 
