@@ -18,7 +18,6 @@ functions:
                   path: /
                   method: get
                   cors: true
-            - http:
-                  path: /{proxy+}
-                  method: any
-                  cors: true
+
+plugins:
+    - serverless-offline

@@ -1,5 +1,6 @@
 const { json } = require('body-parser');
 const express = require('express');
+const fetch = require('node-fetch');
 
 const routes = express.Router({
 	mergeParams: true,
@@ -17,7 +18,7 @@ routes.get('/', (req, res) => {
 
 	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
-	const queries = `?origin="${values.origin}"&destination="${values.destination}"&key=${key}`;
+	const queries = `?origin="${origin}"&destination="${destination}"&key=${key}`;
 	const url = baseUrl + queries;
 
 	// Data that goes with fetch
@@ -55,5 +56,6 @@ module.exports = {
 	routes,
 };
 
+// Demonstration Addresses
 // 8000 Utopia Pkwy, Jamaica, NY 11439
 // 940 Madison Ave, New York, NY 10021
