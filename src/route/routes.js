@@ -13,8 +13,41 @@ routes.get('/', async function (req, res) {
 	const origin = req.query.origin;
 	const destination = req.query.destination;
 
+	console.log(origin, destination);
+
+	// Ensure origin was specified
+	if (origin == undefined) {
+		return res.status(422).send({
+			error: 'You must specify an origin address!',
+			solution:
+				"Try adding '&origin=ADDRESS' at the end of your API call.'",
+			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
+			route: [],
+		});
+	}
+
+	// Ensure destination was specified
+	if (destination == undefined) {
+		return res.status(422).send({
+			error: 'You must specify a destination address!',
+			solution:
+				"Try adding '&destination=ADDRESS' at the end of your API call.'",
+			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
+			route: [],
+		});
+	}
+
 	// Get key from enviornment variable
 	const key = process.env.GOOGLE_MAPS_API_KEY;
+
+	// Ensure the API key contains a value
+	if (key == undefined) {
+		return res.status(422).send({
+			error: 'Unable to locate the Google Maps API Key!',
+			solution: 'Contact James for assistance.',
+			route: [],
+		});
+	}
 
 	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
@@ -25,15 +58,8 @@ routes.get('/', async function (req, res) {
 	response = await axios.get(url);
 	data = response.data;
 
-	// If there is no body to Google's response, inform user
-	// Double !'s convert variable to boolean value if it is set or not
-	googleReturnedData = typeof responseBody == undefined ? false : true;
-
 	// Send the response back
-	res.status(200).send({
-		'Origin address': origin,
-		'Destination address': destination,
-		'Successfully connected to Google Maps API': googleReturnedData,
+	return res.status(200).send({
 		'Response Body': data,
 	});
 });
@@ -42,7 +68,3 @@ routes.get('/', async function (req, res) {
 module.exports = {
 	routes,
 };
-
-// Demonstration Addresses
-// 8000 Utopia Pkwy, Jamaica, NY 11439
-// 940 Madison Ave, New York, NY 10021
