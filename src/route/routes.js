@@ -36,12 +36,16 @@ routes.get('/', async function (req, res) {
 	}
 
 	// Get Google Maps API key from .env file
+	// Locally this will get taken from the .env file
+	// When deployed, GitHub Actions will create a .env file in AWS
 	let key = process.env.GOOGLE_MAPS_API_KEY;
-	// Key is undefined, check AWS Secrets for API Key
+
+	// Ensure API key has been defined
 	if (key == undefined) {
-		// key = secretManager.getSecret('GOOGLE_MAPS_API_KEY');
 		return res.status(422).send({
-			error: 'Could not locate API KEY!',
+			error: 'Could not locate API Key!',
+			solution: 'Please contact James for assistance.',
+			route: [],
 		});
 	}
 
@@ -60,7 +64,7 @@ routes.get('/', async function (req, res) {
 	});
 });
 
-// Export the routes
+// Export all the routes
 module.exports = {
 	routes,
 };
