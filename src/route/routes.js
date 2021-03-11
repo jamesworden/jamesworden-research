@@ -55,12 +55,51 @@ routes.get('/', async function (req, res) {
 	let url = baseUrl + queries;
 
 	// Fetch data from url with specified data
-	response = await axios.get(url);
-	data = response.data;
+	let response = await axios.get(url);
+	let data = response.data;
+
+	// If Google API call status was not ok, inform user
+	let status = data.status;
+	if (status != 'OK') {
+		// Create default error and solution statements
+		let error = 'There was a error while processing your request.';
+		let solution =
+			'Please check your request or contact James for assistance.';
+
+		// Each case statement modifies errors and solutions accordingly
+		switch (status) {
+			case 'NOT_FOUND':
+				error =
+					'The route between the given addresses could not be found!';
+				solution =
+					'Please check that you have inputted valid addresses.';
+				break;
+			case 'REQUEST_DENIED':
+				error =
+					'There was a problem fetching data from the Google API!';
+				solution = 'Please contact James for assistance.';
+				break;
+			// Error handling can always be added to
+		}
+		// Return error messages to user
+		return res.status(422).send({
+			error,
+			solution,
+			route: [],
+		});
+	}
+
+	// Google API call went through successfully; safe to extract data
+	// Get encoded polyline of route
+	const compressedPolylinePoints = data.routes[0].overview_polyline.points;
+
+	// Decode polyline into array of points
+	let polyline = require('polyline'); // Use the polyline package
+	route = polyline.decode(compressedPolylinePoints);
 
 	// Send the response back
 	return res.status(200).send({
-		'Response Body': data,
+		route: route,
 	});
 });
 

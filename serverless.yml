@@ -22,7 +22,7 @@ functions:
             #       method: get
             #       cors: true
             - http:
-                  path: /{proxy+}
+                  path: /route
                   method: get
                   cors: true
 
