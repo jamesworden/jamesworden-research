@@ -39,7 +39,8 @@ routes.get('/', async function (req, res) {
 	let key = process.env.GOOGLE_MAPS_API_KEY;
 	// Key is undefined, check AWS Secrets for API Key
 	if (key == undefined) {
-		key = secretManager.getSecret('GOOGLE_MAPS_API_KEY');
+		// key = secretManager.getSecret('GOOGLE_MAPS_API_KEY');
+		key = env.GOOGLE_MAPS_API_KEY;
 		// Testing
 		console.log('Route.js secret: ' + key);
 	}
