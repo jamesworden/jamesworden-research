@@ -19,14 +19,14 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
             - run: npm ci
-            - name: serverless deploy
-              uses: serverless/github-action@master
-              with:
-                  args: deploy
             - name: set enviornment variables in code
               run: |
                   touch .env
                   echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> .env
+            - name: serverless deploy
+              uses: serverless/github-action@master
+              with:
+                  args: deploy
               env:
                   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
