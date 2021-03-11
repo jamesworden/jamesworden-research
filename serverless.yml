@@ -7,14 +7,12 @@ provider:
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
     # Enviornment variables are managed through AWS
-    # Check './src/enviornment.js' for more details
-
+    # Check './src/secretManager.js' for more details
     iamRoleStatements:
-    - Effect: "Allow"
-        Action:
-            - "secretsmanager:GetSecretValue"
-        Resource:
-            "arn:aws:secretsmanager:us-east-1:390078892229:secret:GOOGLE_MAPS_API_KEY-Hga0iu"
+        - Effect: 'Allow'
+          Action:
+              - 'secretsmanager:GetSecretValue'
+          Resource: 'arn:aws:secretsmanager:us-east-1:390078892229:secret:GOOGLE_MAPS_API_KEY-Hga0iu'
 
 stage: dev
 region: us-east-1

@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const secretManager = require('secretManager');
+const secretManager = require('../secretManager');
 
 // All route routes
 const routes = express.Router({
