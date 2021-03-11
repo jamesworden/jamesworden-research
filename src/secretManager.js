@@ -1,4 +1,4 @@
-module.exports.secretManager = (secretName) => {
+module.exports.getSecret = (secretName) => {
 	// Use this code snippet in your app.
 	// If you need more information about configurations or implementing the sample code, visit the AWS docs:
 	// https://aws.amazon.com/developers/getting-started/nodejs/
@@ -53,6 +53,8 @@ module.exports.secretManager = (secretName) => {
 		}
 
 		// Your code goes here.
+		// Testing
+		console.log('Secret Manager Secret: ' + secret);
 		return secret;
 	});
 };
