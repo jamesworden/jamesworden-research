@@ -91,6 +91,21 @@ routes.get('/', async function (req, res) {
 	}
 
 	// Google API call went through successfully; safe to extract data
+
+	// Ensure difference in latitude or longitude does not differ by 1
+	let bounds = data.routes[0].bounds;
+	let latDif = Math.abs(bounds.northeast.lat - bounds.southwest.lat);
+	let lngDif = Math.abs(bounds.northeast.lng - bounds.southwest.lng);
+
+	// If difference in latitude or longitude > 1
+	if (latDif > 1 || lngDif > 1) {
+		return res.status(422).send({
+			error: 'Your addresses are too far apart!',
+			solution:
+				'Please enter locations that are within 1 latitude and longitude difference.',
+			route: [],
+		});
+	}
 	// Get encoded polyline of route
 	const compressedPolylinePoints = data.routes[0].overview_polyline.points;
 
@@ -103,7 +118,9 @@ routes.get('/', async function (req, res) {
 	const route = createRoute(polylinePoints, increment); // JSON Object
 
 	// Send the response back
-	return res.status(200).send(route);
+	return res.status(200).send({
+		route,
+	});
 });
 
 // Export all the routes

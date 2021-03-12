@@ -15,20 +15,6 @@ module.exports.createRoute = (polylinePoints, distanceBetweenPoints = 10) => {
 		if (nextPoint == undefined) {
 			break;
 		}
-		// Ensure difference in latitude or longitude does not differ by 1
-		let latDif = Math.abs(currentPoint[0] - nextPoint[0]);
-		let lonDif = Math.abs(currentPoint[1] - nextPoint[1]);
-		if (latDif > 1 || lonDif > 1) {
-			return {
-				error:
-					'Your latitude or longitude points differ too much!' +
-					`Error between: (${currentPoint[0]},${currentPoint[1]})` +
-					`(${nextPoint[0]},${nextPoint[1]})`,
-				solution:
-					'Please enter coordinates that are within 1 latitude or longitude difference.',
-				route: [],
-			};
-		}
 		// Get distance between inital point and next point
 		let distanceToNextPoint = getDistanceBetweenGpsCoordinates(
 			currentPoint[0], // Latitude of first point
