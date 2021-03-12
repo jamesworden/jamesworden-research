@@ -1,15 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- Meta Tags -->
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- Fonts -->
+		<link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
+
+		<!-- Document Title -->
 		<title>Incremental GPS</title>
+
+		<!-- Styles -->
+		<style>
+			:root {
+				--white: whitesmoke;
+				--black: black;
+				--blue: cadetblue;
+				--gray: #e8e8e8;
+			}
+			body {
+				background-color: var(--white);
+				padding: 1rem;
+				max-width: 1196px;
+				margin: auto;
+				font-family: neue-haas-grotesk-display, sans-serif;
+			}
+			@media (min-width: 700px) {
+				body {
+					display: grid;
+					grid-template-columns: 30% 70%;
+					padding: 2rem;
+				}
+				#container {
+					padding-left: 5rem;
+				}
+			}
+			#container {
+				padding-top: 5rem;
+			}
+			header {
+				width: 100%;
+				max-width: 30rem;
+			}
+			section {
+				margin-bottom: 3rem;
+			}
+			button {
+				padding: 0.5rem 1.5rem;
+				text-transform: uppercase;
+				background-color: var(--blue);
+				border-radius: 1rem;
+				color: var(--white);
+				border: none;
+				cursor: pointer;
+				border: 1px solid var(--white);
+				transition: all ease-in-out 0.15s;
+				outline: none;
+				margin: 1rem 0rem;
+			}
+			button:hover {
+				color: var(--blue);
+				border: 1px solid var(--blue);
+				background-color: var(--white);
+				transition: all ease-in-out 0.15s;
+			}
+			form,
+			p {
+				max-width: 30rem;
+			}
+			form {
+				margin: 2rem 0rem;
+			}
+			form > * {
+				margin-bottom: 1rem;
+			}
+			input {
+				outline: none;
+				border: none;
+				background-color: transparent;
+				border-bottom: black 1px solid;
+				width: 100%;
+			}
+			#increment {
+				max-width: 5rem;
+			}
+			#coordinates {
+				background-color: var(--gray);
+				padding: 1rem 2rem;
+				font-size: 14px;
+				font-family: 'Courier New', Courier, monospace;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
 			<h1>Get incremental GPS Coordinates from two addresses.</h1>
 			<p>Tool created by James Worden</p>
 		</header>
+		<div id="container">
+			<section>
+				<h2>Map</h2>
+				<p>
+					Given an origin and destination address, an array of GPS
+					coordinates will be returned. Each coordinate is an array
+					itself - the first and seconds points are latitude and
+					longitude, respectfully. Get coordinates incrementally
+					according to the The 'increment distance' parameter.
+				</p>
+				<div id="map"></div>
+				<form>
+					<label for="origin">Origin Address</label><br />
+					<input type="text" id="origin" name="origin" /><br />
+					<label for="destination">Destination Address</label><br />
+					<input
+						type="text"
+						id="destination"
+						name="destination"
+					/><br />
+					<label for="increment">
+						Increment distance (in meters) </label
+					><br />
+					<input
+						type="number"
+						id="increment"
+						min="1"
+						max="5"
+						name="increment"
+						placeholder="10"
+					/><br />
+					<button type="submit">Get Coordinates</button>
+				</form>
+				<div id="coordinates">{ route: [] }</div>
+			</section>
+			<section>
+				<h2>Documentation</h2>
+			</section>
+		</div>
 	</body>
 </html>
