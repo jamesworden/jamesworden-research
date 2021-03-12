@@ -48,35 +48,20 @@ module.exports.createRoute = (polylinePoints, distanceBetweenPoints = 10) => {
 };
 
 /**
- * Function from 'https://www.geodatasource.com/developers/javascript'
- * GeoDataSource.com (C) All Rights Reserved 2018
+ * Function by 'https://stackoverflow.com/users/1090562/salvador-dali' on StackOverflow
+ * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
  * Modified by James Worden
  */
 const getDistanceBetweenGpsCoordinates = (lat1, lon1, lat2, lon2) => {
-	// Ensure there is a change in latitude or longitude
-	if (lat1 == lat2 && lon1 == lon2) {
-		return 0;
-	}
-	// Calculations
-	var radlat1 = (Math.PI * lat1) / 180;
-	var radlat2 = (Math.PI * lat2) / 180;
-	var theta = lon1 - lon2;
-	var radtheta = (Math.PI * theta) / 180;
-	var dist =
-		Math.sin(radlat1) * Math.sin(radlat2) +
-		Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-	if (dist > 1) {
-		dist = 1;
-	}
-	dist = Math.acos(dist);
-	dist = (dist * 180) / Math.PI;
-	dist = dist * 60 * 1.1515;
+	var p = 0.017453292519943295; // Math.PI / 180
+	var c = Math.cos;
+	var a =
+		0.5 -
+		c((lat2 - lat1) * p) / 2 +
+		(c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
 
-	// Convert to meters
-	dist *= 1609.344;
-
-	// Return distance
-	return dist;
+	// For kilometers, use 12742. For meters, use 12742000.
+	return 12742000 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 };
 
 /**
@@ -95,4 +80,47 @@ const getPointBetweenGpsCoordinates = (x1, y1, x2, y2, distance) => {
 	let xAvg = (x1 + x2) / 2;
 	let yAvg = (y1 + y2) / 2;
 	return [xAvg, yAvg];
+};
+
+/**
+ * Returns the (initial) bearing from this point to the supplied point, in degrees.
+ * See http://williams.best.vwh.net/avform.htm#Crs
+ * @returns initial bearing in degrees from North
+ */
+module.exports.getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
+	let dLon = lng2 - lng1;
+	let y = Math.sin(dLon) * Math.cos(lat2);
+	let x =
+		Math.cos(lat1) * Math.sin(lat2) -
+		Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+	let radians = Math.atan2(y, x); // In radians
+	let brng = (radians * 180) / Math.PI; // In degrees
+	return 360 - ((brng + 360) % 360);
+};
+
+/**
+ * With inspiration from https://stackoverflow.com/a/46410871/13549
+ * @param distance In meters
+ * @param bearing In degrees
+ * @returns
+ */
+module.exports.getPointFromDistance = function (lat, lng, distance, bearing) {
+	distance /= 1000; // Convert distance from M to KM
+	const R = 6378.1; // Radius of the Earth
+	const brng = (bearing * Math.PI) / 180; // Convert bearing to radian
+	lat = (lat * Math.PI) / 180; // Current coords to radians
+	lng = (lng * Math.PI) / 180;
+
+	// Do the math magic
+	lat = Math.asin(
+		Math.sin(lat) * Math.cos(distance / R) +
+			Math.cos(lat) * Math.sin(distance / R) * Math.cos(brng)
+	);
+	lng += Math.atan2(
+		Math.sin(brng) * Math.sin(distance / R) * Math.cos(lat),
+		Math.cos(distance / R) - Math.sin(lat) * Math.sin(lat)
+	);
+
+	// Coords back to degrees and return
+	return [(lat * 180) / Math.PI, (lng * 180) / Math.PI];
 };
