@@ -18,10 +18,9 @@ routes.get('/', async function (req, res) {
 	if (origin == undefined) {
 		return res.status(422).send({
 			error: 'You must specify an origin address!',
-			solution:
+			message:
 				"Try adding '&origin=ADDRESS' at the end of your API call.'",
 			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
-			route: [],
 		});
 	}
 
@@ -29,10 +28,9 @@ routes.get('/', async function (req, res) {
 	if (destination == undefined) {
 		return res.status(422).send({
 			error: 'You must specify a destination address!',
-			solution:
+			message:
 				"Try adding '&destination=ADDRESS' at the end of your API call.'",
 			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
-			route: [],
 		});
 	}
 
@@ -45,8 +43,7 @@ routes.get('/', async function (req, res) {
 	if (key == undefined) {
 		return res.status(422).send({
 			error: 'Could not locate API Key!',
-			solution: 'Please contact James for assistance.',
-			route: [],
+			message: 'Please contact James for assistance.',
 		});
 	}
 
@@ -62,31 +59,28 @@ routes.get('/', async function (req, res) {
 	// If Google API call status was not ok, inform user
 	let status = data.status;
 	if (status != 'OK') {
-		// Create default error and solution statements
-		let error = 'There was a error while processing your request.';
-		let solution =
-			'Please check your request or contact James for assistance.';
-
 		// Each case statement modifies errors and solutions accordingly
 		switch (status) {
 			case 'NOT_FOUND':
 				error =
 					'The route between the given addresses could not be found!';
-				solution =
+				message =
 					'Please check that you have inputted valid addresses.';
 				break;
 			case 'REQUEST_DENIED':
-				error =
+				message =
 					'There was a problem fetching data from the Google API!';
-				solution = 'Please contact James for assistance.';
+				message = 'Please contact James for assistance.';
 				break;
-			// Error handling can always be added to
+			default:
+				error = 'There was a error while processing your request.';
+				message =
+					'Please check your request or contact James for assistance.';
 		}
 		// Return error messages to user
 		return res.status(422).send({
 			error,
-			solution,
-			route: [],
+			message,
 		});
 	}
 

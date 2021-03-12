@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "node ./src/test",
-		"develop": "serverless offline",
+		"develop": "serverless offline start --noPrependStageInUrl",
 		"deploy": "serverless deploy"
 	},
 	"author": "James Worden",
@@ -17,9 +17,11 @@
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
-		"polyline": "^0.2.0"
+		"polyline": "^0.2.0",
+		"serverless-aws-static-file-handler": "^2.0.7"
 	},
 	"devDependencies": {
+		"serverless-domain-manager": "^5.1.0",
 		"serverless-dotenv-plugin": "^3.8.1",
 		"serverless-offline": "^6.8.0"
 	}
