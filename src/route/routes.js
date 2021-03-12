@@ -12,6 +12,7 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
+	const increment = req.query.increment || 10; // Default 10 meters
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -94,13 +95,15 @@ routes.get('/', async function (req, res) {
 	const compressedPolylinePoints = data.routes[0].overview_polyline.points;
 
 	// Decode polyline into array of points
-	let polyline = require('polyline'); // Use the polyline package
-	route = polyline.decode(compressedPolylinePoints);
+	const polyline = require('polyline'); // Use the polyline package
+	const polylinePoints = polyline.decode(compressedPolylinePoints);
+
+	// Get the optimized and incremented route
+	const { createRoute } = require('./calculations');
+	const route = createRoute(polylinePoints, increment); // JSON Object
 
 	// Send the response back
-	return res.status(200).send({
-		route: route,
-	});
+	return res.status(200).send(route);
 });
 
 // Export all the routes

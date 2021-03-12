@@ -43,3 +43,6 @@ _meta
 .serverless
 .serverless/
 env.yml
+
+#Testing files
+test.js
