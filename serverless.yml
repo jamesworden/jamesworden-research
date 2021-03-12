@@ -27,15 +27,7 @@ functions:
                   method: get
                   cors: true
 
-# custom:
-#     customDomain:
-#         domainName: research.jamesworden.com
-#         basePath: ''
-#         stage: ${self:provider.stage}
-#         createRoute53Record: true
-
 plugins:
     - serverless-offline
     - serverless-dotenv-plugin
     - serverless-aws-static-file-handler
-    # - serverless-domain-manager
