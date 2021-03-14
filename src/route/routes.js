@@ -60,6 +60,7 @@ routes.get('/', async function (req, res) {
 	let status = data.status;
 	if (status != 'OK') {
 		// Each case statement modifies errors and solutions accordingly
+		let error, message;
 		switch (status) {
 			case 'NOT_FOUND':
 				error =
@@ -68,7 +69,7 @@ routes.get('/', async function (req, res) {
 					'Please check that you have inputted valid addresses.';
 				break;
 			case 'REQUEST_DENIED':
-				message =
+				error =
 					'There was a problem fetching data from the Google API!';
 				message = 'Please contact James for assistance.';
 				break;

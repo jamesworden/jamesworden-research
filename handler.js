@@ -10,7 +10,7 @@ exports.handler = (event, context) => {
 // Setting up file serving
 const StaticFileHandler = require('serverless-aws-static-file-handler');
 const path = require('path');
-const clientFilesPath = path.join(__dirname, './frontend/');
+const clientFilesPath = path.join(__dirname, './src/frontend/');
 const fileHandler = new StaticFileHandler(clientFilesPath);
 
 module.exports.html = async (event, context) => {
