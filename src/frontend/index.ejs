@@ -12,6 +12,61 @@
 		<!-- Document Title -->
 		<title>Incremental GPS</title>
 
+		<!-- Load Google Map Data -->
+		<script
+			async
+			defer
+			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&callback=initMap"
+		></script>
+
+		<!-- Render Google Map -->
+		<script>
+			// Google Maps callback function
+			function initMap() {
+				// Define origin and destination coordinates
+				const origin = '<%= origin %>';
+				const destination = '<%= destination %>';
+				// Map options
+				var options = {
+					zoom: 11,
+				};
+				// Define map
+				var map = new google.maps.Map(
+					document.getElementById('map'),
+					options
+				);
+				directionsDisplay = new google.maps.DirectionsRenderer();
+				directionsDisplay.setMap(map);
+
+				// Initialize the route
+				initRoute(map);
+
+				// Re-Initialize map whenever the window reloads
+				google.maps.event.addDomListener(window, 'load', initMap);
+
+				function initRoute(map) {
+					directionsService = new google.maps.DirectionsService();
+					var request = {
+						origin,
+						destination,
+						travelMode: 'DRIVING',
+					};
+
+					directionsService.route(
+						request,
+						function (response, status) {
+							if (status == 'OK') {
+								directionsDisplay.setDirections(response);
+							} else {
+								document.getElementById('status').innerHTML =
+									'Unable to find address!';
+							}
+						}
+					);
+				}
+			}
+		</script>
+
 		<!-- Styles -->
 		<style>
 			:root {
@@ -34,7 +89,7 @@
 					padding: 2rem;
 				}
 				#container {
-					padding-left: 5rem;
+					padding-left: 3rem;
 				}
 			}
 			#container {
@@ -45,7 +100,7 @@
 				max-width: 30rem;
 			}
 			section {
-				margin-bottom: 3rem;
+				margin-bottom: 2rem;
 			}
 			button {
 				padding: 0.5rem 1.5rem;
@@ -58,7 +113,7 @@
 				border: 1px solid var(--white);
 				transition: all ease-in-out 0.15s;
 				outline: none;
-				margin: 1rem 0rem;
+				margin-top: 1rem;
 			}
 			button:hover {
 				color: var(--blue);
@@ -69,30 +124,29 @@
 			form {
 				margin: 2rem 0rem;
 			}
-			form > * {
-				margin-bottom: 1rem;
-			}
 			input {
+				margin-bottom: 1rem;
 				outline: none;
 				border: none;
 				background-color: transparent;
 				border-bottom: black 1px solid;
 				width: 100%;
 			}
-			#increment {
-				max-width: 5rem;
-			}
-			#coordinates {
+
+			#code {
 				background-color: var(--gray);
 				padding: 1rem 2rem;
 				font-size: 14px;
 				font-family: 'Courier New', Courier, monospace;
 			}
+			#map {
+				height: 20rem;
+				width: 100%;
+			}
+			#status {
+				font-weight: bold;
+			}
 		</style>
-		<script>
-			console.log('Test script!');
-			// console.log('<%= GOOGLE_MAPS_API_KEY %>');
-		</script>
 	</head>
 	<body>
 		<header>
@@ -102,22 +156,29 @@
 		<div id="container">
 			<section>
 				<h2>Map</h2>
+				<div id="map"></div>
+				<p id="status"></p>
 				<p>
 					Given an origin and destination address, an array of GPS
 					coordinates will be returned. Each coordinate is an array
 					itself - the first and seconds points are latitude and
 					longitude, respectfully. Get coordinates incrementally
-					according to the The 'increment distance' parameter.
+					according to the the 'increment' parameter.
 				</p>
-				<div id="map"></div>
-				<form>
+				<form id="form">
 					<label for="origin">Origin Address</label><br />
-					<input type="text" id="origin" name="origin" /><br />
+					<input
+						type="text"
+						id="origin"
+						name="origin"
+						placeholder="<%= origin %>"
+					/><br />
 					<label for="destination">Destination Address</label><br />
 					<input
 						type="text"
 						id="destination"
 						name="destination"
+						placeholder="<%= destination %>"
 					/><br />
 					<label for="increment">
 						Increment distance (in meters) </label
@@ -126,13 +187,18 @@
 						type="number"
 						id="increment"
 						min="1"
-						max="5"
+						max="25"
 						name="increment"
-						placeholder="10"
+						placeholder="<%= increment%>"
 					/><br />
-					<button type="submit">Get Coordinates</button>
+					<button type="submit">Get HTTP Request</button>
 				</form>
-				<div id="coordinates">{ route: [] }</div>
+				<div id="code">
+					https://research.jamesworden.com/route?<br />
+					origin=<strong><%= origin %></strong><br />
+					&destination=<strong><%= destination %></strong><br />
+					&increment=<strong><%= increment %></strong>
+				</div>
 			</section>
 			<section>
 				<h2>Documentation</h2>
