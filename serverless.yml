@@ -13,15 +13,13 @@ stage: dev
 region: us-east-1
 
 functions:
-    html:
-        handler: handler.html
+    api:
+        handler: handler.handler
         events:
             - http:
                   path: /
                   method: get
-    api:
-        handler: handler.handler
-        events:
+                  cors: true
             - http:
                   path: /route
                   method: get
@@ -30,4 +28,3 @@ functions:
 plugins:
     - serverless-offline
     - serverless-dotenv-plugin
-    - serverless-aws-static-file-handler

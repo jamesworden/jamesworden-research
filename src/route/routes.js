@@ -119,6 +119,4 @@ routes.get('/', async function (req, res) {
 });
 
 // Export all the routes
-module.exports = {
-	routes,
-};
+module.exports = routes;

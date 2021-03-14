@@ -1,7 +1,7 @@
 /**
  * Create route from array of polyline points
  * @param {*} polylinePoints Array of gps coordinate pairs stored as arrays
- * @param {*} distanceBetweenPoints Always in meters
+ * @param {*} distanceBetweenPoints In meters
  * @returns
  */
 module.exports.createRoute = (polylinePoints, distanceBetweenPoints = 10) => {
@@ -67,19 +67,10 @@ const getDistanceBetweenGpsCoordinates = (lat1, lon1, lat2, lon2) => {
 /**
  * Get the coordinates of a point between two points
  * that is a certain distance away from the first
- *
- * @param {*} x1 X coordinate of 1st point
- * @param {*} y1 Y coordinate of 1st point
- * @param {*} x2 X coordinate of 2nd point
- * @param {*} y2 Y coordinate of 2nd point
- * @returns
  */
-const getPointBetweenGpsCoordinates = (x1, y1, x2, y2, distance) => {
-	// Currently, this will return points directly inbetween the next.
-	// This does not do the points incrementally.
-	let xAvg = (x1 + x2) / 2;
-	let yAvg = (y1 + y2) / 2;
-	return [xAvg, yAvg];
+const getPointBetweenGpsCoordinates = (lat1, lng1, lat2, lng2, distance) => {
+	let bearing = calculations.getBearingFromPoints(lat1, lng1, lat2, lng2);
+	return calculations.getPointFromDistance(lat1, lng1, distance, bearing);
 };
 
 /**
