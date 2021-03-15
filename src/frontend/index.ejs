@@ -5,26 +5,21 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 		<!-- Fonts -->
 		<link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
-
 		<!-- Font Awesome -->
 		<script
 			src="https://kit.fontawesome.com/2f3d399a99.js"
 			crossorigin="anonymous"
 		></script>
-
 		<!-- Document Title -->
 		<title>Incremental GPS</title>
-
 		<!-- Load Google Map Data -->
 		<script
 			async
 			defer
 			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&callback=initMap"
 		></script>
-
 		<!-- Render Google Map -->
 		<script>
 			// Google Maps callback function
@@ -72,7 +67,6 @@
 						}
 					);
 				}
-
 				function initMarkers(map, route) {
 					// Parse through the stringified EJS route
 					routeObject = route.replaceAll('&#34;', '"');
@@ -203,15 +197,30 @@
 			#github {
 				color: var(--black);
 			}
+			a {
+				text-decoration: none;
+				color: var(--black);
+				transition: all 0.3s ease-in-out;
+			}
+			a:hover {
+				color: var(--blue);
+				transition: all 0.3s ease-in-out;
+			}
 		</style>
 	</head>
 	<body>
 		<header>
 			<h1>Get incremental GPS Coordinates between two addresses.</h1>
-			<p>Tool created by James Worden</p>
-			<a href="https://github.com/jamesworden/jamesworden-research">
-				<i class="fab fa-github-square fa-2x" id="github"></i>
-			</a>
+			<p>
+				<span style="font-style: italic"
+					>Tool created by James Worden</span
+				>
+				<br />
+				<a href="https://github.com/jamesworden/jamesworden-research">
+					See code on GitHub: &nbsp;
+					<i class="fab fa-github-square fa-1.5x" id="github"></i>
+				</a>
+			</p>
 		</header>
 		<div id="container">
 			<section>
@@ -263,9 +272,6 @@
 				</div>
 				<p>First 5 coordinate pairs returned by the request above.</p>
 				<pre id="data" class="code"></pre>
-			</section>
-			<section>
-				<h2>Documentation</h2>
 			</section>
 		</div>
 	</body>
