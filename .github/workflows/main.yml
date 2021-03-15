@@ -3,6 +3,7 @@ on:
     push:
         branches:
             - master
+            - auto-build
     # Manual deployment
     workflow_dispatch:
         inputs:
