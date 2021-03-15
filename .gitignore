@@ -43,3 +43,6 @@ _meta
 .serverless
 .serverless/
 env.yml
+
+# Testing
+test.js

@@ -1,5 +1,4 @@
 const express = require('express');
-require('dotenv').config();
 
 // All frontend routes
 const routes = express.Router({

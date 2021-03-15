@@ -1,58 +1,9 @@
 /**
- * Create route from array of polyline points
- * @param {*} polylinePoints Array of gps coordinate pairs stored as arrays
- * @param {*} distanceBetweenPoints In meters
- * @returns
- */
-module.exports.createRoute = (polylinePoints, distanceBetweenPoints = 10) => {
-	let route = polylinePoints;
-	for (i = 0; i < route.length; i++) {
-		// Define current point and next point
-		let currentPoint = route[i];
-		let nextPoint = route[i + 1];
-
-		// If next point is undefined, current point is the last point.
-		if (nextPoint == undefined) {
-			break;
-		}
-		// Get distance between inital point and next point
-		let distanceToNextPoint = getDistanceBetweenGpsCoordinates(
-			currentPoint[0], // Latitude of first point
-			currentPoint[1], // Longitude of first point
-			nextPoint[0], // Latitude of second point
-			nextPoint[1] // Longitude of second point
-		);
-		// Check if distance is larger than increment
-		if (distanceToNextPoint > distanceBetweenPoints) {
-			// Incrementally create new point from current point
-			let point = getPointBetweenGpsCoordinates(
-				currentPoint[0],
-				currentPoint[1],
-				nextPoint[0],
-				nextPoint[1],
-				distanceBetweenPoints
-			);
-			// Insert new point right after the current 'i' value
-			// This can cause an infinate loop if not done properly.
-			route.splice(i + 1, 0, point);
-
-			// Ensure 'i' remains the same on next iteration.
-			// This can probably be removed once 'getPointsBetweenGpsCoordinates'
-			// gets updated to create points incrementally.
-			i -= 1;
-		}
-	}
-	return {
-		route,
-	};
-};
-
-/**
  * Function by 'https://stackoverflow.com/users/1090562/salvador-dali' on StackOverflow
  * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
  * Modified by James Worden
  */
-const getDistanceBetweenGpsCoordinates = (lat1, lon1, lat2, lon2) => {
+const getDistanceBetweenPoints = (lat1, lon1, lat2, lon2) => {
 	var p = 0.017453292519943295; // Math.PI / 180
 	var c = Math.cos;
 	var a =
@@ -68,7 +19,7 @@ const getDistanceBetweenGpsCoordinates = (lat1, lon1, lat2, lon2) => {
  * Get the coordinates of a point between two points
  * that is a certain distance away from the first
  */
-const getPointBetweenGpsCoordinates = (lat1, lng1, lat2, lng2, distance) => {
+const getIntermediatePoint = (lat1, lng1, lat2, lng2, distance) => {
 	let bearing = getBearingFromPoints(lat1, lng1, lat2, lng2);
 	return getPointFromDistance(lat1, lng1, distance, bearing);
 };
@@ -114,4 +65,11 @@ const getPointFromDistance = function (lat, lng, distance, bearing) {
 
 	// Coords back to degrees and return
 	return [(lat * 180) / Math.PI, (lng * 180) / Math.PI];
+};
+
+module.exports = {
+	getDistanceBetweenPoints,
+	getIntermediatePoint,
+	getPointFromDistance,
+	getBearingFromPoints,
 };

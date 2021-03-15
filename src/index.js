@@ -1,5 +1,7 @@
-// Created by James Worden
-// GitHub: jamesworden
+/**
+ * App configuration
+ * @author James Worden
+ */
 
 const express = require('express');
 const bodyParser = require('body-parser');
