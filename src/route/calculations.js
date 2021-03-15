@@ -69,8 +69,8 @@ const getDistanceBetweenGpsCoordinates = (lat1, lon1, lat2, lon2) => {
  * that is a certain distance away from the first
  */
 const getPointBetweenGpsCoordinates = (lat1, lng1, lat2, lng2, distance) => {
-	let bearing = calculations.getBearingFromPoints(lat1, lng1, lat2, lng2);
-	return calculations.getPointFromDistance(lat1, lng1, distance, bearing);
+	let bearing = getBearingFromPoints(lat1, lng1, lat2, lng2);
+	return getPointFromDistance(lat1, lng1, distance, bearing);
 };
 
 /**
@@ -78,7 +78,7 @@ const getPointBetweenGpsCoordinates = (lat1, lng1, lat2, lng2, distance) => {
  * See http://williams.best.vwh.net/avform.htm#Crs
  * @returns initial bearing in degrees from North
  */
-module.exports.getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
+const getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
 	let dLon = lng2 - lng1;
 	let y = Math.sin(dLon) * Math.cos(lat2);
 	let x =
@@ -95,7 +95,7 @@ module.exports.getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
  * @param bearing In degrees
  * @returns
  */
-module.exports.getPointFromDistance = function (lat, lng, distance, bearing) {
+const getPointFromDistance = function (lat, lng, distance, bearing) {
 	distance /= 1000; // Convert distance from M to KM
 	const R = 6378.1; // Radius of the Earth
 	const brng = (bearing * Math.PI) / 180; // Convert bearing to radian
