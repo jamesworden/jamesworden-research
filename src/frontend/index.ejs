@@ -14,11 +14,13 @@
 		></script>
 		<!-- Document Title -->
 		<title>Incremental GPS</title>
+		<!-- Google Address Autocomplete -->
+		<script></script>
 		<!-- Load Google Map Data -->
 		<script
 			async
 			defer
-			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&callback=initMap"
+			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&libraries=places&callback=initMap"
 		></script>
 		<!-- Render Google Map -->
 		<script>
@@ -44,23 +46,35 @@
 				initRoute(map);
 				initMarkers(map, route);
 
+				// Initialize autocomple on address inputs
+				let autocompleteOrigin = new google.maps.places.Autocomplete(
+					document.getElementById('origin')
+				);
+				let autocompleteDestination = new google.maps.places.Autocomplete(
+					document.getElementById('destination')
+				);
+
 				// Re-Initialize map whenever the window reloads
 				google.maps.event.addDomListener(window, 'load', initMap);
 
+				// Initialize route using Google's directions service
 				function initRoute(map) {
+					// Configure the request to setup the route within the map
 					directionsService = new google.maps.DirectionsService();
 					var request = {
 						origin,
 						destination,
 						travelMode: 'DRIVING',
 					};
-
+					// Get the route
 					directionsService.route(
 						request,
 						function (response, status) {
 							if (status == 'OK') {
+								// Route created
 								directionsDisplay.setDirections(response);
 							} else {
+								// Unable to create route; inform user
 								document.getElementById('status').innerHTML =
 									'Unable to find address!';
 							}

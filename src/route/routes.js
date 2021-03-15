@@ -10,7 +10,7 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
-	const increment = req.query.increment || 10; // Default 10 meters
+	const increment = req.query.increment || 25; // Default 10 meters
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -36,7 +36,7 @@ routes.get('/', async function (req, res) {
 		.then((route) => {
 			// Error Handling
 			let status = 200;
-			if (route.error != undefined) {
+			if (route.route == undefined) {
 				status = 500;
 			}
 			// Successful Response

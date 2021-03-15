@@ -3,7 +3,7 @@
  * @param {*} increment In meters
  * @returns
  */
-async function getRoute(origin, destination, increment = 10) {
+async function getRoute(origin, destination, increment) {
 	// Get Google Maps API key from .env file
 	// Locally this will get taken from the .env file
 	// When deployed, GitHub Actions will create a .env file in AWS
