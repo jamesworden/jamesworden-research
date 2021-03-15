@@ -9,6 +9,12 @@
 		<!-- Fonts -->
 		<link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
 
+		<!-- Font Awesome -->
+		<script
+			src="https://kit.fontawesome.com/2f3d399a99.js"
+			crossorigin="anonymous"
+		></script>
+
 		<!-- Document Title -->
 		<title>Incremental GPS</title>
 
@@ -26,7 +32,7 @@
 				// Define origin and destination coordinates
 				const origin = '<%= origin %>';
 				const destination = '<%= destination %>';
-				const route = '<%= JSON.stringify(route) %>';
+				const route = '<%= route %>';
 				// Map options
 				var options = {
 					zoom: 11,
@@ -39,25 +45,9 @@
 				directionsDisplay = new google.maps.DirectionsRenderer();
 				directionsDisplay.setMap(map);
 
-				// Convert waypoints to route
-				console.log(route);
-				// TODO
-				const routeObject = JSON.parse(route.route);
-
-				let waypoints = [];
-				for (i = 0; i < routeObject.length; i++) {
-					let waypoint = {
-						location: new google.maps.LatLng(
-							routeObject[0],
-							routeObject[1]
-						),
-						stopover: true,
-					};
-					waypoints.push(waypoint);
-				}
-
 				// Initialize the route
 				initRoute(map);
+				initMarkers(map, route);
 
 				// Re-Initialize map whenever the window reloads
 				google.maps.event.addDomListener(window, 'load', initMap);
@@ -67,7 +57,6 @@
 					var request = {
 						origin,
 						destination,
-						waypoints,
 						travelMode: 'DRIVING',
 					};
 
@@ -81,6 +70,49 @@
 									'Unable to find address!';
 							}
 						}
+					);
+				}
+
+				function initMarkers(map, route) {
+					// Parse through the stringified EJS route
+					routeObject = route.replaceAll('&#34;', '"');
+					routeObject = JSON.parse(routeObject);
+					routeObject = routeObject.route;
+
+					// Loop through the route object and initialize all the markers
+					let markers = [];
+					for (i = 0; i < routeObject.length; i++) {
+						markers.push({
+							position: new google.maps.Marker({
+								position: new google.maps.LatLng(
+									routeObject[i][0],
+									routeObject[i][1]
+								),
+								map,
+							}),
+						});
+					}
+					// Set how many coordinate pairs there are
+					let count = markers.length;
+					let countText = document.getElementById('count');
+					countText.innerHTML = count + ' coordinate pairs';
+
+					// Set how many pieces of data to show off
+					const exampledata = 5;
+
+					// Create example data
+					let data = [];
+					for (i = 0; i < exampledata; i++) {
+						data.push(routeObject[i]);
+					}
+					let exampleRoute = {
+						route: data,
+					};
+					let dataText = document.getElementById('data');
+					dataText.textContent = JSON.stringify(
+						exampleRoute,
+						null,
+						2
 					);
 				}
 			}
@@ -151,8 +183,7 @@
 				border-bottom: black 1px solid;
 				width: 100%;
 			}
-
-			#code {
+			.code {
 				background-color: var(--gray);
 				padding: 1rem 2rem;
 				font-size: 14px;
@@ -165,16 +196,27 @@
 			#status {
 				font-weight: bold;
 			}
+			#count {
+				float: right;
+				font-weight: bold;
+			}
+			#github {
+				color: var(--black);
+			}
 		</style>
 	</head>
 	<body>
 		<header>
-			<h1>Get incremental GPS Coordinates from two addresses.</h1>
+			<h1>Get incremental GPS Coordinates between two addresses.</h1>
 			<p>Tool created by James Worden</p>
+			<a href="https://github.com/jamesworden/jamesworden-research">
+				<i class="fab fa-github-square fa-2x" id="github"></i>
+			</a>
 		</header>
 		<div id="container">
 			<section>
 				<h2>Map</h2>
+				<div id="count"></div>
 				<div id="map"></div>
 				<p id="status"></p>
 				<p>
@@ -210,14 +252,17 @@
 						name="increment"
 						placeholder="<%= increment%>"
 					/><br />
-					<button type="submit">Get HTTP Request</button>
+					<button type="submit">Get route</button>
 				</form>
-				<div id="code">
+				<p>Http GET request between the two given addresses:</p>
+				<div id="http" class="code">
 					https://research.jamesworden.com/route?<br />
 					origin=<strong><%= origin %></strong><br />
 					&destination=<strong><%= destination %></strong><br />
 					&increment=<strong><%= increment %></strong>
 				</div>
+				<p>First 5 coordinate pairs returned by the request above.</p>
+				<pre id="data" class="code"></pre>
 			</section>
 			<section>
 				<h2>Documentation</h2>

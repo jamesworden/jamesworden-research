@@ -10,7 +10,7 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	origin = req.query.origin || '8000 Utopia Pkwy, Jamaica, NY 11439';
 	destination = req.query.destination || '2, 168-46 91st Ave, 11432';
-	increment = req.query.increment || 10; // Default 10 meters
+	increment = req.query.increment || 25; // Default 10 meters
 
 	// Get the route and then render the page
 	const { getRoute } = require('../route/route');
@@ -22,7 +22,7 @@ routes.get('/', async function (req, res) {
 				origin,
 				destination,
 				increment,
-				route,
+				route: JSON.stringify(route), // So EJS can pass it through
 			});
 		})
 		.catch(() => {
