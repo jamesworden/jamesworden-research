@@ -21,6 +21,7 @@
 		"polyline": "^0.2.0"
 	},
 	"devDependencies": {
+		"node-fetch": "^2.6.1",
 		"serverless-dotenv-plugin": "^3.8.1",
 		"serverless-offline": "^6.8.0"
 	}

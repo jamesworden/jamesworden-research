@@ -18,11 +18,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// EJS for frontend
-const path = require('path');
-const frontend = path.join(__dirname, '/frontend');
+// Set path for EJS views
+const { join } = require('path');
 app.set('view engine', 'ejs');
-app.set('views', frontend);
+app.set('views', join(__dirname, '/frontend'));
 
 // Routing
 app.use('/route', routeRoutes);
