@@ -1,6 +1,6 @@
 /**
  * Create route from two addresses
- * @param {*} increment In meters
+ * @param increment In meters
  * @returns
  */
 async function getRoute(origin, destination, increment) {
@@ -11,10 +11,10 @@ async function getRoute(origin, destination, increment) {
 
 	// Ensure API key has been defined
 	if (key == undefined) {
-		return res.status(422).send({
+		return {
 			error: 'Could not locate API Key!',
 			message: 'Please contact James for assistance.',
-		});
+		};
 	}
 	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
