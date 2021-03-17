@@ -16,6 +16,7 @@
 				--black: black;
 				--blue: cadetblue;
 				--gray: #e8e8e8;
+				--orange: indianred;
 			}
 			body {
 				background-color: var(--white);
@@ -45,10 +46,11 @@
 				margin-bottom: 2rem;
 			}
 			#map-button {
-				padding: 0.5rem 1.5rem;
+				padding: 1rem 1.5rem;
 				text-transform: uppercase;
+				letter-spacing: 0.25rem;
 				background-color: var(--blue);
-				border-radius: 1rem;
+				border-radius: 1.5rem;
 				color: var(--white);
 				border: none;
 				cursor: pointer;
@@ -78,7 +80,9 @@
 				background-color: var(--gray);
 				padding: 1rem 2rem;
 				font-size: 14px;
-				font-family: 'Courier New', Courier, monospace;
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+					Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+					'Helvetica Neue', sans-serif;
 			}
 			#map {
 				height: 20rem;
@@ -101,7 +105,7 @@
 				transition: all 0.3s ease-in-out;
 			}
 			.code-button {
-				padding: 1rem 2rem;
+				padding: 1rem 1.5rem;
 				background-color: var(--blue);
 				color: var(--white);
 				border: none;
@@ -116,6 +120,9 @@
 				background-color: var(--white);
 				transition: all ease-in-out 0.15s;
 			}
+			.selected {
+				text-decoration: underline;
+			}
 			#button-container {
 				margin-bottom: 1rem;
 			}
@@ -128,9 +135,6 @@
 			}
 			.invisible {
 				display: none;
-			}
-			.example-code {
-				padding-bottom: 0; /* Pre tags for code snippets add an extra line at the bottom  */
 			}
 		</style>
 		<!-- Load Google Map Data -->
@@ -250,13 +254,24 @@
 				for (i = 0; i < elements.length; i++) {
 					elements[i].classList.add('invisible');
 				}
+				// Remove styles from buttons
+				elements = document.getElementsByClassName('code-button');
+				for (i = 0; i < elements.length; i++) {
+					elements[i].classList.remove('selected');
+				}
+
 				// Make the one that was clicked visible
 				let element = document.getElementById(id);
 				element.classList.remove('invisible');
+
+				// Make button have selected style
+				console.log(id);
+				element = document.getElementById(id + '-button');
+				element.classList.add('selected');
 			};
 		</script>
 	</head>
-	<body>
+	<body onload="changeExampleCode('javascript');">
 		<header>
 			<h1>Get incremental GPS Coordinates between two addresses.</h1>
 			<p>
@@ -325,22 +340,25 @@
 				<p>First 5 coordinate pairs returned.</p>
 				<pre id="data" class="code"></pre>
 			</section>
-			<section onload="changeExampleCode('javascript');">
+			<section>
 				<h2>Example Code</h2>
 				<div id="button-container">
 					<button
+						id="javascript-button"
 						class="code-button"
 						onclick="changeExampleCode('javascript')"
 					>
 						JavaScript
 					</button>
 					<button
+						id="java-button"
 						class="code-button"
 						onclick="changeExampleCode('java')"
 					>
 						Java
 					</button>
 					<button
+						id="python-button"
 						class="code-button"
 						onclick="changeExampleCode('python')"
 					>
@@ -348,34 +366,57 @@
 					</button>
 				</div>
 				<pre id="javascript" class="code example-code">
+// Define variables
 const origin = 'Origin Address';
 const destination = 'Destination Address';
 const increment = 25; // In meters
 
+// Create URL
 const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}`;
 
+// Use fetch to send request
 async function getData() {
 	const response = await fetch(url, {
 		headers: {
-			'X-API-KEY': 'YOUR_KEY_HERE',
+			'x-api-key': 'YOUR_KEY_HERE',
 		},
 	});
 	return response.json();
 }
 
+// Execute request
 getData().then((data) => {
 	// Your code here
 	console.log(data);
-});
-			</pre
-				>
-				<pre id="python" class="code invisible example-code">
-Python code soon to be updated.
-				</pre
+});</pre
 				>
 				<pre id="java" class="code invisible example-code">
-Java code soon to be updated.
-			</pre
+// Define variables
+String origin = "Origin Address";
+String destination = "Destination Address";
+int increment = 25;
+
+// Create URL
+String url = "https://research.jamesworden.com/route?origin=" + origin +
+		"&destination=" + destination + "&increment=" + increment;
+
+// Use OkHttp to send request
+OkHttpClient client = new OkHttpClient();
+Request request = new Request.Builder()
+		.url(url)
+		.method("GET", null)
+		.header("x-api-key", "YOUR_KEY_HERE")
+		.build();
+
+// Execute request
+Response response = client.newCall(request).execute();
+String data = response.body().string();
+
+// Your code here
+System.out.println(data);</pre
+				>
+				<pre id="python" class="code invisible example-code">
+					Python code soon to be updated.</pre
 				>
 			</section>
 		</div>
