@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Meta Tags -->
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- Document Title -->
+		<title>Incremental Gps Coordinates</title>
+		<!-- Fonts -->
+		<link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
+		<!-- Styles -->
+		<%- include("partials/styles/styles.ejs" ) %>
+		<!-- Code Snippets Script -->
+		<%- include("partials/scripts/snippets.ejs" ) %>
+		<!-- Google Maps Data -->
+		<%- include("partials/scripts/googlemaps.ejs") %>
+		<!-- Initialize Google Map -->
+		<%- include("partials/scripts/initializemap.ejs") %>
+	</head>
+	<body onload="changeCode('javascript');">
+		<header>
+			<h1>Get incremental GPS Coordinates between two addresses.</h1>
+			<p>
+				<span style="font-style: italic"
+					>Tool created by James Worden</span
+				>
+				<br />
+				<a href="https://github.com/jamesworden/jamesworden-research">
+					See code on GitHub &#8594;
+				</a>
+			</p>
+		</header>
+		<div id="container">
+			<section>
+				<h2>Map</h2>
+				<div id="count"></div>
+				<div id="map"></div>
+				<p id="status"></p>
+				<p>
+					Given an origin and destination address, an array of GPS
+					coordinates will be returned. Each coordinate is an array
+					itself - the first and seconds points are latitude and
+					longitude, respectfully. Get coordinates incrementally
+					according to the the 'increment' parameter.
+				</p>
+				<form id="form">
+					<label for="origin">Origin Address</label><br />
+					<input
+						type="text"
+						id="origin"
+						name="origin"
+						placeholder="<%= origin %>"
+					/><br />
+					<label for="destination">Destination Address</label><br />
+					<input
+						type="text"
+						id="destination"
+						name="destination"
+						placeholder="<%= destination %>"
+					/><br />
+					<label for="increment">
+						Increment distance (in meters) </label
+					><br />
+					<input
+						type="number"
+						id="increment"
+						min="1"
+						max="25"
+						name="increment"
+						placeholder="<%= increment%>"
+					/><br />
+					<button id="map-button" type="submit">Get route</button>
+				</form>
+				<p>Http GET request between the two given addresses:</p>
+				<div id="http" class="code">
+					https://research.jamesworden.com/route?<br />
+					origin=<strong><%= origin %></strong><br />
+					&destination=<strong><%= destination %></strong><br />
+					&increment=<strong><%= increment %></strong>
+				</div>
+				<p>
+					Make sure to add your API key to the request header.
+					(Contact James for a key.)
+				</p>
+				<div class="code">-H "x-api-key: YOUR_KEY_HERE"</div>
+				<p>First 5 coordinate pairs returned.</p>
+				<pre id="data" class="code"></pre>
+			</section>
+			<section>
+				<h2>Example Code</h2>
+				<div id="button-container">
+					<button
+						id="javascript-button"
+						class="code-button"
+						onclick="changeCode('javascript')"
+					>
+						JavaScript
+					</button>
+					<button
+						id="java-button"
+						class="code-button"
+						onclick="changeCode('java')"
+					>
+						Java
+					</button>
+					<button
+						id="python-button"
+						class="code-button"
+						onclick="changeCode('python')"
+					>
+						Python
+					</button>
+				</div>
+				<pre id="javascript" class="code example-code">
+<%= javascript %></pre
+				>
+				<pre id="java" class="code invisible example-code">
+<%= java %></pre
+				>
+				<pre id="python" class="code invisible example-code">
+<%= python %></pre
+				>
+			</section>
+		</div>
+	</body>
+</html>

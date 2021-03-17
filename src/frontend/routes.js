@@ -18,10 +18,10 @@ routes.get('/', async function (req, res) {
 
 	// Code snippets from text files
 	const javascript = fs.readFileSync(
-		join(__dirname + '/example-code/javascript')
+		join(__dirname + '/snippets/javascript')
 	);
-	const java = fs.readFileSync(join(__dirname + '/example-code/java'));
-	const python = fs.readFileSync(join(__dirname + '/example-code/python'));
+	const java = fs.readFileSync(join(__dirname + '/snippets/java'));
+	const python = fs.readFileSync(join(__dirname + '/snippets/python'));
 
 	// Get the route and then render the page
 	const { getRoute } = require('../route/route');

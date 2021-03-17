@@ -1,7 +1,7 @@
 // Define variables
 const origin = 'Origin Address';
 const destination = 'Destination Address';
-const increment = 25; // In meters
+const increment = 25;
 
 // Create URL
 const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}`;

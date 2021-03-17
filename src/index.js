@@ -21,7 +21,8 @@ app.use(bodyParser.json());
 // Set path for EJS views
 const { join } = require('path');
 app.set('view engine', 'ejs');
-app.set('views', join(__dirname, '/frontend'));
+app.set('views', join(__dirname, '/frontend/views'));
+app.use(express.static(join(__dirname, 'public')));
 
 // Routing
 app.use('/route', routeRoutes);
