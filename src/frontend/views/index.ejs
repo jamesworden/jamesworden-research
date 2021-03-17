@@ -63,12 +63,12 @@
 					<input
 						type="number"
 						id="increment"
-						min="1"
-						max="25"
 						name="increment"
+						min="1"
+						max="100"
 						placeholder="<%= increment%>"
 					/><br />
-					<button id="map-button" type="submit">Get route</button>
+					<button type="submit">Get route</button>
 				</form>
 				<p>Http GET request between the two given addresses:</p>
 				<div id="http" class="code">
@@ -90,23 +90,14 @@
 				<div id="button-container">
 					<button
 						id="javascript-button"
-						class="code-button"
 						onclick="changeCode('javascript')"
 					>
 						JavaScript
 					</button>
-					<button
-						id="java-button"
-						class="code-button"
-						onclick="changeCode('java')"
-					>
+					<button id="java-button" onclick="changeCode('java')">
 						Java
 					</button>
-					<button
-						id="python-button"
-						class="code-button"
-						onclick="changeCode('python')"
-					>
+					<button id="python-button" onclick="changeCode('python')">
 						Python
 					</button>
 				</div>

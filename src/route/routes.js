@@ -10,7 +10,7 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
-	const increment = req.query.increment || 25; // Default 10 meters
+	const increment = req.query.increment || 25; // Default 25 meters
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -30,6 +30,15 @@ routes.get('/', async function (req, res) {
 			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
 		});
 	}
+	// Ensure increment is between 1 and 100 meters
+	if (increment < 1 || increment > 100) {
+		return {
+			error: 'Invalid increment size.',
+			message:
+				'Your increment parameter must be a value between 1 and 100!',
+		};
+	}
+
 	// Return route from addresses
 	const { getRoute } = require('./route');
 	getRoute(origin, destination, increment)
@@ -37,10 +46,10 @@ routes.get('/', async function (req, res) {
 			// Error Handling
 			let status = 200;
 			if (route.route == undefined) {
-				status = 500;
+				status = 422;
 			}
 			// Successful Response
-			res.status(200).send({
+			res.status(status).send({
 				route,
 			});
 		})
