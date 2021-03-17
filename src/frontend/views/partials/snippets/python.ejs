@@ -1,9 +1,10 @@
+<pre id="python" class="code invisible example-code">
 import requests
 
 # Define variables
-origin = 'Origin Address'
-destination = 'Destination Address'
-increment = '25'
+origin = '<strong><%= origin %></strong>'
+destination = '<strong><%= destination %></strong>'
+increment = '<strong><%= increment %></strong>'
 
 # Create URL
 url = 'https://research.jamesworden.com/route?origin=' + origin + \
@@ -17,3 +18,4 @@ data = response.text.encode('utf8')
 
 # Your code here
 print(data)
+</pre>

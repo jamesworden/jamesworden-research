@@ -112,15 +112,9 @@
 						Python
 					</button>
 				</div>
-				<pre id="javascript" class="code example-code">
-<%= javascript %></pre
-				>
-				<pre id="java" class="code invisible example-code">
-<%= java %></pre
-				>
-				<pre id="python" class="code invisible example-code">
-<%= python %></pre
-				>
+				<%- include("partials/snippets/javascript.ejs") %> <%-
+				include("partials/snippets/java.ejs") %> <%-
+				include("partials/snippets/python.ejs") %>
 			</section>
 		</div>
 	</body>
