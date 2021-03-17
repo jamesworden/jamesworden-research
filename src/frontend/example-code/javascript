@@ -1,0 +1,23 @@
+// Define variables
+const origin = 'Origin Address';
+const destination = 'Destination Address';
+const increment = 25; // In meters
+
+// Create URL
+const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}`;
+
+// Use fetch to send request
+async function getData() {
+	const response = await fetch(url, {
+		headers: {
+			'x-api-key': 'YOUR_KEY_HERE',
+		},
+	});
+	return response.json();
+}
+
+// Execute request
+getData().then((data) => {
+	// Your code here
+	console.log(data);
+});

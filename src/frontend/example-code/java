@@ -1,0 +1,23 @@
+// Define variables
+String origin = "Origin Address";
+String destination = "Destination Address";
+int increment = 25;
+
+// Create URL
+String url = "https://research.jamesworden.com/route?origin=" + origin +
+		"&destination=" + destination + "&increment=" + increment;
+
+// Use OkHttp to send request
+OkHttpClient client = new OkHttpClient();
+Request request = new Request.Builder()
+		.url(url)
+		.method("GET", null)
+		.header("x-api-key", "YOUR_KEY_HERE")
+		.build();
+
+// Execute request
+Response response = client.newCall(request).execute();
+String data = response.body().string();
+
+// Your code here
+System.out.println(data);

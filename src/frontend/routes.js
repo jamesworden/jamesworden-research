@@ -12,17 +12,33 @@ routes.get('/', async function (req, res) {
 	destination = req.query.destination || '2, 168-46 91st Ave, 11432';
 	increment = req.query.increment || 25; // Default 10 meters
 
+	// Get file system module for injecting example code snippets
+	const fs = require('fs');
+	const { join } = require('path');
+
+	// Code snippets from text files
+	const javascript = fs.readFileSync(
+		join(__dirname + '/example-code/javascript')
+	);
+	const java = fs.readFileSync(join(__dirname + '/example-code/java'));
+	const python = fs.readFileSync(join(__dirname + '/example-code/python'));
+
 	// Get the route and then render the page
 	const { getRoute } = require('../route/route');
 	getRoute(origin, destination, increment)
 		.then((route) => {
 			// The front end does not require parameters; the API does
 			res.render('index.ejs', {
+				// Google maps and route data
 				GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
 				origin,
 				destination,
 				increment,
-				route: JSON.stringify(route), // So EJS can pass it through
+				route: JSON.stringify(route),
+				// Example code snippets
+				javascript,
+				java,
+				python,
 			});
 		})
 		.catch(() => {

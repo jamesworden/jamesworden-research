@@ -248,7 +248,7 @@
 		</script>
 		<!-- Example code -->
 		<script>
-			const changeExampleCode = (id) => {
+			const changeCode = (id) => {
 				// Set all code snippets to invisible
 				let elements = document.getElementsByClassName('example-code');
 				for (i = 0; i < elements.length; i++) {
@@ -271,7 +271,7 @@
 			};
 		</script>
 	</head>
-	<body onload="changeExampleCode('javascript');">
+	<body onload="changeCode('javascript');">
 		<header>
 			<h1>Get incremental GPS Coordinates between two addresses.</h1>
 			<p>
@@ -346,77 +346,33 @@
 					<button
 						id="javascript-button"
 						class="code-button"
-						onclick="changeExampleCode('javascript')"
+						onclick="changeCode('javascript')"
 					>
 						JavaScript
 					</button>
 					<button
 						id="java-button"
 						class="code-button"
-						onclick="changeExampleCode('java')"
+						onclick="changeCode('java')"
 					>
 						Java
 					</button>
 					<button
 						id="python-button"
 						class="code-button"
-						onclick="changeExampleCode('python')"
+						onclick="changeCode('python')"
 					>
 						Python
 					</button>
 				</div>
 				<pre id="javascript" class="code example-code">
-// Define variables
-const origin = 'Origin Address';
-const destination = 'Destination Address';
-const increment = 25; // In meters
-
-// Create URL
-const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}`;
-
-// Use fetch to send request
-async function getData() {
-	const response = await fetch(url, {
-		headers: {
-			'x-api-key': 'YOUR_KEY_HERE',
-		},
-	});
-	return response.json();
-}
-
-// Execute request
-getData().then((data) => {
-	// Your code here
-	console.log(data);
-});</pre
+<%= javascript %></pre
 				>
 				<pre id="java" class="code invisible example-code">
-// Define variables
-String origin = "Origin Address";
-String destination = "Destination Address";
-int increment = 25;
-
-// Create URL
-String url = "https://research.jamesworden.com/route?origin=" + origin +
-		"&destination=" + destination + "&increment=" + increment;
-
-// Use OkHttp to send request
-OkHttpClient client = new OkHttpClient();
-Request request = new Request.Builder()
-		.url(url)
-		.method("GET", null)
-		.header("x-api-key", "YOUR_KEY_HERE")
-		.build();
-
-// Execute request
-Response response = client.newCall(request).execute();
-String data = response.body().string();
-
-// Your code here
-System.out.println(data);</pre
+<%= java %></pre
 				>
 				<pre id="python" class="code invisible example-code">
-					Python code soon to be updated.</pre
+<%= python %></pre
 				>
 			</section>
 		</div>
