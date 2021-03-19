@@ -1,3 +1,5 @@
+const e = require('cors');
+
 /**
  * Create route from two addresses
  * @param increment In meters
@@ -70,46 +72,55 @@ async function getRoute(origin, destination, increment) {
 	}
 	// Decode polyline into array of points
 	const { decode } = require('polyline'); // Use the polyline package
-	const calculations = require('../calculations');
-	const route = decode(data.routes[0].overview_polyline.points);
-	// Loop through all points; add points where distance is larger
-	// than the increment size
-	for (i = 0; i < route.length; i++) {
-		// Define current point and next point
-		let currentPoint = route[i];
-		let nextPoint = route[i + 1];
+	const points = decode(data.routes[0].overview_polyline.points);
 
-		// If next point is undefined, current point is the last point.
+	const calculations = require('../calculations');
+	let route = []; // Route array begins with first point always
+
+	let i = 0; // Point index;
+	let currentPosition = points[0]; // Not an actual point, just a temporary marker
+	let distanceUntilNextPoint = 0; // Starts at 0 because 1st point should be added immediately
+
+	// Loop through the polyline points; push valid points to route array
+	while (i < points.length) {
+		// Define next point
+		let nextPoint = points[i + 1];
+
+		// End loop if there is no next point
 		if (nextPoint == undefined) {
 			break;
 		}
-		// Get distance between inital point and next point
-		let distanceToNextPoint = calculations.getDistanceBetweenPoints(
-			currentPoint[0], // Latitude of first point
-			currentPoint[1], // Longitude of first point
+		// Get distance between current position and next point
+		let distanceBetweenPoints = calculations.getDistanceBetweenPoints(
+			currentPosition[0], // Latitude of current position
+			currentPosition[1], // Longitude of current position
 			nextPoint[0], // Latitude of second point
 			nextPoint[1] // Longitude of second point
 		);
-		// Check if distance is larger than increment
-		if (distanceToNextPoint > increment) {
+		// Distance where the next point of the route should be
+		if (distanceBetweenPoints < distanceUntilNextPoint) {
+			// Not far enough from current point, record distance and goto next
+			distanceUntilNextPoint -= distanceBetweenPoints;
+			currentPosition = points[i + 1];
+			i++; // Go to next point
+		} else {
 			// Incrementally create new point from current point
-			let point = calculations.getIntermediatePoint(
-				currentPoint[0],
-				currentPoint[1],
+			let newPoint = calculations.getIntermediatePoint(
+				currentPosition[0],
+				currentPosition[1],
 				nextPoint[0],
 				nextPoint[1],
-				increment
+				distanceUntilNextPoint
 			);
-			// Insert new point right after the current 'i' value
-			// This can cause an infinate loop if not done properly.
-			route.splice(i + 1, 0, point);
 
-			// Ensure 'i' remains the same on next iteration.
-			// This can probably be removed once 'getPointsBetweenGpsCoordinates'
-			// gets updated to create points incrementally.
-			i -= 1;
+			route.push(newPoint);
+			currentPosition = newPoint; // Set current position to newly added point
+			distanceUntilNextPoint = increment; // Point added, reset distance
+
+			// Don't increment i; not yet there
 		}
 	}
+
 	return {
 		route,
 	};
