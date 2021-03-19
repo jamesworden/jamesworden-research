@@ -127,22 +127,35 @@ async function getRoute(origin, destination, increment) {
 	// Make API call for every 100 points
 	let pointsRemaining = route.length;
 	let correctedRoute = [];
+	let apiCalls = 0;
+	let path = '';
 
 	while (pointsRemaining > 0) {
-		// Format path for API call
-		let path = '';
-		for (i = 0; i < 100; i++) {
-			// Loop through 100 points
-			path += route[i][0] + ',' + route[i][1]; // Add points to path
-			if (route[i + 1] != undefined && i + 1 < 100) {
-				// Add division symbol if next point exists and next point is apart of this 100 points
+		// Beginning and end indexes for points in route array
+		minRouteIndex = apiCalls * 100; // 100 slots for each call that has already been made
+		maxRouteIndex = minRouteIndex + 100; // 100 more than the minimum
+
+		for (i = minRouteIndex; i < maxRouteIndex; i++) {
+			// Define current and next points
+			let currentPoint = route[i];
+			let nextPoint = route[i + 1];
+
+			// End loop if there is no current point
+			if (currentPoint == undefined) {
+				break;
+			}
+			// Add coordinates of current point to path string
+			path += currentPoint[0] + ',' + currentPoint[1];
+			if (nextPoint != undefined && i + 1 < maxRouteIndex) {
+				// Add '|' if next point exists and is apart of this set of 100 points
 				path += '|';
 			}
 		}
+
 		// Create URL from path
 		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
 		response = await axios.get(url);
-		let snappedPoints = response.data.snappedPoints;
+		snappedPoints = response.data.snappedPoints;
 
 		// Ensure data was returned
 		if (snappedPoints == undefined) {
@@ -160,6 +173,8 @@ async function getRoute(origin, destination, increment) {
 		}
 
 		pointsRemaining -= 100;
+		apiCalls++;
+		path = '';
 	}
 
 	return {
