@@ -121,8 +121,49 @@ async function getRoute(origin, destination, increment) {
 		}
 	}
 
+	// Route created; now points must be snapped to nearest road.
+	// Google's 'Snap to Roads' API only takes 100 points per API call.
+
+	// Make API call for every 100 points
+	let pointsRemaining = route.length;
+	let correctedRoute = [];
+
+	while (pointsRemaining > 0) {
+		// Format path for API call
+		let path = '';
+		for (i = 0; i < 100; i++) {
+			// Loop through 100 points
+			path += route[i][0] + ',' + route[i][1]; // Add points to path
+			if (route[i + 1] != undefined && i + 1 < 100) {
+				// Add division symbol if next point exists and next point is apart of this 100 points
+				path += '|';
+			}
+		}
+		// Create URL from path
+		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
+		response = await axios.get(url);
+		let snappedPoints = response.data.snappedPoints;
+
+		// Ensure data was returned
+		if (snappedPoints == undefined) {
+			return {
+				error: 'There was a error while processing your request.',
+				message:
+					'Please check your request or contact James for assistance.',
+			};
+		}
+
+		// Loop through all snapped points and add them to corrected route array
+		for (i = 0; i < snappedPoints.length; i++) {
+			location = snappedPoints[i].location;
+			correctedRoute.push([location.latitude, location.longitude]);
+		}
+
+		pointsRemaining -= 100;
+	}
+
 	return {
-		route,
+		route: correctedRoute,
 	};
 }
 
