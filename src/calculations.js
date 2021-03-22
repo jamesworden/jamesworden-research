@@ -1,5 +1,4 @@
 /**
- * Function by 'https://stackoverflow.com/users/1090562/salvador-dali' on StackOverflow
  * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
  * Modified by James Worden
  */
@@ -25,9 +24,8 @@ const getIntermediatePoint = (lat1, lng1, lat2, lng2, distance) => {
 };
 
 /**
- * Returns the (initial) bearing from this point to the supplied point, in degrees.
- * See http://williams.best.vwh.net/avform.htm#Crs
- * @returns initial bearing in degrees from North
+ * http://williams.best.vwh.net/avform.htm#Crs
+ * @returns initial bearing in degrees from North in degrees
  */
 const getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
 	let dLon = lng2 - lng1;
@@ -41,7 +39,7 @@ const getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
 };
 
 /**
- * With inspiration from https://stackoverflow.com/a/46410871/13549
+ * Inspiration from https://stackoverflow.com/a/46410871/13549
  * @param distance In meters
  * @param bearing In degrees
  * @returns

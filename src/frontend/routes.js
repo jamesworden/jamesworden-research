@@ -19,7 +19,7 @@ routes.get('/', async function (req, res) {
 			// The front end does not require parameters; the API does
 			res.render('index.ejs', {
 				// Google maps and route data
-				GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+				GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_FRONTEND_KEY,
 				origin,
 				destination,
 				increment,

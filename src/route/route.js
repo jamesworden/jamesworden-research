@@ -1,15 +1,12 @@
-const e = require('cors');
-
 /**
  * Create route from two addresses
  * @param increment In meters
- * @returns
  */
 async function getRoute(origin, destination, increment) {
 	// Get Google Maps API key from .env file
 	// Locally this will get taken from the .env file
 	// When deployed, GitHub Actions will create a .env file in AWS
-	let key = process.env.GOOGLE_MAPS_API_KEY;
+	let key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 
 	// Ensure API key has been defined
 	if (key == undefined) {

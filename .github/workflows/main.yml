@@ -31,7 +31,8 @@ jobs:
               # to the .env file created below.
               run: |
                   touch .env
-                  echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> .env
+                  echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
+                  echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
             - name: serverless deploy
               uses: serverless/github-action@master
               with:
