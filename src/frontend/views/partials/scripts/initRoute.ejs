@@ -1,0 +1,23 @@
+<script>
+	// Initialize route using Google's directions service
+	function initRoute(map, origin, destination) {
+		// Configure the request to setup the route within the map
+		directionsService = new google.maps.DirectionsService();
+		var request = {
+			origin,
+			destination,
+			travelMode: 'DRIVING',
+		};
+		// Get the route
+		directionsService.route(request, function (response, status) {
+			if (status == 'OK') {
+				// Route created
+				directionsDisplay.setDirections(response);
+			} else {
+				// Unable to create route; inform user
+				document.getElementById('status').innerHTML =
+					'Unable to find address!';
+			}
+		});
+	}
+</script>

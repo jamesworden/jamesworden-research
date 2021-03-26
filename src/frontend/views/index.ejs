@@ -14,7 +14,15 @@
 		<!-- Code Snippets -->
 		<%- include("partials/scripts/snippets.ejs" ) %>
 		<!-- Google Maps -->
-		<%- include("partials/scripts/googlemaps.ejs") %>
+		<%- include("partials/scripts/initRoute.ejs" ) %> <%-
+		include("partials/scripts/initMarkers.ejs" ) %> <%-
+		include("partials/scripts/initMap.ejs" ) %>
+		<!-- Get google maps data from API -->
+		<script
+			async
+			defer
+			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&libraries=places&callback=initMap"
+		></script>
 	</head>
 	<body onload="changeCode('javascript');">
 		<header>

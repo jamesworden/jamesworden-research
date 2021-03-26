@@ -166,7 +166,9 @@ async function getRoute(origin, destination, increment) {
 		// Loop through all snapped points and add them to corrected route array
 		for (i = 0; i < snappedPoints.length; i++) {
 			location = snappedPoints[i].location;
-			correctedRoute.push([location.latitude, location.longitude]);
+			correctedRoute.push({
+				location,
+			});
 		}
 
 		pointsRemaining -= 100;

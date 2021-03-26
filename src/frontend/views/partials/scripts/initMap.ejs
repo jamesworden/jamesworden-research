@@ -1,0 +1,36 @@
+<!-- Create google maps callback function -->
+<script>
+	// Google Maps callback function
+	function initMap() {
+		// Define origin and destination coordinates
+		const origin = '<%= origin %>';
+		const destination = '<%= destination %>';
+		const route = '<%= route %>';
+		// Map options
+		const options = {
+			zoom: 11,
+		};
+		// Define map
+		const map = new google.maps.Map(
+			document.getElementById('map'),
+			options
+		);
+		directionsDisplay = new google.maps.DirectionsRenderer();
+		directionsDisplay.setMap(map);
+
+		// Initialize the route & markers on map
+		initRoute(map, origin, destination);
+		initMarkers(map, route);
+
+		// Initialize autocomple on address inputs
+		let autocompleteOrigin = new google.maps.places.Autocomplete(
+			document.getElementById('origin')
+		);
+		let autocompleteDestination = new google.maps.places.Autocomplete(
+			document.getElementById('destination')
+		);
+
+		// Re-Initialize map whenever the window reloads
+		google.maps.event.addDomListener(window, 'load', initMap);
+	}
+</script>
