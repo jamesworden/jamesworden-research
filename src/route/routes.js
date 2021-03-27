@@ -10,7 +10,8 @@ routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
 	const origin = req.query.origin;
 	const destination = req.query.destination;
-	const increment = req.query.increment || 25; // Default 25 meters
+	const increment = req.query.increment || 25; // Default: 25 meters
+	const panorama = req.query.panorama || false; // Default: Don't show panorama Id's
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -41,7 +42,7 @@ routes.get('/', async function (req, res) {
 
 	// Return route from addresses
 	const { getRoute } = require('./route');
-	getRoute(origin, destination, increment)
+	getRoute(origin, destination, increment, panorama)
 		.then((route) => {
 			// Error Handling
 			let status = 200;
@@ -49,11 +50,12 @@ routes.get('/', async function (req, res) {
 				status = 422;
 			}
 			// Successful Response
-			res.status(status).send({
-				route,
-			});
+			res.status(status).send(route); // Route is a JSON object
 		})
-		.catch(() => {
+		.catch((error) => {
+			// Error handling for getRoute
+			console.log(error);
+			// Inform the user there has been a server side error
 			res.status(500).send({
 				error: 'Unable to create complete request!',
 				message: 'Please contact James for assistance.',

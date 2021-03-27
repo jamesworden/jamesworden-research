@@ -1,11 +1,16 @@
 /**
  * Create route from two addresses
- * @param increment In meters
+ * @param {String} origin Origin address
+ * @param {String} destination Destination address
+ * @param {Number} increment Increment distance in meters
+ * @param {Boolean} panorama Return panorma Id's for each coordinate pair if true
  */
-async function getRoute(origin, destination, increment) {
-	// Get Google Maps API key from .env file
-	// Locally this will get taken from the .env file
-	// When deployed, GitHub Actions will create a .env file in AWS
+async function getRoute(origin, destination, increment, panorama) {
+	/**
+	 * Get Google Maps API key from .env file
+	 * Locally this will get taken from the .env file
+	 * When deployed, GitHub Actions will create a .env file in AWS
+	 */
 	let key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 
 	// Ensure API key has been defined
@@ -59,12 +64,13 @@ async function getRoute(origin, destination, increment) {
 	let latDif = Math.abs(bounds.northeast.lat - bounds.southwest.lat);
 	let lngDif = Math.abs(bounds.northeast.lng - bounds.southwest.lng);
 
-	// If difference in latitude or longitude > 1
-	if (latDif > 1 || lngDif > 1) {
+	// If difference in latitude or longitude is greater than 5 miles, throw an error
+	// Converted miles to latitdue / longitdue
+	if (latDif > 0.07277702574 || lngDif > 0.09157509157) {
 		return {
 			error: 'Your addresses are too far apart!',
 			solution:
-				'Please enter locations that are within 1 latitude and longitude difference.',
+				'Please enter locations that are within 5 miles of longitdue and latitdue from one another.',
 		};
 	}
 	// Decode polyline into array of points
@@ -118,11 +124,12 @@ async function getRoute(origin, destination, increment) {
 		}
 	}
 
-	// Route created; now points must be snapped to nearest road.
-	// Google's 'Snap to Roads' API only takes 100 points per API call.
+	/**
+	 * Route created; now points must be snapped to nearest road.
+	 * Google's 'Snap to Roads' API only takes 100 points per API call.
+	 */
 
-	// Make API call for every 100 points
-	let pointsRemaining = route.length;
+	let pointsRemaining = route.length; // Make API call every 100 points
 	let correctedRoute = [];
 	let apiCalls = 0;
 	let path = '';
@@ -165,7 +172,7 @@ async function getRoute(origin, destination, increment) {
 
 		// Loop through all snapped points and add them to corrected route array
 		for (i = 0; i < snappedPoints.length; i++) {
-			location = snappedPoints[i].location;
+			let location = snappedPoints[i].location;
 			correctedRoute.push({
 				location,
 			});
@@ -174,6 +181,33 @@ async function getRoute(origin, destination, increment) {
 		pointsRemaining -= 100;
 		apiCalls++;
 		path = '';
+	}
+
+	/**
+	 * Snapped points are collected, let's handle panorama id's.
+	 * If panorama is true, add id's to each coordinate pair object
+	 */
+
+	if (panorama) {
+		let promises = []; // Array of promises to be executed after
+		const { getPanoramaId } = require('./panorama');
+
+		// Loop through all snapped points and add Pano Id's for each
+		for (i = 0; i < correctedRoute.length; i++) {
+			// Create a function to push a promise to the promises array
+			// Without a closed function, the value of i gets overridden each iteration
+			(function (i) {
+				let location = correctedRoute[i].location;
+				// Push promise for each snapped point location
+				promises.push(
+					getPanoramaId(location).then((pano_id) => {
+						correctedRoute[i]['pano_id'] = pano_id;
+					})
+				);
+			})(i);
+		}
+		// Execute all the promises that have been added.
+		await Promise.all(promises);
 	}
 
 	return {

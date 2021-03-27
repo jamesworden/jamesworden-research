@@ -6,15 +6,9 @@
 		const origin = '<%= origin %>';
 		const destination = '<%= destination %>';
 		const route = '<%= route %>';
-		// Map options
-		const options = {
-			zoom: 11,
-		};
+
 		// Define map
-		const map = new google.maps.Map(
-			document.getElementById('map'),
-			options
-		);
+		const map = new google.maps.Map(document.getElementById('map'));
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		directionsDisplay.setMap(map);
 
@@ -29,7 +23,6 @@
 		let autocompleteDestination = new google.maps.places.Autocomplete(
 			document.getElementById('destination')
 		);
-
 		// Re-Initialize map whenever the window reloads
 		google.maps.event.addDomListener(window, 'load', initMap);
 	}

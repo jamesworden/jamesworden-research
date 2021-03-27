@@ -79,7 +79,7 @@
 					<button type="submit">Get route</button>
 				</form>
 				<p>Http GET request between the two given addresses:</p>
-				<div id="http" class="code">
+				<div class="code">
 					https://research.jamesworden.com/route?<br />
 					origin=<strong><%= origin %></strong><br />
 					&destination=<strong><%= destination %></strong><br />
@@ -92,6 +92,35 @@
 				<div class="code">-H "x-api-key: YOUR_KEY_HERE"</div>
 				<p>First 5 coordinate pairs returned.</p>
 				<pre id="data" class="code"></pre>
+			</section>
+			<section>
+				<h2>Google StreetView Integration</h2>
+				<p>
+					The Google StreetView API contains panorama images that can
+					be referenced by <strong>panorama id</strong> strings. Add
+					an extra <strong>panorama</strong> query parameter at the
+					end of your GET request to retrieve panorama id's with each
+					of the coordinate pairs.
+				</p>
+				<p>
+					Setting <strong>panorama</strong> to
+					<strong>true</strong> will include panorama id's.
+				</p>
+				<div class="code">&panorama=true</div>
+				<p>
+					By default, this setting is false. When true, however, the
+					coordinate pair JSON objects will appear as follows:
+				</p>
+				<pre class="code">
+{
+	"location": {
+		"latitude": 40.72499649420905,
+		"longitude": -73.79225323669348
+	},
+	"pano_id": "PANORAMA_ID"
+}
+				</pre
+				>
 			</section>
 			<section>
 				<h2>Example Code</h2>
