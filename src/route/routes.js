@@ -11,7 +11,11 @@ routes.get('/', async function (req, res) {
 	const origin = req.query.origin;
 	const destination = req.query.destination;
 	const increment = req.query.increment || 25; // Default: 25 meters
-	const panorama = req.query.panorama || false; // Default: Don't show panorama Id's
+	const panorama =
+		req.query.panorama == undefined || // If panorama is undefined
+		req.query.panorama.toUpperCase() !== 'TRUE' // or anything but true,
+			? false // set it false
+			: true; // Otherwise, set it true
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -31,13 +35,13 @@ routes.get('/', async function (req, res) {
 			'example-address': '8000 Utopia Pkwy, Jamaica, NY 11439',
 		});
 	}
-	// Ensure increment is between 1 and 100 meters
-	if (increment < 1 || increment > 100) {
-		return {
+	// Ensure increment is a positive integer between 1 and 100 meters
+	if (isNaN(increment) || increment < 1 || increment > 100) {
+		return res.status(422).send({
 			error: 'Invalid increment size.',
 			message:
 				'Your increment parameter must be a value between 1 and 100!',
-		};
+		});
 	}
 
 	// Return route from addresses
