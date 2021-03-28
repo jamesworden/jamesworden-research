@@ -8,10 +8,10 @@ const routes = express.Router({
 // Dynamically rendering the enviornment variables into the ejs template
 routes.get('/', async function (req, res) {
 	// Get origin and destination values from queries
-	origin = req.query.origin || 'New York, NY 10119';
-	destination = req.query.destination || '20 W 34th St, New York, NY 10001';
-	increment = req.query.increment || 25; // Default 25 meters
-	panorama = req.query.panorama || false; // Default don't display panorama Id's
+	const origin = req.query.origin || 'New York, NY 10119';
+	const destination =
+		req.query.destination || '20 W 34th St, New York, NY 10001';
+	const increment = req.query.increment || 25; // Default 25 meters
 
 	// Get the route and then render the page
 	const { getRoute } = require('../route/route');
@@ -24,7 +24,6 @@ routes.get('/', async function (req, res) {
 				origin,
 				destination,
 				increment,
-				panorama,
 				route: JSON.stringify(route),
 			});
 		})

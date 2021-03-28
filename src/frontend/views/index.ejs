@@ -6,7 +6,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- Document Title -->
-		<title>Incremental Gps Coordinates</title>
+		<title>Incremental GPS Coordinates</title>
 		<!-- Fonts -->
 		<link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
 		<!-- Styles -->
@@ -17,12 +17,6 @@
 		<%- include("partials/scripts/initRoute.ejs" ) %> <%-
 		include("partials/scripts/initMarkers.ejs" ) %> <%-
 		include("partials/scripts/initMap.ejs" ) %>
-		<!-- Get google maps data from API -->
-		<script
-			async
-			defer
-			src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&libraries=places&callback=initMap"
-		></script>
 	</head>
 	<body onload="changeCode('javascript');">
 		<header>
@@ -32,16 +26,18 @@
 					>Tool created by James Worden</span
 				>
 				<br />
-				<a href="https://github.com/jamesworden/jamesworden-research">
-					See code on GitHub &#8594;
-				</a>
 			</p>
+			<button
+				onclick="window.location.href='https://github.com/jamesworden/jamesworden-research'"
+			>
+				See code on GitHub &#8594;
+			</button>
 		</header>
 		<div id="container">
 			<section>
 				<h2>Map</h2>
 				<div id="count"></div>
-				<div id="map"></div>
+				<div id="map" class="fullscreen"></div>
 				<p id="status"></p>
 				<p>
 					Given an origin and destination address, an array of GPS
@@ -126,15 +122,24 @@
 				<h2>Example Code</h2>
 				<div id="button-container">
 					<button
+						class="code-button"
 						id="javascript-button"
 						onclick="changeCode('javascript')"
 					>
 						JavaScript
 					</button>
-					<button id="java-button" onclick="changeCode('java')">
+					<button
+						class="code-button"
+						id="java-button"
+						onclick="changeCode('java')"
+					>
 						Java
 					</button>
-					<button id="python-button" onclick="changeCode('python')">
+					<button
+						class="code-button"
+						id="python-button"
+						onclick="changeCode('python')"
+					>
 						Python
 					</button>
 				</div>
