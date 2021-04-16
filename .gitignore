@@ -46,3 +46,6 @@ env.yml
 
 # Testing
 test.js
+
+# Google
+GoogleServiceCredentials.json

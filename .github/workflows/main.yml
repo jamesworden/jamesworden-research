@@ -33,6 +33,9 @@ jobs:
                   touch .env
                   echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
                   echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
+                  echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
+                  touch GoogleServiceCredentials.json
+                  echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
             - name: serverless deploy
               uses: serverless/github-action@master
               with:

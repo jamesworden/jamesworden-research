@@ -7,15 +7,20 @@ const routes = express.Router({
 
 // Get route
 routes.get('/', async function (req, res) {
-	// Get origin and destination values from queries
+	// Query parameters
 	const origin = req.query.origin;
 	const destination = req.query.destination;
 	const increment = req.query.increment || 25; // Default: 25 meters
-	const panorama =
-		req.query.panorama == undefined || // If panorama is undefined
-		req.query.panorama.toUpperCase() !== 'TRUE' // or anything but true,
-			? false // set it false
-			: true; // Otherwise, set it true
+	const panoid =
+		req.query.panoid == undefined ||
+		req.query.panoid.toUpperCase() !== 'TRUE'
+			? false
+			: true;
+	const panotext =
+		req.query.panotext == undefined ||
+		req.query.panotext.toUpperCase() !== 'TRUE'
+			? false
+			: true;
 
 	// Ensure origin was specified
 	if (origin == undefined) {
@@ -46,20 +51,14 @@ routes.get('/', async function (req, res) {
 
 	// Return route from addresses
 	const { getRoute } = require('./route');
-	getRoute(origin, destination, increment, panorama)
+	getRoute(origin, destination, increment, panoid, panotext)
 		.then((route) => {
-			// Error Handling
 			let status = 200;
-			if (route.route == undefined) {
-				status = 422;
-			}
-			// Successful Response
+			if (route.route == undefined) status = 422;
 			res.status(status).send(route); // Route is a JSON object
 		})
 		.catch((error) => {
-			// Error handling for getRoute
 			console.log(error);
-			// Inform the user there has been a server side error
 			res.status(500).send({
 				error: 'Unable to create complete request!',
 				message: 'Please contact James for assistance.',

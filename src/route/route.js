@@ -3,9 +3,10 @@
  * @param {String} origin Origin address
  * @param {String} destination Destination address
  * @param {Number} increment Increment distance in meters
- * @param {Boolean} panorama Return panorma Id's for each coordinate pair if true
+ * @param {Boolean} panoid Return panorma Id's for each coordinate pair if true
+ * @param {Boolean} panotext Returns Google Vision OCR text from the panorma images at each coordinate pair
  */
-async function getRoute(origin, destination, increment, panorama) {
+async function getRoute(origin, destination, increment, panoid, panotext) {
 	/**
 	 * Get Google Maps API key from .env file
 	 * Locally this will get taken from the .env file
@@ -77,7 +78,7 @@ async function getRoute(origin, destination, increment, panorama) {
 	const { decode } = require('polyline'); // Use the polyline package
 	const points = decode(data.routes[0].overview_polyline.points);
 
-	const calculations = require('../calculations');
+	const calculations = require('./calculations');
 	let route = []; // Route array begins with first point always
 
 	let i = 0; // Point index;
@@ -88,11 +89,8 @@ async function getRoute(origin, destination, increment, panorama) {
 	while (i < points.length) {
 		// Define next point
 		let nextPoint = points[i + 1];
+		if (nextPoint == undefined) break;
 
-		// End loop if there is no next point
-		if (nextPoint == undefined) {
-			break;
-		}
 		// Get distance between current position and next point
 		let distanceBetweenPoints = calculations.getDistanceBetweenPoints(
 			currentPosition[0], // Latitude of current position
@@ -155,7 +153,6 @@ async function getRoute(origin, destination, increment, panorama) {
 				path += '|';
 			}
 		}
-
 		// Create URL from path
 		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
 		response = await axios.get(url);
@@ -169,7 +166,6 @@ async function getRoute(origin, destination, increment, panorama) {
 					'Please check your request or contact James for assistance.',
 			};
 		}
-
 		// Loop through all snapped points and add them to corrected route array
 		for (i = 0; i < snappedPoints.length; i++) {
 			let location = snappedPoints[i].location;
@@ -177,37 +173,53 @@ async function getRoute(origin, destination, increment, panorama) {
 				location,
 			});
 		}
-
 		pointsRemaining -= 100;
 		apiCalls++;
 		path = '';
 	}
 
 	/**
-	 * Snapped points are collected, let's handle panorama id's.
-	 * If panorama is true, add id's to each coordinate pair object
+	 * Corrected Route has been created.
+	 * Add additional query data for each coordinate pair
 	 */
 
-	if (panorama) {
-		let promises = []; // Array of promises to be executed after
-		const { getPanoramaId } = require('./panorama');
+	if (panoid || panotext) {
+		let promises = [];
+		const { getPanoramaId, getPanoramaText } = require('./panorama');
 
-		// Loop through all snapped points and add Pano Id's for each
+		// Loop through all coordinate pairs and push promises for each location
 		for (i = 0; i < correctedRoute.length; i++) {
-			// Create a function to push a promise to the promises array
-			// Without a closed function, the value of i gets overridden each iteration
 			(function (i) {
-				let location = correctedRoute[i].location;
-				// Push promise for each snapped point location
-				promises.push(
-					getPanoramaId(location).then((pano_id) => {
-						correctedRoute[i]['pano_id'] = pano_id;
-					})
-				);
+				const latitude = correctedRoute[i].location.latitude;
+				const longitude = correctedRoute[i].location.longitude;
+				if (panoid) {
+					promises.push(
+						getPanoramaId(latitude, longitude).then((pano_id) => {
+							correctedRoute[i]['pano_id'] = pano_id;
+						})
+					);
+				}
+				if (panotext) {
+					// Google Cloud Vision service client
+					const vision = require('@google-cloud/vision');
+					const client = new vision.ImageAnnotatorClient();
+					correctedRoute[i]['pano_text'] = '';
+					for (heading = 0; heading < 360; heading += 120) {
+						promises.push(
+							getPanoramaText(
+								latitude,
+								longitude,
+								client,
+								heading
+							).then((pano_text) => {
+								correctedRoute[i]['pano_text'] += pano_text;
+							})
+						);
+					}
+				}
 			})(i);
 		}
-		// Execute all the promises that have been added.
-		await Promise.all(promises);
+		await Promise.all(promises); // Execute all the promises that have been added.
 	}
 
 	return {

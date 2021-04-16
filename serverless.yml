@@ -23,7 +23,12 @@ functions:
                   method: get
                   cors: true
             - http:
-                  path: /route
+                  path: /api/route
+                  method: get
+                  cors: true
+                  private: true
+            - http:
+                  path: /api/validate
                   method: get
                   cors: true
                   private: true

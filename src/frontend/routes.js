@@ -7,18 +7,16 @@ const routes = express.Router({
 
 // Dynamically rendering the enviornment variables into the ejs template
 routes.get('/', async function (req, res) {
-	// Get origin and destination values from queries
 	const origin = req.query.origin || 'New York, NY 10119';
 	const destination =
 		req.query.destination || '20 W 34th St, New York, NY 10001';
 	const increment = req.query.increment || 25; // Default 25 meters
 
-	// Get the route and then render the page
 	const { getRoute } = require('../route/route');
 	getRoute(origin, destination, increment)
 		.then((route) => {
 			// The front end does not require parameters; the API does
-			res.render('index.ejs', {
+			res.render('index.html', {
 				// Google maps and route data
 				GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_FRONTEND_KEY,
 				origin,
