@@ -28,7 +28,6 @@ const getPanoramaText = async function (
 
 	let image = await axios.get(url, { responseType: 'arraybuffer' });
 	let base64 = Buffer.from(image.data).toString('base64');
-
 	let panotext = [];
 
 	const request = { image: { content: Buffer.from(base64, 'base64') } };

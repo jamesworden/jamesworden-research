@@ -4,37 +4,39 @@
  * @param {String} destination Destination address
  * @param {Number} increment Increment distance in meters
  * @param {Boolean} panoid Return panorma Id's for each coordinate pair if true
- * @param {Boolean} panotext Returns Google Vision OCR text from the panorma images at each coordinate pair
+ * @param {Boolean} panotext Returns Google Vision OCR text from the panorma images at each coordinate pair if true
+ * @param {Boolean} location Returns the coordinate pairs along the route, set to true by default
+ * @param {String} waypoints Waypoints that the route goes through ('ADDR1|ADDR2|ETC...')
  */
-async function getRoute(origin, destination, increment, panoid, panotext) {
+async function getRoute(
+	origin,
+	destination,
+	increment,
+	panoid = false,
+	panotext = false,
+	location = true,
+	waypoints = ''
+) {
 	/**
-	 * Get Google Maps API key from .env file
-	 * Locally this will get taken from the .env file
-	 * When deployed, GitHub Actions will create a .env file in AWS
+	 * Fetch route from Google Maps
 	 */
-	let key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 
-	// Ensure API key has been defined
+	let key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 	if (key == undefined) {
 		return {
 			error: 'Could not locate API Key!',
 			message: 'Please contact James for assistance.',
 		};
 	}
-	// Fetch data from google directions using query data
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
-	const queries = `?origin="${origin}"&destination="${destination}"&key=${key}`;
+	const queries = `?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`;
 	let url = baseUrl + queries;
-
-	// Fetch data from url with specified data
 	const axios = require('axios');
 	let response = await axios.get(url);
 	let data = response.data;
 
-	// If Google API call status was not ok, inform user
 	let status = data.status;
 	if (status != 'OK') {
-		// Each case statement modifies errors and solutions accordingly
 		let error, message;
 		switch (status) {
 			case 'NOT_FOUND':
@@ -53,32 +55,35 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 				message =
 					'Please check your request or contact James for assistance.';
 		}
-		// Return error messages to user
-		return {
-			error,
-			message,
-		};
+		return { error, message };
 	}
-	// Google API call went through successfully; safe to extract data
-	// Ensure difference in latitude or longitude does not differ by 1
-	let bounds = data.routes[0].bounds;
-	let latDif = Math.abs(bounds.northeast.lat - bounds.southwest.lat);
-	let lngDif = Math.abs(bounds.northeast.lng - bounds.southwest.lng);
+
+	/**
+	 * Google API call went through successfully; safe to extract data
+	 * Get incremental points along the route
+	 */
+
+	const calculations = require('./calculations');
+	const constants = require('../constants');
 
 	// If difference in latitude or longitude is greater than 5 miles, throw an error
-	// Converted miles to latitdue / longitdue
-	if (latDif > 0.07277702574 || lngDif > 0.09157509157) {
+	let bounds = data.routes[0].bounds;
+	let distance = calculations.getDistanceBetweenPoints(
+		bounds.northeast.lat,
+		bounds.northeast.lng,
+		bounds.southwest.lat,
+		bounds.southwest.lng
+	);
+	if (distance > constants.MAX_DISTANCE_BETWEEN_ADDRESSES) {
 		return {
-			error: 'Your addresses are too far apart!',
-			solution:
-				'Please enter locations that are within 5 miles of longitdue and latitdue from one another.',
+			error: `Your addresses are too far apart (${distance} meters)!`,
+			solution: `Please enter locations that are within ${constants.MAX_DISTANCE_BETWEEN_ADDRESSES} meters of longitdue and latitdue from one another.`,
 		};
 	}
 	// Decode polyline into array of points
 	const { decode } = require('polyline'); // Use the polyline package
 	const points = decode(data.routes[0].overview_polyline.points);
 
-	const calculations = require('./calculations');
 	let route = []; // Route array begins with first point always
 
 	let i = 0; // Point index;
@@ -87,7 +92,6 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 
 	// Loop through the polyline points; push valid points to route array
 	while (i < points.length) {
-		// Define next point
 		let nextPoint = points[i + 1];
 		if (nextPoint == undefined) break;
 
@@ -138,27 +142,19 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 		maxRouteIndex = minRouteIndex + 100; // 100 more than the minimum
 
 		for (i = minRouteIndex; i < maxRouteIndex; i++) {
-			// Define current and next points
 			let currentPoint = route[i];
 			let nextPoint = route[i + 1];
-
 			// End loop if there is no current point
-			if (currentPoint == undefined) {
-				break;
-			}
+			if (currentPoint == undefined) break;
 			// Add coordinates of current point to path string
 			path += currentPoint[0] + ',' + currentPoint[1];
-			if (nextPoint != undefined && i + 1 < maxRouteIndex) {
-				// Add '|' if next point exists and is apart of this set of 100 points
-				path += '|';
-			}
+			// Add '|' if next point exists and is apart of this set of 100 points
+			if (nextPoint != undefined && i + 1 < maxRouteIndex) path += '|';
 		}
-		// Create URL from path
+
 		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
 		response = await axios.get(url);
 		snappedPoints = response.data.snappedPoints;
-
-		// Ensure data was returned
 		if (snappedPoints == undefined) {
 			return {
 				error: 'There was a error while processing your request.',
@@ -168,10 +164,7 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 		}
 		// Loop through all snapped points and add them to corrected route array
 		for (i = 0; i < snappedPoints.length; i++) {
-			let location = snappedPoints[i].location;
-			correctedRoute.push({
-				location,
-			});
+			correctedRoute.push({ location: snappedPoints[i].location });
 		}
 		pointsRemaining -= 100;
 		apiCalls++;
@@ -200,7 +193,6 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 					);
 				}
 				if (panotext) {
-					// Google Cloud Vision service client
 					const vision = require('@google-cloud/vision');
 					const client = new vision.ImageAnnotatorClient();
 					correctedRoute[i]['pano_text'] = '';
@@ -212,21 +204,17 @@ async function getRoute(origin, destination, increment, panoid, panotext) {
 								client,
 								heading
 							).then((pano_text) => {
-								correctedRoute[i]['pano_text'] += pano_text;
+								correctedRoute[i]['pano_text'] +=
+									pano_text + ',';
 							})
 						);
 					}
 				}
+				if (!location) delete correctedRoute[i]['location'];
 			})(i);
 		}
-		await Promise.all(promises); // Execute all the promises that have been added.
+		await Promise.all(promises);
 	}
-
-	return {
-		route: correctedRoute,
-	};
+	return { route: correctedRoute };
 }
-
-module.exports = {
-	getRoute,
-};
+module.exports = { getRoute };

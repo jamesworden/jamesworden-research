@@ -1,23 +1,19 @@
 const express = require('express');
+const constants = require('../constants');
 
-// All frontend routes
-const routes = express.Router({
-	mergeParams: true,
-});
+const routes = express.Router({ mergeParams: true });
 
-// Dynamically rendering the enviornment variables into the ejs template
 routes.get('/', async function (req, res) {
-	const origin = req.query.origin || 'New York, NY 10119';
+	const origin = req.query.origin || constants.DEFAULT_ORIGIN_ADDRESS;
 	const destination =
-		req.query.destination || '20 W 34th St, New York, NY 10001';
-	const increment = req.query.increment || 25; // Default 25 meters
+		req.query.destination || constants.DEFAULT_DESTINATION_ADDRESS;
+	const increment =
+		req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
 
 	const { getRoute } = require('../route/route');
 	getRoute(origin, destination, increment)
 		.then((route) => {
-			// The front end does not require parameters; the API does
 			res.render('index.html', {
-				// Google maps and route data
 				GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_FRONTEND_KEY,
 				origin,
 				destination,
@@ -33,5 +29,4 @@ routes.get('/', async function (req, res) {
 		});
 });
 
-// Export all the routes
 module.exports = routes;
