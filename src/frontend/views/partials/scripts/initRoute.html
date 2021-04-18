@@ -3,11 +3,7 @@
 	function initRoute(map, origin, destination) {
 		// Configure the request to setup the route within the map
 		directionsService = new google.maps.DirectionsService();
-		var request = {
-			origin,
-			destination,
-			travelMode: 'DRIVING',
-		};
+		var request = { origin, destination, travelMode: 'DRIVING' };
 		// Get the route
 		directionsService.route(request, function (response, status) {
 			if (status == 'OK') {

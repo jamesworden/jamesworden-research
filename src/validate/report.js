@@ -1,43 +1,34 @@
+const constants = require('../constants');
+
 /**
- * Returns a report of how likely two routes separated from one another
- * Also contains statistical information with OCR data
+ * Contains statistical information with OCR data
  * @param {String} origin Origin address
  * @param {String} destination Destination Address
  * @param {String} waypoints Waypoints for detour in route to simulate spoofed locations
  * @param {Integer} increment Increment distance between GPS coordinates
- * @returns
+ * @returns A report of how likely two routes separated from one another
  */
 const getReport = async function (origin, destination, waypoints, increment) {
-	/**
-	 * Get both routes and panorama text along the way
-	 */
-	const { getRoute } = require('../route/route');
-	let detour, regular;
+	// Production
+	// Get both routes and panorama text along the way
+	// const { getRoute } = require('../route/route');
+	// let detour, regular, error;
+	// await Promise.all([
+	// 	getRoute(origin, destination, increment, false, true, true)
+	// 		.then((r) => (regular = r))
+	// 		.catch(() => (error = true)),
+	// 	getRoute(origin, destination, increment, false, true, true, waypoints)
+	// 		.then((r) => (detour = r))
+	// 		.catch(() => (error = true)),
+	// ]);
+	//
+	// if (error) return { error: constants.DEFAULT_ERROR_MESSAGE };
 
-	await Promise.all([
-		getRoute(origin, destination, increment, false, true, true)
-			.then((route) => {
-				if (route.route == undefined) res.status(422).send(route);
-				regular = route;
-			})
-			.catch((error) => {
-				console.log(error);
-				return { error: constants.DEFAULT_ERROR_MESSAGE };
-			}),
-		getRoute(origin, destination, increment, false, true, true, waypoints)
-			.then((route) => {
-				if (route.route == undefined) res.status(422).send(route);
-				detour = route;
-			})
-			.catch((error) => {
-				console.log(error);
-				return { error: constants.DEFAULT_ERROR_MESSAGE };
-			}),
-	]);
+	// Development
+	let detour = require('../sampledata/detour_text_route.json'),
+		regular = require('../sampledata/regular_text_route.json');
 
-	/**
-	 * Loop through the regular route and halt when the detour route diverges
-	 */
+	//Loop through the regular route and halt when the detour route diverges
 
 	// spoofed: true,
 	// confidence_value: 39%
@@ -51,5 +42,4 @@ const getReport = async function (origin, destination, waypoints, increment) {
 
 	return { report: { detour, regular } };
 };
-
 module.exports = { getReport };

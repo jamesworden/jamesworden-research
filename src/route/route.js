@@ -17,17 +17,8 @@ async function getRoute(
 	location = true,
 	waypoints = ''
 ) {
-	/**
-	 * Fetch route from Google Maps
-	 */
-
-	let key = process.env.GOOGLE_MAPS_BACKEND_KEY;
-	if (key == undefined) {
-		return {
-			error: 'Could not locate API Key!',
-			message: 'Please contact James for assistance.',
-		};
-	}
+	// Fetch route from Google Maps
+	const key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
 	const queries = `?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`;
 	let url = baseUrl + queries;
@@ -40,20 +31,17 @@ async function getRoute(
 		let error, message;
 		switch (status) {
 			case 'NOT_FOUND':
-				error =
-					'The route between the given addresses could not be found!';
-				message =
-					'Please check that you have inputted valid addresses.';
+				error = 'The route between the given addresses could not be found!';
+				message = 'Please check that you have inputted valid addresses.';
 				break;
 			case 'REQUEST_DENIED':
-				error =
-					'There was a problem fetching data from the Google API!';
+				error = 'There was a problem fetching data from the Google API!';
 				message = 'Please contact James for assistance.';
 				break;
 			default:
 				error = 'There was a error while processing your request.';
-				message =
-					'Please check your request or contact James for assistance.';
+				message = 'Please check your request or contact James for assistance.';
+				status = `Google Status Code: ${status}`;
 		}
 		return { error, message };
 	}
@@ -158,8 +146,7 @@ async function getRoute(
 		if (snappedPoints == undefined) {
 			return {
 				error: 'There was a error while processing your request.',
-				message:
-					'Please check your request or contact James for assistance.',
+				message: 'Please check your request or contact James for assistance.',
 			};
 		}
 		// Loop through all snapped points and add them to corrected route array
@@ -198,15 +185,11 @@ async function getRoute(
 					correctedRoute[i]['pano_text'] = '';
 					for (heading = 0; heading < 360; heading += 120) {
 						promises.push(
-							getPanoramaText(
-								latitude,
-								longitude,
-								client,
-								heading
-							).then((pano_text) => {
-								correctedRoute[i]['pano_text'] +=
-									pano_text + ',';
-							})
+							getPanoramaText(latitude, longitude, client, heading).then(
+								(pano_text) => {
+									correctedRoute[i]['pano_text'] += pano_text + ',';
+								}
+							)
 						);
 					}
 				}

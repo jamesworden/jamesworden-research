@@ -39,7 +39,32 @@ const containsInvalidIncrement = function (increment, response) {
 	} else return false;
 };
 
+/**
+ * @param key API key required for API services
+ * @param response Response to send an error message to the sender
+ * @return True if the key is invalid or undefined, false if the key is valid
+ */
+const containsInvalidKey = function (key, response) {
+	if (key && key == process.env.RESEARCH_API_KEY) return false;
+	let error;
+	if (!key) error = 'An API key is required to perform this function.';
+	else error = 'The specified API key is invalid.';
+	response.status(422).send({ error });
+	return true;
+};
+
+/**
+ * @param {String} String1
+ * @param {String} String2
+ * @returns True only if given strings are equal regardless of casing
+ */
+const equalsIgnoreCase = function (string1, string2) {
+	return string1 && string2 && string1.toUpperCase() === string2.toUpperCase() ? true : false;
+};
+
 module.exports = {
 	containsUndefinedValues,
 	containsInvalidIncrement,
+	containsInvalidKey,
+	equalsIgnoreCase,
 };

@@ -5,9 +5,12 @@
 	src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&libraries=places&callback=initMap"
 ></script>
 <!-- Create google maps callback function -->
-<script>
+<script async defer>
 	// Google Maps callback function
 	function initMap() {
+		// Display errors for serverside route definition
+		const error = '<%= error %>';
+		if (error) document.getElementById('status').innerHTML = error;
 		// Define origin and destination coordinates
 		const origin = '<%= origin %>';
 		const destination = '<%= destination %>';
