@@ -6,11 +6,11 @@ const routes = express.Router({ mergeParams: true });
 
 routes.get('/', async function (req, res) {
 	// Define query parameters
-	const key = req.query.key;
-	const origin = req.query.origin;
-	const destination = req.query.destination;
-	const waypoints = req.query.waypoints;
-	const increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
+	const key = req.query.key,
+		origin = req.query.origin,
+		destination = req.query.destination,
+		waypoints = req.query.waypoints,
+		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
 
 	// Validate query parameters
 	if (utils.containsInvalidKey(key, res)) return;

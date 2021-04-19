@@ -30,7 +30,7 @@ functions:
                   cors: true
                   # private: true
             - http:
-                  path: /api/validate
+                  path: /api/report
                   method: get
                   cors: true
                   # private: true

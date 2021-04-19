@@ -18,15 +18,13 @@ async function getRoute(
 	waypoints = ''
 ) {
 	// Fetch route from Google Maps
-	const key = process.env.GOOGLE_MAPS_BACKEND_KEY;
-	const baseUrl = 'https://maps.googleapis.com/maps/api/directions/json';
-	const queries = `?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`;
-	let url = baseUrl + queries;
-	const axios = require('axios');
-	let response = await axios.get(url);
-	let data = response.data;
+	const key = process.env.GOOGLE_MAPS_BACKEND_KEY,
+		url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`,
+		axios = require('axios'),
+		response = await axios.get(url),
+		data = response.data,
+		status = data.status;
 
-	let status = data.status;
 	if (status != 'OK') {
 		let error, message;
 		switch (status) {
@@ -51,8 +49,8 @@ async function getRoute(
 	 * Get incremental points along the route
 	 */
 
-	const calculations = require('./calculations');
-	const constants = require('../constants');
+	const calculations = require('./calculations'),
+		constants = require('../constants');
 
 	// If difference in latitude or longitude is greater than 5 miles, throw an error
 	let bounds = data.routes[0].bounds;
@@ -69,33 +67,30 @@ async function getRoute(
 		};
 	}
 	// Decode polyline into array of points
-	const { decode } = require('polyline'); // Use the polyline package
-	const points = decode(data.routes[0].overview_polyline.points);
-
-	let route = []; // Route array begins with first point always
-
-	let i = 0; // Point index;
-	let currentPosition = points[0]; // Not an actual point, just a temporary marker
-	let distanceUntilNextPoint = 0; // Starts at 0 because 1st point should be added immediately
+	const { decode } = require('polyline'),
+		points = decode(data.routes[0].overview_polyline.points);
 
 	// Loop through the polyline points; push valid points to route array
+	let i = 0,
+		route = [],
+		currentPosition = points[0], // Temporary marker
+		distanceUntilNextPoint = 0; // Starts at 0 because 1st point should be added immediately
+
 	while (i < points.length) {
 		let nextPoint = points[i + 1];
 		if (nextPoint == undefined) break;
 
 		// Get distance between current position and next point
 		let distanceBetweenPoints = calculations.getDistanceBetweenPoints(
-			currentPosition[0], // Latitude of current position
-			currentPosition[1], // Longitude of current position
-			nextPoint[0], // Latitude of second point
-			nextPoint[1] // Longitude of second point
+			currentPosition[0], // Current position latitude
+			currentPosition[1], // Current position longitude
+			nextPoint[0], // Next Point latitude
+			nextPoint[1] // Next Point longitude
 		);
-		// Distance where the next point of the route should be
 		if (distanceBetweenPoints < distanceUntilNextPoint) {
-			// Not far enough from current point, record distance and goto next
 			distanceUntilNextPoint -= distanceBetweenPoints;
 			currentPosition = points[i + 1];
-			i++; // Go to next point
+			i++;
 		} else {
 			// Incrementally create new point from current point
 			let newPoint = calculations.getIntermediatePoint(
@@ -105,12 +100,9 @@ async function getRoute(
 				nextPoint[1],
 				distanceUntilNextPoint
 			);
-
 			route.push(newPoint);
 			currentPosition = newPoint; // Set current position to newly added point
 			distanceUntilNextPoint = increment; // Point added, reset distance
-
-			// Don't increment i; not yet there
 		}
 	}
 
@@ -119,10 +111,10 @@ async function getRoute(
 	 * Google's 'Snap to Roads' API only takes 100 points per API call.
 	 */
 
-	let pointsRemaining = route.length; // Make API call every 100 points
-	let correctedRoute = [];
-	let apiCalls = 0;
-	let path = '';
+	let pointsRemaining = route.length, // Make API call every 100 points
+		correctedRoute = [],
+		apiCalls = 0,
+		path = '';
 
 	while (pointsRemaining > 0) {
 		// Beginning and end indexes for points in route array
@@ -131,24 +123,14 @@ async function getRoute(
 
 		for (i = minRouteIndex; i < maxRouteIndex; i++) {
 			let currentPoint = route[i];
-			let nextPoint = route[i + 1];
-			// End loop if there is no current point
-			if (currentPoint == undefined) break;
-			// Add coordinates of current point to path string
-			path += currentPoint[0] + ',' + currentPoint[1];
-			// Add '|' if next point exists and is apart of this set of 100 points
-			if (nextPoint != undefined && i + 1 < maxRouteIndex) path += '|';
+			if (currentPoint == undefined) break; // End loop if there is no current point
+			path += currentPoint[0] + ',' + currentPoint[1] + '|'; // Add current point coordinates to path string
 		}
-
 		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
 		response = await axios.get(url);
 		snappedPoints = response.data.snappedPoints;
-		if (snappedPoints == undefined) {
-			return {
-				error: 'There was a error while processing your request.',
-				message: 'Please check your request or contact James for assistance.',
-			};
-		}
+		if (snappedPoints == undefined) return constants.DEFAULT_ERROR_MESSAGE;
+
 		// Loop through all snapped points and add them to corrected route array
 		for (i = 0; i < snappedPoints.length; i++) {
 			correctedRoute.push({ location: snappedPoints[i].location });
@@ -163,15 +145,17 @@ async function getRoute(
 	 * Add additional query data for each coordinate pair
 	 */
 
-	if (panoid || panotext) {
+	if (panoid || panotext || !location) {
 		let promises = [];
-		const { getPanoramaId, getPanoramaText } = require('./panorama');
+		const { getPanoramaId, getPanoramaText } = require('./panorama'),
+			vision = require('@google-cloud/vision'),
+			client = new vision.ImageAnnotatorClient();
 
 		// Loop through all coordinate pairs and push promises for each location
 		for (i = 0; i < correctedRoute.length; i++) {
 			(function (i) {
-				const latitude = correctedRoute[i].location.latitude;
-				const longitude = correctedRoute[i].location.longitude;
+				const latitude = correctedRoute[i].location.latitude,
+					longitude = correctedRoute[i].location.longitude;
 				if (panoid) {
 					promises.push(
 						getPanoramaId(latitude, longitude).then((pano_id) => {
@@ -180,8 +164,6 @@ async function getRoute(
 					);
 				}
 				if (panotext) {
-					const vision = require('@google-cloud/vision');
-					const client = new vision.ImageAnnotatorClient();
 					correctedRoute[i]['pano_text'] = '';
 					for (heading = 0; heading < 360; heading += 120) {
 						promises.push(

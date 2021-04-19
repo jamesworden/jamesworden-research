@@ -1,35 +1,27 @@
 <script>
-	function initMarkers(map, route) {
-		// Parse through the stringified EJS route
-		routeObject = route.replaceAll('&#34;', '"');
-		routeObject = JSON.parse(routeObject);
-		routeObject = routeObject.route;
-
+	function initMarkers(map, route, detour = false) {
+		route = route.route;
 		// Loop through the route object and initialize all the markers
-		for (i = 0; i < routeObject.length; i++) {
+		for (i = 0; i < route.length; i++) {
+			color = detour ? (route[i].detour ? 'green' : 'blue') : 'red';
 			new google.maps.Marker({
 				position: new google.maps.LatLng(
-					routeObject[i].location.latitude,
-					routeObject[i].location.longitude
+					route[i].location.latitude,
+					route[i].location.longitude
 				),
+				icon: {
+					url: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
+				},
 				map,
 			});
 		}
-		// Set how many coordinate pairs there are
-		let countText = document.getElementById('count');
-		countText.innerHTML = `${routeObject.length} coordinate pairs`;
-
-		// Set how many pieces of data to show off
+		// Set example Route data
+		countText = document.getElementById(detour ? 'detourcount' : 'routecount');
+		countText.innerHTML = `${route.length} coordinate pairs`;
 		const numExampleCoordinatePairs = '<%= numExampleCoordinatePairs %>';
 
-		// Create example data
 		let data = [];
-		for (i = 0; i < numExampleCoordinatePairs; i++)
-			data.push(routeObject[i]);
-		let exampleRoute = { route: data };
-		let dataText = document.getElementById('data');
-
-		// JSON Stringify options are used to prettify the string.
-		dataText.textContent = JSON.stringify(exampleRoute, null, 2);
+		for (i = 0; i < numExampleCoordinatePairs; i++) data.push(route[i]);
+		document.getElementById('data').textContent = JSON.stringify({ route: data }, null, 2);
 	}
 </script>

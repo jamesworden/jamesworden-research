@@ -5,33 +5,41 @@
 	src="https://maps.googleapis.com/maps/api/js?key=<%= GOOGLE_MAPS_API_KEY %>&map_ids=b07d0e4dc4f381fb&libraries=places&callback=initMap"
 ></script>
 <!-- Create google maps callback function -->
-<script async defer>
+<script>
 	// Google Maps callback function
 	function initMap() {
+		// Declare variables passed through EJS rendering
+		const origin = '<%-origin%>',
+			error = '<%= error %>',
+			destination = '<%=destination%>',
+			route = <%-route%>,
+			detour = <%-detour%>,
+			report = <%-report%>;
+
 		// Display errors for serverside route definition
-		const error = '<%= error %>';
-		if (error) document.getElementById('status').innerHTML = error;
-		// Define origin and destination coordinates
-		const origin = '<%= origin %>';
-		const destination = '<%= destination %>';
-		const route = '<%= route %>';
+		if (error) {
+			document.getElementsByClassName('status').forEach((element) => {
+				element.innerHTML = error;
+			});
+		}
+		// Report API Example
+		document.getElementById('report-json').textContent = JSON.stringify(report, null, 2);
 
-		// Define map
-		const map = new google.maps.Map(document.getElementById('map'));
-		directionsDisplay = new google.maps.DirectionsRenderer();
-		directionsDisplay.setMap(map);
+		// Route API Map
+		const routemap = new google.maps.Map(document.getElementById('routemap'));
+		initRoute(routemap, origin, destination);
+		initMarkers(routemap, route);
 
-		// Initialize the route & markers on map
-		initRoute(map, origin, destination);
-		initMarkers(map, route);
+		// Report API Map
+		const detourmap = new google.maps.Map(document.getElementById('detourmap'));
+		initRoute(detourmap, origin, destination);
+		initMarkers(detourmap, route);
+		initMarkers(detourmap, detour, true); // True for detour route
 
-		// Initialize autocomple on address inputs
-		let autocompleteOrigin = new google.maps.places.Autocomplete(
-			document.getElementById('origin')
-		);
-		let autocompleteDestination = new google.maps.places.Autocomplete(
-			document.getElementById('destination')
-		);
+		// Autocomplete Fields for Route API
+		new google.maps.places.Autocomplete(document.getElementById('origin'));
+		new google.maps.places.Autocomplete(document.getElementById('destination'));
+
 		// Re-Initialize map whenever the window reloads
 		google.maps.event.addDomListener(window, 'load', initMap);
 	}

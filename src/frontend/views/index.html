@@ -7,30 +7,71 @@
 			<section>
 				<h2>About</h2>
 				<p>
-					Using Optical Character Recognition (OCR), text can be
-					extracted from images along two different routes. By
-					comparing the returned text, we can determine whether the
-					routes are sepearate from one another. This tool contains
-					API services that fulfill functions related to this method
-					of GPS coordinate validation.
+					Optical Character Recognition (OCR) is a powerful tool that allows text to be
+					extracted from images. Using OCR, we can identify sequences of letters from
+					images of the outdoors. Street signs, billboards, buildings, and other
+					structures contain text that can be used to identify where an image was taken.
+					Images can be taken incrementally while a vehicle is moving to validate its
+					location. If a vehnicle were to send a false GPS signal, images of the outside
+					may validate whether this signal is truthful or not. This tool contains API
+					services that fulfill functions related to GPS coordinate validation using OCR.
 				</p>
 				<p>
-					For all API calls, make sure to add an API key to the request header.
+					All API calls return JSON objects and require an API key as a query parameter.
 					(Contact James for a key.)
 				</p>
-				<div class="code">-H "x-api-key: YOUR_KEY_HERE"</div>
+				<div class="code">&key=YOUR_KEY_HERE</div>
+			</section>
+			<section>
+				<h2 id="report" style="margin-bottom: 0rem">Report API</h2>
+				<div id="detourcount" class="count"></div>
+				<div id="detourmap" class="map"></div>
+				<p class="status"></p>
+				<p>
+					Get a report determining whether our OCR methologies can sense a detour in a
+					route. With a given origin, destination, and waypoints, a two routes can be
+					created and compared for irregularities. The first route is between the origin
+					and destination. The second route is between the origin and destination but
+					stops at every given waypoint. Traveling to a waypoint simulates a detour in a
+					vehicle's travel.
+				</p>
+				<p>
+					The blue makers on the map above represent a locations along a detour route. The
+					green marker represents a single waypoint that was specified to simulate the
+					detour. The red markers represent the route directly between the given origin
+					and destination address.
+				</p>
+				<p>
+					Required Query Parameters: <strong>origin, destination, & waypoints</strong
+					><br />The origin and desination query parameters should contain addresses.<br />
+					Waypoints should appear in the format:
+				</p>
+				<pre class="code">Address 1 | Address 2 | Address 3</pre>
+				<p>Example Report API JSON object:</p>
+				<pre class="code" id="report-json"></pre>
+				<p>Report API: Example HTTP GET Request:</p>
+				<div class="code">
+					https://research.jamesworden.com/api/report<br />
+					<strong>?origin</strong>=New York, NY 10119&destination=56 E 34th St, New York,
+					NY 10016<br /><strong>&destination</strong>=940 Madison Ave, New York, NY
+					10021<br /><strong>&waypoints</strong>=151 W 34th St, New York, NY 10001|63 W
+					38th St, New York, NY 10018
+				</div>
 			</section>
 			<section>
 				<h2 id="route" style="margin-bottom: 0rem">Route API</h2>
-				<div id="count"></div>
-				<div id="map" class="fullscreen"></div>
-				<p id="status"></p>
+				<div id="routecount" class="count"></div>
+				<div id="routemap" class="map"></div>
+				<p class="status"></p>
 				<p>
-					Given an origin and destination address, an array of GPS
-					coordinates will be returned. Each coordinate is an array
-					itself - the first and seconds points are latitude and
-					longitude, respectfully. Get coordinates incrementally
-					according to the the 'increment' parameter.
+					Given an origin and destination address, an array of GPS coordinates will be
+					returned. Each coordinate is an array itself - the first and seconds points are
+					latitude and longitude, respectfully. The optional increment query parameter is
+					distance between each incremental coordinate pair.
+				</p>
+				<p>
+					Required Query Parameters: <strong>origin & destination</strong> <br />
+					Optional Query Parameters: <strong>increment</strong>
 				</p>
 				<form id="form">
 					<label for="origin">Origin Address</label><br />
@@ -47,43 +88,43 @@
 						name="destination"
 						placeholder="<%= destination %>"
 					/><br />
-					<label for="increment">
-						Increment distance (in meters) </label
-					><br />
+					<label for="increment"> Increment Distance (in meters) </label><br />
 					<input
 						type="number"
 						id="increment"
 						name="increment"
-						min="1"
-						max="100"
+						min="<%= minIncrement%>"
+						max="<%=maxIncrement%>"
 						placeholder="<%= increment%>"
 					/><br />
+					<label for="origin">API Key</label><br />
+					<input type="text" id="key" name="key" placeholder="<%= key %>" /><br />
 					<button type="submit">Get route</button>
 				</form>
-				<p>Http GET request between the two given addresses:</p>
+				<p>Route API: Example HTTP GET Request:</p>
 				<div class="code">
-					https://research.jamesworden.com/route?<br />
-					origin=<strong><%= origin %></strong><br />
+					https://research.jamesworden.com/route<br />
+					?origin=<strong><%= origin %></strong><br />
 					&destination=<strong><%= destination %></strong><br />
 					&increment=<strong><%= increment %></strong>
 				</div>
-				<p>First 5 coordinate pairs returned.</p>
+				<p>First <%= numExampleCoordinatePairs %> coordinate pairs returned.</p>
 				<pre id="data" class="code"></pre>
 			</section>
 			<section>
 				<h3>Panorama ID</h3>
 				<p>
-					The Google StreetView API contains panorama images that can
-					be referenced by <strong>panorama id</strong> strings. Add
-					an extra <strong>panoid=true</strong> query parameter at the
-					end of your GET request to retrieve Google StreetView panorama 
-					id's with each coordinate pair.
+					The Google StreetView API contains panorama images that can be referenced by
+					panorama id strings. Set the panoid query parameter to true for Google
+					StreetView panorama id's alongside each coordinate pair of the Route API. By
+					default this setting is set to false.
 				</p>
-				<div class="code">&panoid=true</div>
 				<p>
-					By default, this setting is false. When true, the
-					coordinate pair JSON objects will appear as follows:
+					Optional Query Parameters: <strong>panoid</strong><br />
+					This query parameter should be in the format:
 				</p>
+				<pre class="code">&panoid=true</pre>
+				<p>Example Route API JSON object with panoid set to true:</p>
 				<pre class="code">
 {
 	"location": {
@@ -91,24 +132,22 @@
 		"longitude": -73.79225323669348
 	},
 	"pano_id": "PANORAMA_ID"
-}
-				</pre
+}</pre
 				>
 			</section>
 			<section>
 				<h3>Panorama Text</h3>
 				<p>
-					Get extracted text from surrounding enviornment of each
-					coordinate pair by adding a
-					<strong>panotext=true</strong> query parameter at the end of
-					your API call. Google Cloud Vision OCR extracts the text
-					from Google StreetView API images at each location.
+					Get extracted text from surrounding enviornment of each coordinate pair by
+					adding setting the panotext query parameter to true. Google Cloud Vision OCR
+					extracts the text from Google StreetView API images at each location.
 				</p>
-				<div class="code">&panotext=true</div>
 				<p>
-					By default, this setting is false. When true, the
-					coordinate pair JSON objects will appear as follows:
-				</p>
+					Optional Query Parameters: <strong>panotext</strong><br />
+					This query parameter should be in the format:
+				<p>
+				<pre class="code">&panotext=true</pre>
+				</p>Example Route API JSON object with panotext set to true:</p>
 				<pre class="code">
 {
 	"location": {
@@ -116,8 +155,7 @@
 		"longitude": -73.79225323669348
 	},
 	"pano_text": "EXAMPLE TEXT, MORE TEXT"
-}
-				</pre
+}</pre
 				>
 			</section>
 			<section>
@@ -130,49 +168,13 @@
 					>
 						JavaScript
 					</button>
-					<button
-						class="code-button"
-						id="java-button"
-						onclick="changeCode('java')"
-					>
+					<button class="code-button" id="java-button" onclick="changeCode('java')">
 						Java
 					</button>
-					<button
-						class="code-button"
-						id="python-button"
-						onclick="changeCode('python')"
-					>
+					<button class="code-button" id="python-button" onclick="changeCode('python')">
 						Python
 					</button>
 				</div>
-				<%- include("partials/snippets/javascript.html") %> <%-
-				include("partials/snippets/java.html") %> <%-
-				include("partials/snippets/python.html") %>
-			</section>
-			<section>
-				<h2 id="validate">Validate API (Under Construction)</h2>
-				<p>
-					Determine whether our OCR methologies can sense a detour in a route. 
-					Using a given <strong>origin</strong>, <strong>destination</strong>, 
-					and <strong>detour</strong> address, two routes are created and compared. 
-					The first is between the origin and destination address. The second 
-					stops at all three adresses.
-				</p>
-				<p>
-					This API will return a JSON object with a <strong>valid</strong> string
-					containing 'true' or 'false' if the routes match with one another or not.
-					The matching text between coordinate pairs will also be returned. A confidence
-					value will also be returned depending on how many matches were detected.
-				</p>
-				<pre class="code">
-{
-	"valid": "true",
-	"matching_text": "EXAMPLE TEXT, MORE TEXT",
-	"confidence_value": ".8"
-}
-				</pre
-				>
-			</section>
 				<%- include("partials/snippets/javascript.html") %> <%-
 				include("partials/snippets/java.html") %> <%-
 				include("partials/snippets/python.html") %>
@@ -184,8 +186,7 @@
 			<!-- Google Maps -->
 			<%- include("partials/scripts/initRoute.html" ) %> <%-
 			include("partials/scripts/initMarkers.html" ) %> <%-
-			include("partials/scripts/initMap.html" ) %> 
-			
+			include("partials/scripts/initMap.html" ) %>
 		</div>
 	</body>
 </html>
