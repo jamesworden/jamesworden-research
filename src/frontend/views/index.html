@@ -79,14 +79,14 @@
 						type="text"
 						id="origin"
 						name="origin"
-						placeholder="<%= origin %>"
+						value="<%= origin %>"
 					/><br />
 					<label for="destination">Destination Address</label><br />
 					<input
 						type="text"
 						id="destination"
 						name="destination"
-						placeholder="<%= destination %>"
+						value="<%= destination %>"
 					/><br />
 					<label for="increment"> Increment Distance (in meters) </label><br />
 					<input
@@ -95,10 +95,10 @@
 						name="increment"
 						min="<%= minIncrement%>"
 						max="<%=maxIncrement%>"
-						placeholder="<%= increment%>"
+						value="<%= increment%>"
 					/><br />
 					<label for="origin">API Key</label><br />
-					<input type="text" id="key" name="key" placeholder="<%= key %>" /><br />
+					<input type="text" id="key" name="key" value="<%= key %>" /><br />
 					<button type="submit">Get route</button>
 				</form>
 				<p>Route API: Example HTTP GET Request:</p>
@@ -184,9 +184,7 @@
 			<!-- Sticky Navbar -->
 			<%- include("partials/scripts/stickyNav.html" ) %>
 			<!-- Google Maps -->
-			<%- include("partials/scripts/initRoute.html" ) %> <%-
-			include("partials/scripts/initMarkers.html" ) %> <%-
-			include("partials/scripts/initMap.html" ) %>
+			<%-include("partials/scripts/initMap.html" ) %>
 		</div>
 	</body>
 </html>

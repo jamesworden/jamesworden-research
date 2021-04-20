@@ -40,6 +40,22 @@ const containsInvalidIncrement = function (increment, response) {
 };
 
 /**
+ * @returns If there are too many waypoints return true, otherwise return false
+ */
+const containsExtraWaypoints = function (waypoints, response) {
+	// Ensure number of waypoints is valid
+	let array = waypoints.split('|');
+	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
+		response.status(422).send({
+			error: `Too many waypoints in this route (${array.length} waypoints).`,
+			message: 'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE,
+			waypoints: array,
+		});
+		return true;
+	} else return false;
+};
+
+/**
  * @param key API key required for API services
  * @param response Response to send an error message to the sender
  * @return True if the key is invalid or undefined, false if the key is valid
@@ -65,6 +81,7 @@ const equalsIgnoreCase = function (string1, string2) {
 module.exports = {
 	containsUndefinedValues,
 	containsInvalidIncrement,
+	containsExtraWaypoints,
 	containsInvalidKey,
 	equalsIgnoreCase,
 };

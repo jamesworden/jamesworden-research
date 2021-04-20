@@ -6,7 +6,8 @@
  * @param {Boolean} panoid Return panorma Id's for each coordinate pair if true
  * @param {Boolean} panotext Returns Google Vision OCR text from the panorma images at each coordinate pair if true
  * @param {Boolean} location Returns the coordinate pairs along the route, set to true by default
- * @param {String} waypoints Waypoints that the route goes through ('ADDR1|ADDR2|ETC...')
+ * @param {String} waypoints Waypoints that the detour route goes through ('ADDR1|ADDR2|ETC...')
+ * @param {Boolean} detour If the route should include a generated detour with it as well
  */
 async function getRoute(
 	origin,
@@ -15,15 +16,19 @@ async function getRoute(
 	panoid = false,
 	panotext = false,
 	location = true,
-	waypoints = ''
+	waypoints = '',
+	detour = false
 ) {
 	// Fetch route from Google Maps
 	const key = process.env.GOOGLE_MAPS_BACKEND_KEY,
-		url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`,
-		axios = require('axios'),
-		response = await axios.get(url),
-		data = response.data,
-		status = data.status;
+		axios = require('axios');
+
+	url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${key}&waypoints=${
+		detour ? '' : waypoints // Only get route with waypoints when it is not a detour.
+	}`;
+	response = await axios.get(url);
+	data = response.data;
+	status = data.status;
 
 	if (status != 'OK') {
 		let error, message;
@@ -45,25 +50,21 @@ async function getRoute(
 	}
 
 	/**
-	 * Google API call went through successfully; safe to extract data
-	 * Get incremental points along the route
+	 * Google API call went through successfully, Ensure route is acceptable,
+	 * Get route from polyline points
 	 */
 
 	const calculations = require('./calculations'),
 		constants = require('../constants');
 
-	// If difference in latitude or longitude is greater than 5 miles, throw an error
-	let bounds = data.routes[0].bounds;
-	let distance = calculations.getDistanceBetweenPoints(
-		bounds.northeast.lat,
-		bounds.northeast.lng,
-		bounds.southwest.lat,
-		bounds.southwest.lng
-	);
-	if (distance > constants.MAX_DISTANCE_BETWEEN_ADDRESSES) {
+	// If total route distance is too long, throw an error
+	const legs = data.routes[0]['legs'];
+	let distance = 0;
+	for (leg of legs) distance += leg['distance']['value'];
+	if (distance > constants.MAX_ROUTE_DISTANCE) {
 		return {
-			error: `Your addresses are too far apart (${distance} meters)!`,
-			solution: `Please enter locations that are within ${constants.MAX_DISTANCE_BETWEEN_ADDRESSES} meters of longitdue and latitdue from one another.`,
+			error: `The specified route is too long (${distance} meters)!`,
+			solution: `Please enter locations that are closer to one another; The cumulative distance must be less than ${constants.MAX_ROUTE_DISTANCE} meters.`,
 		};
 	}
 	// Decode polyline into array of points
@@ -100,6 +101,7 @@ async function getRoute(
 				nextPoint[1],
 				distanceUntilNextPoint
 			);
+			newPoint = [newPoint['latitude'], [newPoint['longitude']]];
 			route.push(newPoint);
 			currentPosition = newPoint; // Set current position to newly added point
 			distanceUntilNextPoint = increment; // Point added, reset distance
@@ -126,6 +128,7 @@ async function getRoute(
 			if (currentPoint == undefined) break; // End loop if there is no current point
 			path += currentPoint[0] + ',' + currentPoint[1] + '|'; // Add current point coordinates to path string
 		}
+		path = path.slice(0, -1);
 		url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`;
 		response = await axios.get(url);
 		snappedPoints = response.data.snappedPoints;
@@ -179,6 +182,60 @@ async function getRoute(
 			})(i);
 		}
 		await Promise.all(promises);
+	}
+
+	/**
+	 * Route created. If detour, get sub-route between first quartile and third quartile.
+	 * A detour waypoint should be created above the midpoint.
+	 */
+
+	if (detour) {
+		length = correctedRoute.length;
+		firstQuartileIndex = Math.floor(length / 4);
+		midpointIndex = Math.floor(length / 2);
+		thirdQuartileIndex = Math.floor(length * (3 / 4));
+
+		originPoint = correctedRoute[firstQuartileIndex]['location'];
+		midpoint = correctedRoute[midpointIndex]['location'];
+		destinationPoint = correctedRoute[thirdQuartileIndex]['location'];
+
+		bearing = calculations.getBearingFromPoints(
+			midpoint['latitude'],
+			midpoint['longitude'],
+			destinationPoint['latitude'],
+			destinationPoint['longitude']
+		);
+		waypoint = calculations.getPointFromDistance(
+			midpoint['latitude'],
+			midpoint['longitude'],
+			constants.DEFAULT_DETOUR_DISTANCE,
+			bearing + 90 // Subtract 90 to make detour waypoint perpendicular to route
+		);
+		url = `https://roads.googleapis.com/v1/snapToRoads?path=${waypoint.latitude},${waypoint.longitude}&key=${key}`;
+		response = await axios.get(url);
+		waypoint = response.data.snappedPoints[0]['location'];
+		detour = await getRoute(
+			`${originPoint.latitude},${originPoint.longitude}`,
+			`${destinationPoint.latitude},${destinationPoint.longitude}`,
+			increment,
+			panoid,
+			panotext,
+			location,
+			`${waypoint.latitude},${waypoint.longitude}`
+		);
+
+		// Stitch detour portion with route portion
+		firstLeg = correctedRoute.slice(0, firstQuartileIndex);
+		lastLeg = correctedRoute.slice(thirdQuartileIndex, length);
+		detourRoute = firstLeg.concat(detour.route).concat(lastLeg);
+
+		return {
+			origin,
+			destination,
+			route: correctedRoute,
+			detour: detourRoute,
+			detour_waypoint: waypoint,
+		};
 	}
 	return { route: correctedRoute };
 }

@@ -9,6 +9,7 @@ routes.get('/', async function (req, res) {
 	const key = req.query.key,
 		origin = req.query.origin,
 		destination = req.query.destination,
+		detour = utils.equalsIgnoreCase(req.query.detour, 'true'),
 		panoid = utils.equalsIgnoreCase(req.query.panoid, 'true'),
 		panotext = utils.equalsIgnoreCase(req.query.panotext, 'true'),
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
@@ -20,7 +21,7 @@ routes.get('/', async function (req, res) {
 
 	// Return route from addresses
 	const { getRoute } = require('./route');
-	getRoute(origin, destination, increment, panoid, panotext)
+	getRoute(origin, destination, increment, panoid, panotext, true, '', detour)
 		.then((route) => res.status(route.route == undefined ? 422 : 200).send(route))
 		.catch((error) => {
 			console.log(error);

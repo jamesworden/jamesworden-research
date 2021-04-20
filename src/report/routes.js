@@ -1,5 +1,6 @@
 const express = require('express');
 const constants = require('../constants');
+const { getRoute } = require('../route/route');
 const utils = require('../utils');
 
 const routes = express.Router({ mergeParams: true });
@@ -9,25 +10,19 @@ routes.get('/', async function (req, res) {
 	const key = req.query.key,
 		origin = req.query.origin,
 		destination = req.query.destination,
-		waypoints = req.query.waypoints,
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
 
 	// Validate query parameters
 	if (utils.containsInvalidKey(key, res)) return;
 	if (utils.containsInvalidIncrement(increment, res)) return;
-	if (utils.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
+	if (utils.containsUndefinedValues({ origin, destination }, res)) return;
 
-	// Ensure number of waypoints is valid
-	let array = waypoints.split('|');
-	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
-		return res.status(422).send({
-			error: `Too many waypoints in this route (${array.length} waypoints).`,
-			message: 'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE,
-			waypoints: array,
-		});
-	}
+	route = await getRoute(origin, destination, increment, false, true, true, '', true);
+	detour = route.detour;
+	route = route.route;
+
 	const { getReport } = require('./report');
-	getReport(origin, destination, waypoints, increment)
+	getReport(route, detour)
 		.then((report) => res.status(report.error == undefined ? 200 : 422).send(report))
 		.catch(() => res.status(500).send(constants.DEFAULT_ERROR_MESSAGE));
 });

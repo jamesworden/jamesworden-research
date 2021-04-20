@@ -24,18 +24,21 @@ const getIntermediatePoint = (lat1, lng1, lat2, lng2, distance) => {
 };
 
 /**
- * http://williams.best.vwh.net/avform.htm#Crs
+ * https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
  * @returns initial bearing in degrees from North in degrees
  */
-const getBearingFromPoints = (lat1, lng1, lat2, lng2) => {
-	let dLon = lng2 - lng1;
-	let y = Math.sin(dLon) * Math.cos(lat2);
-	let x =
-		Math.cos(lat1) * Math.sin(lat2) -
-		Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-	let radians = Math.atan2(y, x); // In radians
-	let brng = (radians * 180) / Math.PI; // In degrees
-	return 360 - ((brng + 360) % 360);
+const getBearingFromPoints = (startLat, startLng, destLat, destLng) => {
+	startLat = toRadians(startLat);
+	startLng = toRadians(startLng);
+	destLat = toRadians(destLat);
+	destLng = toRadians(destLng);
+	y = Math.sin(destLng - startLng) * Math.cos(destLat);
+	x =
+		Math.cos(startLat) * Math.sin(destLat) -
+		Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+	brng = Math.atan2(y, x);
+	brng = toDegrees(brng);
+	return (brng + 360) % 360;
 };
 
 /**
@@ -60,10 +63,26 @@ const getPointFromDistance = function (lat, lng, distance, bearing) {
 		Math.sin(brng) * Math.sin(distance / R) * Math.cos(lat),
 		Math.cos(distance / R) - Math.sin(lat) * Math.sin(lat)
 	);
-
 	// Coords back to degrees and return
-	return [(lat * 180) / Math.PI, (lng * 180) / Math.PI];
+	return {
+		latitude: (lat * 180) / Math.PI,
+		longitude: (lng * 180) / Math.PI,
+	};
 };
+
+/**
+ * Converts from degrees to radians.
+ */
+function toRadians(degrees) {
+	return (degrees * Math.PI) / 180;
+}
+
+/**
+ *  Converts from radians to degrees.
+ */
+function toDegrees(radians) {
+	return (radians * 180) / Math.PI;
+}
 
 module.exports = {
 	getDistanceBetweenPoints,
