@@ -40,19 +40,22 @@ const containsInvalidIncrement = function (increment, response) {
 };
 
 /**
+ * @param {String} waypoints A string of waypoints separated by '|'
  * @returns If there are too many waypoints return true, otherwise return false
+ * If waypoints is undefined, it will return false as this function only cares
+ * if there are too many waypoints.
  */
 const containsExtraWaypoints = function (waypoints, response) {
-	// Ensure number of waypoints is valid
-	let array = waypoints.split('|');
+	if (!waypoints) return false;
+	array = waypoints.split('|');
 	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
 		response.status(422).send({
 			error: `Too many waypoints in this route (${array.length} waypoints).`,
 			message: 'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE,
 			waypoints: array,
 		});
-		return true;
-	} else return false;
+	}
+	return false;
 };
 
 /**

@@ -12,16 +12,18 @@ routes.get('/', async function (req, res) {
 		detour = utils.equalsIgnoreCase(req.query.detour, 'true'),
 		panoid = utils.equalsIgnoreCase(req.query.panoid, 'true'),
 		panotext = utils.equalsIgnoreCase(req.query.panotext, 'true'),
-		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
+		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE,
+		waypoints = req.query.waypoints || '';
 
 	// Validate query parameters
 	if (utils.containsInvalidKey(key, res)) return;
+	if (utils.containsExtraWaypoints(waypoints, res)) return;
 	if (utils.containsInvalidIncrement(increment, res)) return;
 	if (utils.containsUndefinedValues({ origin, destination }, res)) return;
 
 	// Return route from addresses
 	const { getRoute } = require('./route');
-	getRoute(origin, destination, increment, panoid, panotext, true, '', detour)
+	getRoute(origin, destination, increment, panoid, panotext, true, waypoints)
 		.then((route) => res.status(route.route == undefined ? 422 : 200).send(route))
 		.catch((error) => {
 			console.log(error);

@@ -10,34 +10,42 @@
 	function initMap() {
 		// Declare variables passed through EJS rendering
 		const origin = '<%-origin%>',
-			error = '<%= error %>',
 			destination = '<%=destination%>',
 			numExampleCoordinatePairs = <%-numExampleCoordinatePairs%>,
 			markerPlacementSpeed = <%-markerPlacementSpeed%>;
 
 		let route = <%-route%>,
-			report =  <%-report%>;
-
-		detour = route.detour;
-		waypoint = route.detour_waypoint;
-		route = route.route;
-		report = report;
+			detour =  <%-detour%>,
+			report =  <%-report%>,
+			error = '<%= error %>';
 
 		// Display errors for serverside route definition
+		if (route.error) error = detour.error;
+		else if (detour.error) error = route.error;
 		if (error) {
-			document.querySelectorAll('#status').forEach((element) => {
+			document.querySelectorAll('.status').forEach((element) => {
 				element.innerHTML = error;
 			});
+			return;
 		}
+
+		detour = detour.route;
+		route = route.route;
+		waypoints = detour.waypoints;
 
 		// Report API Map
 		const detourmap = new google.maps.Map(document.getElementById('detourmap'));
 		initRoute(detourmap, origin, destination);
 		initCount(route.length + detour.length, true)
-		placeMarker(waypoint['latitude'], waypoint['longitude'], detourmap, 'green');
-		recursiveMarker(route, 0, detourmap, 'red', markerPlacementSpeed)
-		setTimeout(() => {
-			recursiveMarker(detour, 0, detourmap, 'blue', markerPlacementSpeed)
+		if (waypoints) {
+			for (i = 0; i < waypoints.length; i++) {
+				waypoint = waypoints[i]['location']
+				placeMarker(waypoint['latitude'], waypoint['longitude'], detourmap, 'green');
+			}
+		}
+		recursiveMarker(route, detourmap, 'red', markerPlacementSpeed, 0)
+		setTimeout(() => { // Delay the detour points so they don't immediately overlap
+			recursiveMarker(detour, detourmap, 'blue', markerPlacementSpeed, 0)
 		}, markerPlacementSpeed / 2)
 
 		// Route API Map
@@ -46,13 +54,14 @@
 		initCount(route.length, false)
 		document.getElementById('container').addEventListener('scroll', function (event) {
 			if (isInViewport(document.getElementById('routemap'))) {
-				recursiveMarker(route, 0, routemap, 'red', markerPlacementSpeed)
+				recursiveMarker(route, routemap, 'red', markerPlacementSpeed, 0)
 			}
 		});
 
 		// Autocomplete Fields for Route API
 		new google.maps.places.Autocomplete(document.getElementById('origin'));
 		new google.maps.places.Autocomplete(document.getElementById('destination'));
+		new google.maps.places.Autocomplete(document.getElementById('waypoints'));
 
 		// Re-Initialize map whenever the window reloads
 		google.maps.event.addDomListener(window, 'load', initMap);
@@ -60,22 +69,22 @@
 		// Route API Coordinate Pairs
 		data = [];
 		for (i = 0; i < Math.min(numExampleCoordinatePairs, route.length); i++) data.push(route[i]['location']);
-		document.getElementById('data').textContent = JSON.stringify({ route: data }, null, 2);
+		document.getElementById('data').textContent = JSON.stringify({ route: data }, null, 5);
 
 		// Report API
-		document.getElementById('report-json').textContent = JSON.stringify(report, null, 2);
+		document.getElementById('report-json').textContent = JSON.stringify(report, null, 5);
 	}
-
-	const recursiveMarker = (route, i, map, color, speed) => {
+	// Given an array of points, a map, waypoint color, and speed, this will place markers along the map
+	const recursiveMarker = (route, map, color, speed, i) => {
 		setTimeout(() => {
 			if (i < route.length) {
 				placeMarker(route[i].location.latitude, route[i].location.longitude, map, color);
 				i++
-				recursiveMarker(route, i, map, color, speed)
+				recursiveMarker(route, map, color, speed, i)
 			}
 		}, speed)
 	}
-
+	// Place a given colored marker on a specified map at a certain location
 	function placeMarker(latitude, longitdue, map, color) {
 		new google.maps.Marker({
 				position: new google.maps.LatLng(latitude, longitdue),
@@ -83,7 +92,6 @@
 				map,
 			});
 	}
-
 	// Initialize route using Google's directions service
 	function initRoute(map, origin, destination, zoom) {
 		// Configure the request to setup the route within the map
@@ -100,7 +108,6 @@
 			}
 		});
 	}
-
 	// Set example Route data
 	function initCount(count, detour) {
 		countText = document.getElementById(detour ? 'detourcount' : 'routecount');

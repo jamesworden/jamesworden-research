@@ -20,18 +20,23 @@ routes.get('/', async function (req, res) {
 		origin = req.query.origin;
 		destination = req.query.destination;
 		increment = req.query.increment;
-		route = await getRoute(origin, destination, increment, true, true, true, '', true);
+		waypoints = req.query.waypoints;
+		route = await getRoute(origin, destination, increment, false, true, true);
+		detour = await getRoute(origin, destination, increment, false, true, true, waypoints);
 	} else {
-		let queriesExist = req.query.origin || req.query.destination || req.query.increment;
+		queriesExist = req.query.origin || req.query.destination || req.query.increment;
 		if (!key && queriesExist) error = 'An API key is required for a custom route.';
 		else if (key && queriesExist) error = 'Invalid API key! Contact James for assistance.';
 		route = require('../sampledata/route.json');
+		detour = require('../sampledata/detour.json');
 		origin = route.origin;
 		destination = route.destination;
-		increment = constants.DEFAULT_INCREMENT_DISTANCE;
+		increment = route.increment;
 	}
 
-	report = await getReport(route.route, route.detour);
+	report = await getReport(route, detour);
+	if (!report.error)
+		Object.keys(report['report']).forEach((key) => (report['report'][key] = '...'));
 
 	res.render('index.html', {
 		GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_FRONTEND_KEY,
@@ -41,6 +46,8 @@ routes.get('/', async function (req, res) {
 		minIncrement: constants.MIN_INCREMENT_DISTANCE,
 		report: JSON.stringify(report),
 		route: JSON.stringify(route),
+		detour: JSON.stringify(detour),
+		waypoints: detour.waypoints,
 		origin,
 		destination,
 		increment,
