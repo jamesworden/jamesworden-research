@@ -6,7 +6,8 @@ int increment = <strong><%= increment %></strong>;
 
 // Create URL
 String url = "https://research.jamesworden.com/route?origin=" + origin +
-		"&destination=" + destination + "&increment=" + increment;
+		"&destination=" + destination + "&increment=" + increment + 
+		"&key=YOUR_KEY_HERE";
 
 // Use OkHttp to send request
 OkHttpClient client = new OkHttpClient();

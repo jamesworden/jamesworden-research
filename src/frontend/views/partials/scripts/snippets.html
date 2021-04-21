@@ -2,16 +2,13 @@
 	const changeCode = (id) => {
 		// Set all code snippets to invisible
 		let elements = document.getElementsByClassName('example-code');
-		for (i = 0; i < elements.length; i++)
-			elements[i].classList.add('invisible');
+		for (i = 0; i < elements.length; i++) elements[i].classList.add('invisible');
 		// Remove styles from buttons
 		elements = document.getElementsByClassName('code-button');
-		for (i = 0; i < elements.length; i++)
-			elements[i].classList.remove('selected');
+		for (i = 0; i < elements.length; i++) elements[i].classList.remove('selected');
 		// Make the one that was clicked visible
 		let element = document.getElementById(id);
 		element.classList.remove('invisible');
-
 		// Make button have selected style
 		element = document.getElementById(id + '-button');
 		element.classList.add('selected');

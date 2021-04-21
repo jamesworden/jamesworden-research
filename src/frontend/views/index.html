@@ -78,11 +78,15 @@
 				</p>
 				<p>
 					Required Query Parameters: <strong>origin, destination, & waypoints</strong
-					><br /> Optional Query Parameters: <strong>increment</strong><br />The origin 
-					and desination query parameters should contain addresses.<br />
-					Waypoints should appear in the format:
+					><br /> Optional Query Parameters: <strong>increment</strong>
 				</p>
-				<pre class="code">Address 1 | Address 2 | Address 3</pre>
+				<p>
+					The origin 
+					and desination query parameters should contain addresses or latitude longitude
+					coordinate pairs. Waypoints should only appear as coordinate pairs in the 
+					format:
+				</p>
+				<pre class="code">Latitude, Longitude | Latitude, Longitude</pre>
 				<p>Example Report API JSON object:</p>
 				<pre class="code" id="report-json"></pre>
 				<p>Report API: Example HTTP GET Request:</p>

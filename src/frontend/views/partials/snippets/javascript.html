@@ -3,9 +3,10 @@
 const origin = '<strong><%= origin %></strong>';
 const destination = '<strong><%= destination %></strong>';
 const increment = <strong><%= increment %></strong>;
+const key = 'YOUR_KEY_HERE'
 
 // Create URL
-const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}`;
+const url = `https://research.jamesworden.com/route?origin=${origin}&destination=${destination}&increment=${increment}&key=${key}`;
 
 // Use fetch to send request
 async function getData() {

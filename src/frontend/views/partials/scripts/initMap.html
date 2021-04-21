@@ -31,16 +31,18 @@
 
 		detour = detour.route;
 		route = route.route;
-		waypoints = detour.waypoints;
+		waypoints = '<%= waypoints%>';
 
 		// Report API Map
 		const detourmap = new google.maps.Map(document.getElementById('detourmap'));
 		initRoute(detourmap, origin, destination);
 		initCount(route.length + detour.length, true)
+
 		if (waypoints) {
-			for (i = 0; i < waypoints.length; i++) {
-				waypoint = waypoints[i]['location']
-				placeMarker(waypoint['latitude'], waypoint['longitude'], detourmap, 'green');
+			array = waypoints.split('|');
+			for (i = 0; i < array.length; i++) {
+				waypoint = array[i].split(',')
+				placeMarker(waypoint[0], waypoint[1], detourmap, 'green');
 			}
 		}
 		recursiveMarker(route, detourmap, 'red', markerPlacementSpeed, 0)
