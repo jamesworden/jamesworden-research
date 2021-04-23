@@ -29,7 +29,7 @@
 				<p class="status"></p>
 				<p>
 					The orange makers on the map above represent panorama snapshots along the given 
-					example route. Yellow markers represen incremental detour snapshots. The blue 
+					example route. Yellow markers represent incremental detour snapshots. The blue 
 					markers represent the detour waypoints. The red and green markers represent the
 					divergence and convergence points where the route disconnects and joins again.
 				</p>
@@ -70,16 +70,16 @@
 				</form>
 				<p>
 					Get a report determining whether our OCR methologies can sense a detour in a
-					route. With a given origin, destination, and waypoints, a two routes can be
+					route. With a given origin, destination, and waypoints, two routes can be
 					created and compared for irregularities. The first route is between the origin
-					and destination. The second route is between the origin and destination but
-					stops at every given waypoint. Traveling to a waypoint simulates a detour in a
+					and destination. The second route is between the origin and destination while 
+					stopping at every given waypoint. Traveling to waypoints simulates a detour in a
 					vehicle's travel.
 				</p>
 				<p>
-					All locations and text data is from the Route API, and the comparison between the
-					given route and detour are from the Report API; this includes the convergence and
-					divergence points.
+					All locations and text data is from the Route API. The comparison between the
+					given route and detour are from the Report API; this includes the convergence point,
+					the divergence point, and matching text between the routes.
 				</p>
 				<p>
 					Required Query Parameters: <strong>origin, destination, & waypoints</strong
@@ -123,7 +123,7 @@
 				</p>
 				<p>
 					If you do not have an API key, you may use set the <strong>sample</strong> query
-					parameter to 'true' for a sample route.
+					parameter to <strong>true</strong> for a sample route.
 				</p>
 				<p>Route API: Example HTTP GET Request:</p>
 				<div class="code">
@@ -163,8 +163,9 @@
 				<h3>Panorama Text</h3>
 				<p>
 					Get extracted text from surrounding enviornment of each coordinate pair by
-					adding setting the panotext query parameter to true. Google Cloud Vision OCR
-					extracts the text from Google StreetView API images at each location.
+					setting the <strong>panotext</strong> query parameter to <strong>true</strong>. 
+					Google Cloud Vision OCR extracts the text from Google StreetView API images at 
+					each location.
 				</p>
 				<p>
 					Optional Query Parameters: <strong>panotext</strong><br />
@@ -207,6 +208,8 @@
 				<h2>Example API Calls</h2>
 				<p>
 					These links return JSON data for an example route and an example detour.
+					You may click them to display JSON data in the browser or make API calls
+					using these URLS with a programming language of your choice.
 				</p>
 				<ul>
 					<li>
