@@ -81,8 +81,8 @@
 		document.getElementById('data').textContent = JSON.stringify({ route: data }, null, 5);
 
 		// Report API JSON Data
-		// if (!report.error) Object.keys(report['report']).forEach((key) => (report['report'][key] = '...'));
-		// document.getElementById('report-json').textContent = JSON.stringify(report, null, 5);
+		if (!report.error) Object.keys(report['report']).forEach((key) => (report['report'][key] = '...'));
+		document.getElementById('report-json').textContent = JSON.stringify(report, null, 5);
 	}
 	// Given an array of points, a map, waypoint color, and speed, this will place markers along the map
 	const recursiveMarker = (route, map, color, speed, i) => {
