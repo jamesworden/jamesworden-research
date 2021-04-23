@@ -27,6 +27,12 @@
 				<div id="detourcount" class="count"></div>
 				<div id="detourmap" class="map"></div>
 				<p class="status"></p>
+				<p>
+					The orange makers on the map above represent panorama snapshots along the given 
+					example route. Yellow markers represen incremental detour snapshots. The blue 
+					markers represent the detour waypoints. The red and green markers represent the
+					divergence and convergence points where the route disconnects and joins again.
+				</p>
 				<form id="form">
 					<label for="origin">Origin Address</label><br />
 					<input
@@ -71,10 +77,9 @@
 					vehicle's travel.
 				</p>
 				<p>
-					The blue makers on the map above represent a locations along a detour route. The
-					green marker represents a single waypoint that was specified to simulate the
-					detour. The red markers represent the route directly between the given origin
-					and destination address.
+					All locations and text data is from the Route API, and the comparison between the
+					given route and detour are from the Report API; this includes the convergence and
+					divergence points.
 				</p>
 				<p>
 					Required Query Parameters: <strong>origin, destination, & waypoints</strong

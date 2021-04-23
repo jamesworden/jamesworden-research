@@ -38,16 +38,23 @@
 		initRoute(detourmap, origin, destination);
 		initCount(route.length + detour.length, true)
 
+		if (report) {
+			d = report.report.divergence_point
+			c = report.report.convergence_point
+			placeMarker(d['latitude'], d['longitude'], detourmap, 'red', 40)
+			placeMarker(c['latitude'], c['longitude'], detourmap, 'green', 40)
+		}
+
 		if (waypoints) {
 			array = waypoints.split('|');
 			for (i = 0; i < array.length; i++) {
 				waypoint = array[i].split(',')
-				placeMarker(waypoint[0], waypoint[1], detourmap, 'green');
+				placeMarker(waypoint[0], waypoint[1], detourmap, 'blue', 32);
 			}
 		}
-		recursiveMarker(route, detourmap, 'red', markerPlacementSpeed, 0)
+		recursiveMarker(route, detourmap, 'orange', markerPlacementSpeed, 0)
 		setTimeout(() => { // Delay the detour points so they don't immediately overlap
-			recursiveMarker(detour, detourmap, 'blue', markerPlacementSpeed, 0)
+			recursiveMarker(detour, detourmap, 'yellow', markerPlacementSpeed, 0)
 		}, markerPlacementSpeed / 2)
 
 		// Route API Map
@@ -56,7 +63,7 @@
 		initCount(route.length, false)
 		document.getElementById('container').addEventListener('scroll', function (event) {
 			if (isInViewport(document.getElementById('routemap'))) {
-				recursiveMarker(route, routemap, 'red', markerPlacementSpeed, 0)
+				recursiveMarker(route, routemap, 'orange', markerPlacementSpeed, 0)
 			}
 		});
 
@@ -73,24 +80,28 @@
 		for (i = 0; i < Math.min(numExampleCoordinatePairs, route.length); i++) data.push(route[i]['location']);
 		document.getElementById('data').textContent = JSON.stringify({ route: data }, null, 5);
 
-		// Report API
-		document.getElementById('report-json').textContent = JSON.stringify(report, null, 5);
+		// Report API JSON Data
+		// if (!report.error) Object.keys(report['report']).forEach((key) => (report['report'][key] = '...'));
+		// document.getElementById('report-json').textContent = JSON.stringify(report, null, 5);
 	}
 	// Given an array of points, a map, waypoint color, and speed, this will place markers along the map
 	const recursiveMarker = (route, map, color, speed, i) => {
 		setTimeout(() => {
 			if (i < route.length) {
-				placeMarker(route[i].location.latitude, route[i].location.longitude, map, color);
+				placeMarker(route[i].location.latitude, route[i].location.longitude, map, color, 24);
 				i++
 				recursiveMarker(route, map, color, speed, i)
 			}
 		}, speed)
 	}
 	// Place a given colored marker on a specified map at a certain location
-	function placeMarker(latitude, longitdue, map, color) {
+	function placeMarker(latitude, longitdue, map, color, size = 24) {
 		new google.maps.Marker({
 				position: new google.maps.LatLng(latitude, longitdue),
-				icon: { url: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png` },
+				icon: {
+					url: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
+					scaledSize: new google.maps.Size(size, size),
+				},
 				map,
 			});
 	}

@@ -54,6 +54,11 @@ const getReport = async function (route, detour) {
 				location: route[index].location,
 			});
 			convergence_point = route[index].location;
+		} else if (a.length == 0 && r.length == 0) {
+			backwards_array.push({
+				text: '',
+				location: route[index].location,
+			});
 		} else {
 			valid = false;
 			break;

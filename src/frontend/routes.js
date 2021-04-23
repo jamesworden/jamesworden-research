@@ -35,8 +35,6 @@ routes.get('/', async function (req, res) {
 	}
 
 	report = await getReport(route, detour);
-	if (!report.error)
-		Object.keys(report['report']).forEach((key) => (report['report'][key] = '...'));
 
 	res.render('index.html', {
 		GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_FRONTEND_KEY,
