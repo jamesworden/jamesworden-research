@@ -15,6 +15,11 @@ routes.get('/', async function (req, res) {
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE,
 		waypoints = req.query.waypoints || '';
 
+	if (req.query.sample && utils.equalsIgnoreCase(req.query.sample, 'true')) {
+		res.status(200).send({ route: require('../sampledata/route.json') });
+		return;
+	}
+
 	// Validate query parameters
 	if (utils.containsInvalidKey(key, res)) return;
 	if (utils.containsExtraWaypoints(waypoints, res)) return;

@@ -78,15 +78,18 @@
 				</p>
 				<p>
 					Required Query Parameters: <strong>origin, destination, & waypoints</strong
-					><br /> Optional Query Parameters: <strong>increment</strong>
+					><br /> Optional Query Parameters: <strong>increment & sample</strong>
 				</p>
 				<p>
-					The origin 
-					and desination query parameters should contain addresses or latitude longitude
-					coordinate pairs. Waypoints should only appear as coordinate pairs in the 
+					The origin and desination query parameters should contain addresses or latitude 
+					longitude coordinate pairs. Waypoints should only appear as coordinate pairs in the 
 					format:
 				</p>
 				<pre class="code">Latitude, Longitude | Latitude, Longitude</pre>
+				<p>
+					If you do not have an API key, you may use set the <strong>sample</strong> query
+					parameter to 'true' for a sample Report.
+				</p>
 				<p>Example Report API JSON object:</p>
 				<pre class="code" id="report-json"></pre>
 				<p>Report API: Example HTTP GET Request:</p>
@@ -111,7 +114,11 @@
 				</p>
 				<p>
 					Required Query Parameters: <strong>origin & destination</strong> <br />
-					Optional Query Parameters: <strong>increment</strong>
+					Optional Query Parameters: <strong>increment & sample</strong>
+				</p>
+				<p>
+					If you do not have an API key, you may use set the <strong>sample</strong> query
+					parameter to 'true' for a sample route.
 				</p>
 				<p>Route API: Example HTTP GET Request:</p>
 				<div class="code">
@@ -190,6 +197,20 @@
 				<%- include("partials/snippets/javascript.html") %> <%-
 				include("partials/snippets/java.html") %> <%-
 				include("partials/snippets/python.html") %>
+			</section>
+			<section>
+				<h2>Example API Calls</h2>
+				<p>
+					These links return JSON data for an example route and an example detour.
+				</p>
+				<ul>
+					<li>
+						<a target="_self" href="/api/report?sample=true">Report API</a>
+					</li>
+					<li>
+						<a target="_self" href="/api/route?sample=true">Route API</a>
+					</li>
+				</ul>
 			</section>
 			<!-- Code Snippets -->
 			<%- include("partials/scripts/snippets.html" ) %>

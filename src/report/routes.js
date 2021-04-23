@@ -1,6 +1,7 @@
 const express = require('express');
-const constants = require('../constants');
 const { getRoute } = require('../route/route');
+const { getReport } = require('./report');
+const constants = require('../constants');
 const utils = require('../utils');
 
 const routes = express.Router({ mergeParams: true });
@@ -12,6 +13,13 @@ routes.get('/', async function (req, res) {
 		destination = req.query.destination,
 		waypoints = req.query.waypoints,
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
+
+	if (req.query.sample && utils.equalsIgnoreCase(req.query.sample, 'true')) {
+		route = require('../sampledata/route.json');
+		detour = require('../sampledata/detour.json');
+		res.status(200).send(await getReport(route, detour));
+		return;
+	}
 
 	// Validate query parameters
 	if (utils.containsInvalidKey(key, res)) return;
@@ -32,7 +40,6 @@ routes.get('/', async function (req, res) {
 		return;
 	}
 
-	const { getReport } = require('./report');
 	getReport(route, detour)
 		.then((report) => res.status(report.error == undefined ? 200 : 422).send(report))
 		.catch((error) => {
