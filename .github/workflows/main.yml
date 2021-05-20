@@ -1,9 +1,10 @@
 name: Deploy master branch
+
 on:
     push:
         branches:
             - master
-    # Manual deployment
+
     workflow_dispatch:
         inputs:
             logLevel:
@@ -11,7 +12,8 @@ on:
                 required: true
                 default: 'warning'
             tags:
-                description: 'Test scenario tags'
+                description: 'Test'
+
 jobs:
     deploy:
         name: deploy
@@ -20,24 +22,27 @@ jobs:
             matrix:
                 node-version: [14.x]
         steps:
-            - uses: actions/checkout@v2
+            - name: Begin deployment...
+              uses: actions/checkout@v2
+
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node-version }}
             - run: npm ci
-            - name: set enviornment variables in code
-              # Add new enviornment variables from GitHub Secrets by writing
-              # to the .env file created below.
+
+            - name: Inject enviornment variables with GitHub secrets
               run: |
                   touch .env
                   echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
                   echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
-                  echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
                   echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
+                  echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
+
                   touch GoogleServiceCredentials.json
                   echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
-            - name: serverless deploy
+
+            - name: Deploy with Serverless
               uses: serverless/github-action@master
               with:
                   args: deploy

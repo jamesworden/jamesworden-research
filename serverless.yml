@@ -6,12 +6,6 @@ provider:
     name: aws
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
-    # Enviornment variables are managed through GitHub Secrets
-    # Add new ones by editing the .github/workflows/main.yml
-
-    # API keys will be used with the &key= query parameter
-    # apiKeys:
-    #     - general-purpose-key
 
 stage: dev
 region: us-east-1
@@ -28,13 +22,12 @@ functions:
                   path: /api/route
                   method: get
                   cors: true
-                  # private: true
             - http:
                   path: /api/report
                   method: get
                   cors: true
-                  # private: true
 
 plugins:
     - serverless-offline
     - serverless-dotenv-plugin
+    - serverless-plugin-typescript

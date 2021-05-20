@@ -1,4 +1,6 @@
-const constants = require('./constants');
+import ErrorMessage from '../model/ErrorMessage';
+import { Response } from 'express';
+import constants from '../config/Constants';
 
 /**
  * Validates query parameters for routes by ensureing specified variables are defined
@@ -6,18 +8,20 @@ const constants = require('./constants');
  * @param response Response to send an error message to the sender
  * @return True if at least one value is are undefined, false if all are defined
  */
-const containsUndefinedValues = function (object, response) {
-	let values = []; // Undefined values
-	for (value in object) if (!object[value]) values.push(value);
+let containsUndefinedValues = (object: Object, response: Response): boolean => {
+	let values: String[] = []; // Undefined values
+	for (let value in object) if (!object[value]) values.push(value);
 	if (values.length == 0) return false;
-
-	let parameters = values.join(values.length == 2 ? ' and ' : ', '),
+	let parameters: string = values.join(values.length == 2 ? ' and ' : ', '),
 		s = values.length > 1 ? 's' : '';
-
-	response.status(422).send({
-		error: 'Missing query parameters.',
-		message: `You must specify the ${parameters} query parameter${s}!`,
-	});
+	response
+		.status(422)
+		.send(
+			new ErrorMessage(
+				'Missing query parameters.',
+				`You must specify the ${parameters} query parameter${s}!`
+			)
+		);
 	return true;
 };
 
@@ -27,14 +31,18 @@ const containsUndefinedValues = function (object, response) {
  * @param response Response to send an error message to the sender
  * @return True if the increment is too large or too small, false if increment is valid
  */
-const containsInvalidIncrement = function (increment, response) {
+let containsInvalidIncrement = (increment: number, response: Response): boolean => {
 	let min = constants.MIN_INCREMENT_DISTANCE,
 		max = constants.MAX_INCREMENT_DISTANCE;
 	if (isNaN(increment) || increment < min || increment > max) {
-		response.status(422).send({
-			error: `Invalid increment size (${increment} meters).`,
-			message: `Your increment parameter must be a value between ${min} and ${max}!`,
-		});
+		response
+			.status(422)
+			.send(
+				new ErrorMessage(
+					`Invalid increment size (${increment} meters).`,
+					`Your increment parameter must be a value between ${min} and ${max}!`
+				)
+			);
 		return true;
 	} else return false;
 };
@@ -45,15 +53,18 @@ const containsInvalidIncrement = function (increment, response) {
  * If waypoints is undefined, it will return false as this function only cares
  * if there are too many waypoints.
  */
-const containsExtraWaypoints = function (waypoints, response) {
+let containsExtraWaypoints = (waypoints: String, response: Response): boolean => {
 	if (!waypoints) return false;
-	array = waypoints.split('|');
+	var array = waypoints.split('|');
 	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
-		response.status(422).send({
-			error: `Too many waypoints in this route (${array.length} waypoints).`,
-			message: 'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE,
-			waypoints: array,
-		});
+		response
+			.status(422)
+			.send(
+				new ErrorMessage(
+					`Too many waypoints in this route (${array.length} waypoints).`,
+					'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE + '\n' + array
+				)
+			);
 	}
 	return false;
 };
@@ -63,12 +74,12 @@ const containsExtraWaypoints = function (waypoints, response) {
  * @param response Response to send an error message to the sender
  * @return True if the key is invalid or undefined, false if the key is valid
  */
-const containsInvalidKey = function (key, response) {
+let containsInvalidKey = (key: string, response: Response): boolean => {
 	if (key && key == process.env.RESEARCH_API_KEY) return false;
-	let error;
-	if (!key) error = 'An API key is required to perform this function.';
-	else error = 'The specified API key is invalid.';
-	response.status(422).send({ error });
+	let message: string;
+	if (!key) message = 'An API key is required to perform this function.';
+	else message = 'The specified API key is invalid.';
+	response.status(422).send(new ErrorMessage('API Key Required', message));
 	return true;
 };
 
@@ -77,11 +88,10 @@ const containsInvalidKey = function (key, response) {
  * @param {String} String2
  * @returns True only if given strings are equal regardless of casing
  */
-const equalsIgnoreCase = function (string1, string2) {
-	return string1 && string2 && string1.toUpperCase() === string2.toUpperCase() ? true : false;
-};
+let equalsIgnoreCase = (string1: string, string2: string): boolean =>
+	string1 && string2 && string1.toUpperCase() === string2.toUpperCase() ? true : false;
 
-module.exports = {
+export {
 	containsUndefinedValues,
 	containsInvalidIncrement,
 	containsExtraWaypoints,
