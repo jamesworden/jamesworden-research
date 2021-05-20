@@ -1,4 +1,4 @@
-module.exports = Object.freeze({
+export default Object.freeze({
 	// All distance is measured in meters
 	MAX_ROUTE_DISTANCE: 2000,
 	MIN_INCREMENT_DISTANCE: 1,

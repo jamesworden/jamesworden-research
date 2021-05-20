@@ -49,3 +49,6 @@ test.js
 
 # Google
 GoogleServiceCredentials.json
+
+# AWS Default Policy
+james worden research api-_star_-_star_-policy.json
