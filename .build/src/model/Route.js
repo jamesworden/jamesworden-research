@@ -42,6 +42,7 @@ var Status_1 = require("./Status");
 var axios_1 = require("axios");
 var Constants_1 = require("../config/Constants");
 var polyline_1 = require("polyline");
+var vision_1 = require("@google-cloud/vision");
 var Route = /** @class */ (function () {
     function Route(origin, destination, increment, waypoints) {
         if (waypoints === void 0) { waypoints = ''; }
@@ -52,110 +53,110 @@ var Route = /** @class */ (function () {
         this.status = Status_1.Status.NOT_INITALIZED;
         this.points = [];
     }
-    /* Create the route and inject it into the 'route' member variable */
-    Route.prototype.initialize = function (panoramaText, panoramaId) {
-        if (panoramaText === void 0) { panoramaText = false; }
-        if (panoramaId === void 0) { panoramaId = false; }
+    /**
+     * Create the route and inject it into the 'route' member variable
+     */
+    Route.prototype.initialize = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var key, url, response, data, status, legs, _i, legs_1, leg, points, validPoints, currentPoint, distanceUntilNextPoint, i, nextPoint, distanceBetweenPoints, newPoint, pointsRemaining, route, apiCalls, path, minRouteIndex, maxRouteIndex, currentPoint_1, url_1, response_1, snappedPoints, p, promises_1, _a, getPanoramaId_1, getPanoramaText_1, vision, client_1;
+            var data, _a, points, route;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        key = process.env.GOOGLE_MAPS_BACKEND_KEY, url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + this.origin + "\n\t\t\t&destination=" + this.destination + "&key=" + key + "&waypoints=" + this.waypoints;
-                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 0: return [4 /*yield*/, fetchGoogleDirections(this.origin, this.destination, this.waypoints)];
                     case 1:
-                        response = _b.sent(), data = response.data, status = data.status;
-                        if (status != 'OK') {
-                            if (status == 'NOT_FOUND')
+                        data = _b.sent();
+                        if (data.status != 'OK') {
+                            if (data.status == 'NOT_FOUND')
                                 this.status = Status_1.Status.ROUTE_NOT_FOUND;
                             else
-                                status = Status_1.Status.INTERNAL_ERROR;
+                                this.status = Status_1.Status.INTERNAL_ERROR;
                             return [2 /*return*/, this];
                         }
-                        legs = data.routes[0]['legs'];
-                        this.distance = 0;
-                        for (_i = 0, legs_1 = legs; _i < legs_1.length; _i++) {
-                            leg = legs_1[_i];
-                            this.distance += leg['distance']['value'];
-                        }
+                        _a = this;
+                        return [4 /*yield*/, getDistanceFromLegs(data.routes[0]['legs'])];
+                    case 2:
+                        _a.distance = _b.sent();
                         if (this.distance > Constants_1.default.MAX_ROUTE_DISTANCE) {
                             this.status = Status_1.Status.EXCEEDED_MAXIMUM_DISTANCE;
                             return [2 /*return*/, this];
                         }
-                        points = polyline_1.decode(data.routes[0].overview_polyline.points), validPoints = [], currentPoint = points[0], distanceUntilNextPoint = 0, i = 0;
-                        while (i < points.length) {
-                            currentPoint = new Point_1.default(points[i][0], points[i][1]);
-                            nextPoint = new Point_1.default(points[i + 1][0], points[i + 1][0]);
-                            distanceBetweenPoints = calculations.getDistanceBetweenPoints(currentPoint, nextPoint);
-                            if (distanceBetweenPoints < distanceUntilNextPoint) {
-                                distanceUntilNextPoint -= distanceBetweenPoints;
-                                currentPoint = points[i + 1];
-                                i++;
-                            }
-                            else {
-                                newPoint = calculations.getIntermediatePoint(currentPoint, nextPoint, distanceUntilNextPoint);
-                                validPoints.push(newPoint);
-                                currentPoint = newPoint; // Set current position to newly added point
-                                distanceUntilNextPoint = this.increment; // Point added, reset distance
-                            }
-                        }
-                        pointsRemaining = validPoints.length, route = [], apiCalls = 0, path = '';
-                        _b.label = 2;
-                    case 2:
-                        if (!(pointsRemaining > 0)) return [3 /*break*/, 4];
-                        minRouteIndex = apiCalls * 100, maxRouteIndex = minRouteIndex + 100;
-                        for (i = minRouteIndex; i < maxRouteIndex; i++) {
-                            currentPoint_1 = validPoints[i];
-                            if (currentPoint_1 == undefined)
-                                break; // End loop if there is no current point
-                            path += currentPoint_1[0] + ',' + currentPoint_1[1] + '|'; // Add current point coordinates to path string
-                        }
-                        path = path.slice(0, -1);
-                        url_1 = "https://roads.googleapis.com/v1/snapToRoads?path=" + path + "&key=" + key;
-                        return [4 /*yield*/, axios_1.default.get(url_1)];
-                    case 3:
-                        response_1 = _b.sent(), snappedPoints = response_1.data.snappedPoints;
-                        if (snappedPoints == undefined) {
+                        points = getPointsFromPolyline(data.routes[0].overview_polyline, this.increment);
+                        if (points.length <= 0) {
                             this.status = Status_1.Status.INTERNAL_ERROR;
                             return [2 /*return*/, this];
                         }
-                        // Loop through all snapped points and add them to corrected route array
-                        for (i = 0; i < snappedPoints.length; i++) {
-                            p = snappedPoints[i]['location'];
-                            route.push(new Point_1.default(p['latitude'], p['longitude']));
-                        }
-                        pointsRemaining -= 100;
-                        apiCalls++;
-                        path = '';
-                        return [3 /*break*/, 2];
-                    case 4:
-                        if (!(panoramaId || panoramaText)) return [3 /*break*/, 6];
-                        promises_1 = [];
-                        _a = require('./panorama'), getPanoramaId_1 = _a.getPanoramaId, getPanoramaText_1 = _a.getPanoramaText, vision = require('@google-cloud/vision'), client_1 = new vision.ImageAnnotatorClient();
-                        // Loop through all coordinate pairs and push promises for each location
-                        for (i = 0; i < route.length; i++) {
-                            (function (i) {
-                                var p = route[i]['location'], point = new Point_1.default(p['latitude'], p['longitude']);
-                                if (panoramaId) {
-                                    promises_1.push(getPanoramaId_1(point).then(function (pano_id) {
-                                        point.setPanoramaId(pano_id);
-                                    }));
-                                }
-                                if (panoramaText) {
-                                    route[i]['pano_text'] = '';
-                                    for (var heading = 0; heading < 360; heading += 120) {
-                                        promises_1.push(getPanoramaText_1(point, client_1, heading).then(function (pano_text) {
-                                            route[i]['pano_text'] += pano_text + ',';
-                                        }));
-                                    }
-                                }
-                            })(i);
-                        }
-                        return [4 /*yield*/, Promise.all(promises_1)];
-                    case 5:
-                        _b.sent();
-                        _b.label = 6;
-                    case 6: return [2 /*return*/, this];
+                        return [4 /*yield*/, snapPointsToRoad(points)];
+                    case 3:
+                        route = _b.sent();
+                        if (route.length <= 0)
+                            this.status = Status_1.Status.INTERNAL_ERROR;
+                        return [2 /*return*/, this];
+                }
+            });
+        });
+    };
+    /**
+     * Add query parameters to route data
+     */
+    Route.prototype.addParameters = function (panoramaId, panoramaText) {
+        return __awaiter(this, void 0, void 0, function () {
+            var promises, client;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!panoramaId && !panoramaText)
+                            return [2 /*return*/, this];
+                        promises = [], client = new vision_1.default.ImageAnnotatorClient();
+                        console.log(this.points);
+                        // for (let i = 0; i < this.points.length; i++) {
+                        // 	(function (i) {
+                        // 		let p = this.points[i]['location'],
+                        // 			point = new Point(p['latitude'], p['longitude']);
+                        // 		if (panoramaId) {
+                        // 			promises.push(
+                        // 				getPanoramaId(point).then((pano_id: string) => {
+                        // 					point.setPanoramaId(pano_id);
+                        // 				})
+                        // 			);
+                        // 		}
+                        // 		if (panoramaText) {
+                        // 			this.points[i]['pano_text'] = '';
+                        // 			for (let heading = 0; heading < 360; heading += 120) {
+                        // 				promises.push(
+                        // 					getPanoramaText(point, client, heading).then((pano_text) => {
+                        // 						this.point[i]['pano_text'] += pano_text + ',';
+                        // 					})
+                        // 				);
+                        // 			}
+                        // 		}
+                        // 	})(i);
+                        // }
+                        return [4 /*yield*/, Promise.all(promises)];
+                    case 1:
+                        // for (let i = 0; i < this.points.length; i++) {
+                        // 	(function (i) {
+                        // 		let p = this.points[i]['location'],
+                        // 			point = new Point(p['latitude'], p['longitude']);
+                        // 		if (panoramaId) {
+                        // 			promises.push(
+                        // 				getPanoramaId(point).then((pano_id: string) => {
+                        // 					point.setPanoramaId(pano_id);
+                        // 				})
+                        // 			);
+                        // 		}
+                        // 		if (panoramaText) {
+                        // 			this.points[i]['pano_text'] = '';
+                        // 			for (let heading = 0; heading < 360; heading += 120) {
+                        // 				promises.push(
+                        // 					getPanoramaText(point, client, heading).then((pano_text) => {
+                        // 						this.point[i]['pano_text'] += pano_text + ',';
+                        // 					})
+                        // 				);
+                        // 			}
+                        // 		}
+                        // 	})(i);
+                        // }
+                        _a.sent();
+                        return [2 /*return*/, this];
                 }
             });
         });
@@ -163,4 +164,87 @@ var Route = /** @class */ (function () {
     return Route;
 }());
 exports.default = Route;
+var fetchGoogleDirections = function (origin, destination, waypoints) { return __awaiter(void 0, void 0, void 0, function () {
+    var key, url, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                key = process.env.GOOGLE_MAPS_BACKEND_KEY, url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + key + "&waypoints=" + waypoints;
+                return [4 /*yield*/, axios_1.default.get(url)];
+            case 1:
+                response = _a.sent();
+                return [2 /*return*/, response.data];
+        }
+    });
+}); };
+var getDistanceFromLegs = function (legs) { return __awaiter(void 0, void 0, void 0, function () {
+    var distance, _i, legs_1, leg;
+    return __generator(this, function (_a) {
+        distance = 0;
+        for (_i = 0, legs_1 = legs; _i < legs_1.length; _i++) {
+            leg = legs_1[_i];
+            distance += leg['distance']['value'];
+        }
+        return [2 /*return*/, distance];
+    });
+}); };
+var getPointsFromPolyline = function (polyline, increment) {
+    var points = polyline_1.decode(polyline.points), validPoints = [], currentPoint = points[0], // Temporary marker
+    distanceUntilNextPoint = 0, // Starts at 0 because 1st point should be added immediately
+    i = 0;
+    while (i < points.length) {
+        currentPoint = new Point_1.default(points[i][0], points[i][1]);
+        var nextPoint = new Point_1.default(points[i + 1][0], points[i + 1][0]);
+        var distanceBetweenPoints = calculations.getDistanceBetweenPoints(currentPoint, nextPoint);
+        if (distanceBetweenPoints < distanceUntilNextPoint) {
+            distanceUntilNextPoint -= distanceBetweenPoints;
+            currentPoint = points[i + 1];
+            i++;
+        }
+        else {
+            // Incrementally create new point from current point
+            var newPoint = calculations.getIntermediatePoint(currentPoint, nextPoint, distanceUntilNextPoint);
+            validPoints.push(newPoint);
+            currentPoint = newPoint; // Set current position to newly added point
+            distanceUntilNextPoint = increment; // Point added, reset distance
+        }
+    }
+    return validPoints;
+};
+var snapPointsToRoad = function (points) { return __awaiter(void 0, void 0, void 0, function () {
+    var pointsRemaining, route, apiCalls, path, minRouteIndex, maxRouteIndex, i, currentPoint, key, url, response, snappedPoints, i, p;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pointsRemaining = points.length, route = [], apiCalls = 0, path = '';
+                _a.label = 1;
+            case 1:
+                if (!(pointsRemaining > 0)) return [3 /*break*/, 3];
+                minRouteIndex = apiCalls * 100, maxRouteIndex = minRouteIndex + 100;
+                for (i = minRouteIndex; i < maxRouteIndex; i++) {
+                    currentPoint = points[i];
+                    if (currentPoint == undefined)
+                        break; // End loop if there is no current point
+                    path += currentPoint[0] + ',' + currentPoint[1] + '|'; // Add current point coordinates to path string
+                }
+                path = path.slice(0, -1);
+                key = process.env.GOOGLE_MAPS_BACKEND_KEY, url = "https://roads.googleapis.com/v1/snapToRoads?path=" + path + "&key=" + key;
+                return [4 /*yield*/, axios_1.default.get(url)];
+            case 2:
+                response = _a.sent(), snappedPoints = response.data.snappedPoints;
+                if (snappedPoints == undefined)
+                    return [2 /*return*/, []];
+                // Loop through all snapped points and add them to corrected route array
+                for (i = 0; i < snappedPoints.length; i++) {
+                    p = snappedPoints[i]['location'];
+                    route.push(new Point_1.default(p['latitude'], p['longitude']));
+                }
+                pointsRemaining -= 100;
+                apiCalls++;
+                path = '';
+                return [3 /*break*/, 1];
+            case 3: return [2 /*return*/, route];
+        }
+    });
+}); };
 //# sourceMappingURL=Route.js.map
