@@ -32,24 +32,28 @@ export default class Route {
 	 */
 	async initialize(): Promise<this> {
 		let data = await fetchGoogleDirections(this.origin, this.destination, this.waypoints);
-		if (data.status != 'OK') {
-			if (data.status == 'NOT_FOUND') this.status = Status.ROUTE_NOT_FOUND;
-			else this.status = Status.INTERNAL_ERROR;
-			return this;
-		}
-		this.distance = await getDistanceFromLegs(data.routes[0]['legs']);
-		if (this.distance > constants.MAX_ROUTE_DISTANCE) {
-			this.status = Status.EXCEEDED_MAXIMUM_DISTANCE;
-			return this;
-		}
-		let points = getPointsFromPolyline(data.routes[0].overview_polyline, this.increment);
-		if (points.length <= 0) {
-			this.status = Status.INTERNAL_ERROR;
-			return this;
-		}
-		let route = await snapPointsToRoad(points);
-		if (route.length <= 0) this.status = Status.INTERNAL_ERROR;
 		return this;
+
+		// TODO - Test functions and finialize this method
+
+		// if (data.status != 'OK') {
+		// 	if (data.status == 'NOT_FOUND') this.status = Status.ROUTE_NOT_FOUND;
+		// 	else this.status = Status.INTERNAL_ERROR;
+		// 	return this;
+		// }
+		// this.distance = await getDistanceFromLegs(data.routes[0]['legs']);
+		// if (this.distance > constants.MAX_ROUTE_DISTANCE) {
+		// 	this.status = Status.EXCEEDED_MAXIMUM_DISTANCE;
+		// 	return this;
+		// }
+		// let points = getPointsFromPolyline(data.routes[0].overview_polyline, this.increment);
+		// if (points.length <= 0) {
+		// 	this.status = Status.INTERNAL_ERROR;
+		// 	return this;
+		// }
+		// let route = await snapPointsToRoad(points);
+		// if (route.length <= 0) this.status = Status.INTERNAL_ERROR;
+		// return this;
 	}
 
 	/**
@@ -60,6 +64,9 @@ export default class Route {
 		let promises: Promise<any>[] = [],
 			client = new vision.ImageAnnotatorClient();
 		console.log(this.points);
+
+		// TODO - Finialize the initalize() method and refactor this for cleaner code
+
 		// for (let i = 0; i < this.points.length; i++) {
 		// 	(function (i) {
 		// 		let p = this.points[i]['location'],
@@ -165,3 +172,5 @@ let snapPointsToRoad = async (points: any[]): Promise<Point[]> => {
 	}
 	return route;
 };
+
+export { fetchGoogleDirections, getDistanceFromLegs, getPointsFromPolyline, snapPointsToRoad };
