@@ -5,7 +5,6 @@ import { Status } from '../../../src/model/Status';
 
 let data = require('../../../src/json/googleDirectionsData.json');
 
-
 describe('Route declaration', () => {
 	let origin: string = '123 Main Street',
 		destiantion: string = '567 Short Avenue',
