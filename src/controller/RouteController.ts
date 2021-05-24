@@ -27,6 +27,8 @@ routes.get('/', async function (req, res) {
 	if (validation.containsInvalidIncrement(increment, res)) return;
 	if (validation.containsUndefinedValues({ origin, destination }, res)) return;
 
+	console.log('Test');
+
 	// Return route from addresses
 	res.status(200).send(await new Route(origin, destination, increment, waypoints).initialize());
 });
