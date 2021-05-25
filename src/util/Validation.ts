@@ -1,4 +1,3 @@
-import ErrorMessage from '../model/ErrorMessage';
 import { Response } from 'express';
 import constants from '../config/Constants';
 
@@ -98,3 +97,16 @@ export {
 	containsInvalidKey,
 	equalsIgnoreCase,
 };
+
+/**
+ * Used for returning errors in query validation only.
+ */
+class ErrorMessage {
+	error: string;
+	message: string;
+
+	constructor(error: string, message: string) {
+		this.error = error;
+		this.message = message;
+	}
+}

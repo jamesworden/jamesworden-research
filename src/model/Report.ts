@@ -21,7 +21,6 @@ export default class Report {
 			this.status = Status.NO_TEXT_DATA;
 			return;
 		}
-
 		// Fowards through route
 		for (let index in this.route.points) {
 			let d = this.detour['points'][index]['panoramaText'].split(',').filter((item) => item),
@@ -35,7 +34,6 @@ export default class Report {
 				break;
 			}
 		}
-
 		// Backwards through route
 		let difference = this.detour['points'].length - this.route['points'].length;
 		for (let index = this.route['length'] - 1; index >= 0; index--) {

@@ -1,4 +1,5 @@
 import Point from '../model/Point';
+import { decode } from 'polyline';
 
 /**
  * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
@@ -74,9 +75,58 @@ let toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 /* Converts from radians to degrees. */
 let toDegrees = (radians: number): number => (radians * 180) / Math.PI;
 
+/**
+ * Get distance from a given leg
+ * @param {Object[]} legs Array of legs
+ * @returns Distance in meters
+ */
+let getDistanceFromLegs = (legs: Object[]): number => {
+	let distance = 0;
+	for (let leg of legs) {
+		if (leg['distance'] != undefined && leg['distance']['value'] != undefined)
+			distance += leg['distance']['value'];
+	}
+	return distance;
+};
+
+/**
+ * @param encodedPolyline Encoded polyline string returned by Google Directions route
+ * @returns Array of points
+ */
+let getPointsFromEncodedPolyline = (encodedPolyline: string, increment: number): Point[] => {
+	var decodedPoints: any[] = decode(encodedPolyline),
+		validPoints: Point[] = [],
+		distanceUntilNextPoint: number = 0, // Starts at 0 because 1st point should be added immediately
+		currentPoint: Point = new Point(decodedPoints[0][0], decodedPoints[0][1]),
+		i: number = 0;
+	while (i < decodedPoints.length) {
+		var decodedNextPoint = decodedPoints[i + 1];
+		if (decodedNextPoint == undefined) break;
+		var nextPoint: Point = new Point(decodedNextPoint[0], decodedNextPoint[1]),
+			distanceBetweenPoints: number = getDistanceBetweenPoints(currentPoint, nextPoint);
+		if (distanceBetweenPoints < distanceUntilNextPoint) {
+			distanceUntilNextPoint -= distanceBetweenPoints;
+			currentPoint = nextPoint;
+			i++;
+		} else {
+			var newPoint: Point = getIntermediatePoint(
+				currentPoint,
+				nextPoint,
+				distanceUntilNextPoint
+			);
+			validPoints.push(newPoint);
+			currentPoint = newPoint; // Set current position to newly added point
+			distanceUntilNextPoint = increment; // Point added, reset distance
+		}
+	}
+	return validPoints;
+};
+
 export {
 	getDistanceBetweenPoints,
 	getIntermediatePoint,
 	getPointFromDistance,
 	getBearingFromPoints,
+	getDistanceFromLegs,
+	getPointsFromEncodedPolyline,
 };
