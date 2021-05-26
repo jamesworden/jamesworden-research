@@ -23,8 +23,8 @@ export default class Report {
 		}
 		// Fowards through route
 		for (let index in this.route.points) {
-			let d = this.detour['points'][index]['panoramaText'].split(',').filter((item) => item),
-				r = this.route['points'][index]['panoramaText'].split(',').filter((item) => item),
+			let d = this.detour['points'][index]['panoramaText'],
+				r = this.route['points'][index]['panoramaText'],
 				a = r.filter((element) => d.includes(element));
 			if (a.length > 0) {
 				this.matchingText.push(a, this.route['points'][index]);
@@ -37,10 +37,8 @@ export default class Report {
 		// Backwards through route
 		let difference = this.detour['points'].length - this.route['points'].length;
 		for (let index = this.route['length'] - 1; index >= 0; index--) {
-			let d = this.detour['points'][difference + index]['panoramaText']
-					.split(',')
-					.filter((item) => item),
-				r = this.route['points'][index]['panoramaText'].split(',').filter((item) => item),
+			let d = this.detour['points'][difference + index]['panoramaText'],
+				r = this.route['points'][index]['panoramaText'],
 				a = r.filter((element) => d.includes(element));
 			if (a.length > 0) {
 				this.matchingText.push(a, this.route['points'][index]);

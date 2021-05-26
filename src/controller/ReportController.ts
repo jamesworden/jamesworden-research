@@ -9,19 +9,18 @@ let routes = express.Router({ mergeParams: true });
 
 routes.get('/', async function (req, res) {
 	// Define query parameters
-	const key = req.query.key || '',
+	const key = req.query.key,
 		origin = req.query.origin,
 		destination = req.query.destination,
 		waypoints = req.query.waypoints,
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE;
 
 	if (req.query.sample && validation.equalsIgnoreCase(req.query.sample, 'true')) {
-		let route = require('../sampledata/route.json');
-		let detour = require('../sampledata/detour.json');
+		let route = require('../json/detour5MeterIncrement.json');
+		let detour = require('../json/detour10MeterIncrement.json');
 		res.status(200).send(new Report(route, detour));
 		return;
 	}
-
 	// Validate query parameters
 	if (validation.containsInvalidKey(key, res)) return;
 	if (validation.containsInvalidIncrement(increment, res)) return;

@@ -29,6 +29,7 @@ export default class Route {
 	 * Create the route and inject it into the 'route' member variable
 	 */
 	async initialize(): Promise<this> {
+		this.status = Status.OK;
 		let data = await GoogleMaps.getDirections(this.origin, this.destination, this.waypoints);
 		if (data.status != 'OK') {
 			if (data.status == 'NOT_FOUND') this.status = Status.ROUTE_NOT_FOUND;
@@ -40,7 +41,7 @@ export default class Route {
 			this.status = Status.EXCEEDED_MAXIMUM_DISTANCE;
 			return this;
 		}
-		let points: Point[] = Calculations.getPointsFromEncodedPolyline(
+		var points: Point[] = Calculations.getPointsFromEncodedPolyline(
 			data['routes'][0]['overview_polyline']['points'],
 			this.increment
 		);
@@ -48,8 +49,8 @@ export default class Route {
 			this.status = Status.INTERNAL_ERROR;
 			return this;
 		}
-		let route: Point[] = await GoogleMaps.getSnappedPoints(points);
-		if (route.length <= 0) this.status = Status.INTERNAL_ERROR;
+		this.points = await GoogleMaps.getSnappedPoints(points);
+		if (this.points.length <= 0) this.status = Status.INTERNAL_ERROR;
 		return this;
 	}
 
@@ -57,10 +58,8 @@ export default class Route {
 	 * Add query parameters to route data
 	 */
 	async addParameters(panoramaId: boolean, panoramaText: boolean): Promise<this> {
-		if (!panoramaId && !panoramaText) return this;
 		let promises: Promise<any>[] = [];
-		for (let i = 0; i < this.points.length; i++) {
-			let point = this.points[i];
+		this.points.forEach((point) => {
 			if (panoramaId) {
 				promises.push(
 					GoogleStreetView.getPanoramaId(point).then((pano_id: string) => {
@@ -69,20 +68,20 @@ export default class Route {
 				);
 			}
 			if (panoramaText) {
-				let text = '';
 				// Gather text from three different images to simulate a panorama image
 				for (let heading = 0; heading < 360; heading += 120) {
 					promises.push(
-						GoogleStreetView.getPanoramaBase64(point, heading).then((base64) => {
-							GoogleCloudVision.getTextFromBase64(base64).then((panoramaText) => {
-								text += panoramaText;
-							});
-						})
+						GoogleStreetView.getPanoramaBase64(point, heading)
+							.then((base64) => {
+								return GoogleCloudVision.getTextFromBase64(base64);
+							})
+							.then((textArray) => {
+								point.addPanoramaText(textArray);
+							})
 					);
 				}
-				point.setPanoramaText(text);
 			}
-		}
+		});
 		await Promise.all(promises);
 		return this;
 	}

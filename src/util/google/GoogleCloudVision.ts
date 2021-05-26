@@ -8,7 +8,7 @@ const client = new vision.ImageAnnotatorClient();
  * @param {string} base64 Base64 encoded image data
  * @returns {String[]} Text from image
  */
-let getTextFromBase64 = async (base64: string): Promise<String[]> => {
+let getTextFromBase64 = async (base64: string): Promise<string[]> => {
 	let request = { image: { content: Buffer.from(base64, 'base64') } },
 		[result] = await client.textDetection(request),
 		panotext: string[] = [];

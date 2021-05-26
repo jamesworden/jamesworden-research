@@ -11,8 +11,8 @@ routes.get('/', async function (req, res) {
 	const key = req.query.key,
 		origin = req.query.origin,
 		destination = req.query.destination,
-		panoid = validation.equalsIgnoreCase(req.query.panoid, 'true'),
-		panotext = validation.equalsIgnoreCase(req.query.panotext, 'true'),
+		panoramaId = validation.equalsTrue(req.query.panoid),
+		panoramaText = validation.equalsTrue(req.query.panotext),
 		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE,
 		waypoints = req.query.waypoints || '';
 
@@ -27,10 +27,11 @@ routes.get('/', async function (req, res) {
 	if (validation.containsInvalidIncrement(increment, res)) return;
 	if (validation.containsUndefinedValues({ origin, destination }, res)) return;
 
-	console.log('Test');
-
 	// Return route from addresses
-	res.status(200).send(await new Route(origin, destination, increment, waypoints).initialize());
+	var route: Route = new Route(origin, destination, increment, waypoints),
+		route = await route.initialize(),
+		route = await route.addParameters(panoramaId, panoramaText);
+	res.status(200).send(route);
 });
 
 export default routes;
