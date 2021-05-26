@@ -4,6 +4,8 @@ let awsServerlessExpress = require('aws-serverless-express');
 
 let server = awsServerlessExpress.createServer(app);
 
-export default (event, context) => {
+let handler = (event, context) => {
 	return awsServerlessExpress.proxy(server, event, context);
 };
+
+export { handler };
