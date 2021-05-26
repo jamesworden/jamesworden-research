@@ -2,7 +2,7 @@ export default class Point {
 	latitude: number;
 	longitude: number;
 	panoramaId: string;
-	panoramaText: string;
+	panoramaText: string[];
 
 	constructor(latitude, longitude) {
 		this.latitude = latitude;
@@ -21,8 +21,17 @@ export default class Point {
 		this.panoramaId = panoramaId;
 	}
 
-	setPanoramaText(panoramaText: string): void {
-		this.panoramaText = panoramaText;
+	getPanoramaId(): string {
+		return this.panoramaId;
+	}
+
+	getPanoramaText(): string[] {
+		return this.panoramaText;
+	}
+
+	addPanoramaText(panoramaText: string[]): void {
+		if (this.panoramaText == undefined) this.panoramaText = [];
+		this.panoramaText = this.panoramaText.concat(panoramaText);
 	}
 
 	toString(): string {

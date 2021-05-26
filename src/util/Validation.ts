@@ -90,12 +90,19 @@ let containsInvalidKey = (key: string, response: Response): boolean => {
 let equalsIgnoreCase = (string1: string, string2: string): boolean =>
 	string1 && string2 && string1.toUpperCase() === string2.toUpperCase() ? true : false;
 
+/**
+ * @param {String} String
+ * @returns True only if given strings are equal regardless of casing
+ */
+let equalsTrue = (string: string): boolean => equalsIgnoreCase(string, 'true');
+
 export {
 	containsUndefinedValues,
 	containsInvalidIncrement,
 	containsExtraWaypoints,
 	containsInvalidKey,
 	equalsIgnoreCase,
+	equalsTrue,
 };
 
 /**
