@@ -1,4 +1,5 @@
 import app from './src/app';
+
 let awsServerlessExpress = require('aws-serverless-express');
 
 let server = awsServerlessExpress.createServer(app);
