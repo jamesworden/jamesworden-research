@@ -1,8 +1,9 @@
-import { APIGatewayProxyEvent, Handler } from 'aws-lambda';
+import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import HomeContoller from './controller/HomeController';
 import ReportContoller from './controller/ReportController';
 import RouteContoller from './controller/RouteController';
+import awsServerlessExpress from 'aws-serverless-express';
 import constants from './config/Constants';
 import express from 'express';
 import path from 'path';
@@ -23,11 +24,7 @@ if (!constants.__prod__) {
 	});
 }
 
-const handler: Handler = (event: APIGatewayProxyEvent) => {
-	const response = {
-		statusCode: 200,
-		body: JSON.stringify('Hello world'),
-	};
-};
+const handler = (event: APIGatewayProxyEvent, context: Context) =>
+	awsServerlessExpress.proxy(awsServerlessExpress.createServer(app), event, context);
 
 export { handler };

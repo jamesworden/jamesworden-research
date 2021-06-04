@@ -40,35 +40,18 @@ jobs:
                   echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
                   echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
                   echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
+                  echo "NODE_ENV=production" >> .env
 
                   touch GoogleServiceCredentials.json
                   echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
 
-            - name: Zip Node Modules
-              run: npm install && zip -qq -r -j ./node_modules.zip ./node_modules/*
-
-            - name: Deploy node modules to Lambda Layer
-            - name: AWS Lambda Layer Publish
-              uses: taotao2345/aws-lambda-publishlayer@v1.0.0
+              - name: Deploy with Serverless
+              uses: serverless/github-action@master
+              with:
+                  args: deploy
               env:
-                  AWS_REGION: ${{ secrets.AWS_REGION }}
                   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              with:
-                  layer_name: jamesworden-research-dependencies
-                  zip_file: node_modules.zip
-
-            - name: Compile typescript and zip api js files
-              run: npm build && zip -qq -r -j ./api.zip ./dist/*
-
-            - name: Deploy API to AWS Lambda
-              uses: appleboy/lambda-action@master
-              with:
-                  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws_region: ${{ secrets.AWS_REGION }}
-                  function_name: jamesworden-research
-                  zip_file: api.zip
     test:
         name: Run tests
         runs-on: ubuntu-latest
