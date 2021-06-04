@@ -1,3 +1,5 @@
+import { APIGatewayProxyEvent, Handler } from 'aws-lambda';
+
 import HomeContoller from './controller/HomeController';
 import ReportContoller from './controller/ReportController';
 import RouteContoller from './controller/RouteController';
@@ -15,19 +17,17 @@ app.use('/api/report', ReportContoller);
 app.use('/api/route', RouteContoller);
 app.use('/', HomeContoller);
 
-const handler = () => {
-	// app.listen(constants.PORT, () => {
-	// 	console.log(`Development server starting on port ${constants.PORT}`);
-	// });
-	// const response = {
-	// 	statusCode: 200,
-	// 	body: JSON.stringify('Hello world'),
-	// };
-	console.log('Hello world');
-};
-
 if (!constants.__prod__) {
-	handler();
+	app.listen(constants.PORT, () => {
+		console.log(`Development server starting on port ${constants.PORT}`);
+	});
 }
+
+const handler: Handler = (event: APIGatewayProxyEvent) => {
+	const response = {
+		statusCode: 200,
+		body: JSON.stringify('Hello world'),
+	};
+};
 
 export { handler };
