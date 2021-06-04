@@ -31,19 +31,19 @@ export default class Route {
 	 */
 	async build(options: RouteOption[]): Promise<this> {
 		this.status = Status.OK;
-		var data = await GoogleMaps.getDirections(this.origin, this.destination, this.waypoints);
+		const data = await GoogleMaps.getDirections(this.origin, this.destination, this.waypoints);
 		if (data.status != 'OK') {
 			if (data.status == 'NOT_FOUND') this.status = Status.ROUTE_NOT_FOUND;
 			else this.status = Status.INTERNAL_ERROR;
 			return this;
 		}
-		this.distance = await Calculations.getDistanceFromLegs(data.routes[0]['legs']);
+		this.distance = await Calculations.getDistanceFromLegs(data.routes[0].legs);
 		if (this.distance > constants.MAX_ROUTE_DISTANCE) {
 			this.status = Status.EXCEEDED_MAXIMUM_DISTANCE;
 			return this;
 		}
-		var points: Point[] = Calculations.getPointsFromEncodedPolyline(
-			data['routes'][0]['overview_polyline']['points'],
+		const points: Point[] = Calculations.getPointsFromEncodedPolyline(
+			data.routes[0].overview_polyline.points,
 			this.increment
 		);
 		if (points.length <= 0) {
@@ -57,7 +57,7 @@ export default class Route {
 		if (options.length <= 0) {
 			return this;
 		}
-		var optionPromises: Promise<any>[] = [];
+		const optionPromises: Promise<any>[] = [];
 		this.points.forEach((point) => {
 			if (options.includes(RouteOption.PANORAMA_ID)) {
 				optionPromises.push(

@@ -19,35 +19,35 @@ export default class Report {
 
 		if (
 			!(
-				this.detour.getPoints()[0]['panoramaText'] &&
-				this.route.getPoints()[0]['panoramaText']
+				this.detour.getPoints()[0].panoramaText &&
+				this.route.getPoints()[0].panoramaText
 			)
 		) {
 			this.status = Status.NO_TEXT_DATA;
 			return;
 		}
 		// Fowards through route
-		for (let index in this.route.points) {
-			let d = this.detour['points'][index]['panoramaText'],
-				r = this.route['points'][index]['panoramaText'],
+		for (const index in this.route.points) {
+			const d = this.detour.points[index].panoramaText,
+				r = this.route.points[index].panoramaText,
 				a = r.filter((element) => d.includes(element));
 			if (a.length > 0) {
-				this.matchingText.push(a, this.route['points'][index]);
-				this.divergencePoint = this.route['points'][index];
+				this.matchingText.push(a, this.route.points[index]);
+				this.divergencePoint = this.route.points[index];
 			} else {
 				this.status = Status.DIFFERENT_ROUTES;
 				break;
 			}
 		}
 		// Backwards through route
-		let difference = this.detour['points'].length - this.route['points'].length;
-		for (let index = this.route['points']['length'] - 1; index >= 0; index--) {
-			let d = this.detour['points'][difference + index]['panoramaText'],
-				r = this.route['points'][index]['panoramaText'],
+		const difference = this.detour.points.length - this.route.points.length;
+		for (let index = this.route.points.length - 1; index >= 0; index--) {
+			const d = this.detour.points[difference + index].panoramaText,
+				r = this.route.points[index].panoramaText,
 				a = r.filter((element) => d.includes(element));
 			if (a.length > 0) {
-				this.matchingText.push(a, this.route['points'][index]);
-				this.convergencePoint = this.route['points'][index];
+				this.matchingText.push(a, this.route.points[index]);
+				this.convergencePoint = this.route.points[index];
 			} else if (a.length == 0 && r.length == 0) {
 			} else {
 				this.status = Status.DIFFERENT_ROUTES;

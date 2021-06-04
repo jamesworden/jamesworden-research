@@ -8,14 +8,14 @@ const client = new vision.ImageAnnotatorClient();
  * @param {string} base64 Base64 encoded image data
  * @returns {String[]} Text from image
  */
-let getTextFromBase64 = async (base64: string): Promise<string[]> => {
-	let request = { image: { content: Buffer.from(base64, 'base64') } },
+const getTextFromBase64 = async (base64: string): Promise<string[]> => {
+	const request = { image: { content: Buffer.from(base64, 'base64') } },
 		[result] = await client.textDetection(request),
 		panotext: string[] = [];
-	if (result['textAnnotations'] == null || result['textAnnotations'] == undefined)
+	if (result.textAnnotations == null || result.textAnnotations == undefined)
 		return panotext;
 	result.textAnnotations.forEach((annotation) => {
-		let text: string = annotation.description || '';
+		const text: string = annotation.description || '';
 		if (!text.includes('©') && !text.includes('Google')) panotext.push(text);
 	});
 	return panotext;

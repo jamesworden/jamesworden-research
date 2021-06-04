@@ -7,13 +7,13 @@ import Route from '../model/Route';
 import { RouteOption } from '../model/RouteOption';
 import constants from '../config/Constants';
 
-let express = require('express');
-let routes = express.Router({ mergeParams: true });
+const express = require('express');
+const routes = express.Router({ mergeParams: true });
 
 routes.get('/', async function (req: Request, res: Response) {
 	const sample: string = req.query.sample as string;
 	if (validation.equalsIgnoreCase(sample as string, 'true')) {
-		var route: Route = require('../json/sampleRoute.json'),
+		const route: Route = require('../json/sampleRoute.json'),
 			detour: Route = require('../json/sampleDetour.json'),
 			report: Report = new Report(route, detour);
 		res.status(200).send(report);
@@ -32,8 +32,10 @@ routes.get('/', async function (req: Request, res: Response) {
 	if (validation.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
 	if (validation.containsExtraWaypoints(waypoints, res)) return;
 
-	route = await new Route(origin, destination, increment).build([RouteOption.PANORAMA_TEXT]);
-	detour = await new Route(origin, destination, increment, waypoints).build([
+	const route: Route = await new Route(origin, destination, increment).build([
+		RouteOption.PANORAMA_TEXT,
+	]);
+	const detour: Route = await new Route(origin, destination, increment, waypoints).build([
 		RouteOption.PANORAMA_TEXT,
 	]);
 	res.status(200).send(new Report(route, detour));

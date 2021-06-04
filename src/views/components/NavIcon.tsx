@@ -7,7 +7,7 @@ export const NavIcon: React.FC<NavIcon> = ({}) => {
 		<svg
 			stroke='black'
 			fill='black'
-			stroke-width='0'
+			strokeWidth='0'
 			viewBox='0 0 18 18'
 			height='1em'
 			width='1em'

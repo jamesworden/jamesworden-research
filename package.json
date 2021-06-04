@@ -5,14 +5,19 @@
 	"main": "src/index.ts",
 	"type": "commonjs",
 	"scripts": {
-		"start": "concurrently \"npm run dev\" \"npm run watch\"",
-		"dev": "node .build/index.js",
-		"watch": "tsc -w",
-		"build": "tsc",
+		"start": "node .build/Index.js",
+		"dev": "concurrently \"npm run watch-typescript\" \"npm run watch-assets\" \"npm run start\"",
+		"watch-typescript": "tsc -w",
+		"watch-assets": "nodemon --watch src -e css,js,html,jpg,png --exec npm run copy-assets",
+		"build": "npm-run-all clean copy-assets tsc lint",
+		"clean": "rimraf .build/*",
+		"lint": "tslint -c tslint.json -p tsconfig.json --fix",
+		"tsc": "tsc",
+		"copy-assets": "ts-node src/util/CopyAssets",
 		"test": "jest",
 		"coverage": "jest --coverage",
 		"deploy": "serverless deploy",
-		"test-actions": "act -n"
+		"test-github-actions": "act -n"
 	},
 	"author": "James Worden",
 	"license": "ISC",
@@ -28,10 +33,7 @@
 		"polyline": "^0.2.0",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
-		"react-helmet": "^6.1.0",
-		"react-router-dom": "^5.2.0",
-		"serverless-dotenv-plugin": "^3.9.0",
-		"styled-components": "^5.3.0"
+		"serverless-dotenv-plugin": "^3.9.0"
 	},
 	"devDependencies": {
 		"@types/aws-lambda": "^8.10.76",
@@ -59,6 +61,7 @@
 		"ts-jest": "^26.5.6",
 		"ts-node": "^10.0.0",
 		"tsconfig-paths": "^3.9.0",
+		"tslint": "^6.1.3",
 		"typescript": "^4.3.2"
 	}
 }

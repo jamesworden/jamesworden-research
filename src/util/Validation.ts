@@ -7,11 +7,11 @@ import constants from '../config/Constants';
  * @param response Response to send an error message to the sender
  * @return True if at least one value is are undefined, false if all are defined
  */
-let containsUndefinedValues = (object: any, response: Response): boolean => {
-	let values: String[] = []; // Undefined values
-	for (let value in object) if (!object[value]) values.push(value);
+const containsUndefinedValues = (object: any, response: Response): boolean => {
+	const values: String[] = []; // Undefined values
+	for (const value in object) if (!object[value]) values.push(value);
 	if (values.length == 0) return false;
-	let parameters: string = values.join(values.length == 2 ? ' and ' : ', '),
+	const parameters: string = values.join(values.length == 2 ? ' and ' : ', '),
 		s = values.length > 1 ? 's' : '';
 	response
 		.status(422)
@@ -30,8 +30,8 @@ let containsUndefinedValues = (object: any, response: Response): boolean => {
  * @param response Response to send an error message to the sender
  * @return True if the increment is too large or too small, false if increment is valid
  */
-let containsInvalidIncrement = (increment: number, response: Response): boolean => {
-	let min = constants.MIN_INCREMENT_DISTANCE,
+const containsInvalidIncrement = (increment: number, response: Response): boolean => {
+	const min = constants.MIN_INCREMENT_DISTANCE,
 		max = constants.MAX_INCREMENT_DISTANCE;
 	if (isNaN(increment) || increment < min || increment > max) {
 		response
@@ -52,9 +52,9 @@ let containsInvalidIncrement = (increment: number, response: Response): boolean 
  * If waypoints is undefined, it will return false as this function only cares
  * if there are too many waypoints.
  */
-let containsExtraWaypoints = (waypoints: String, response: Response): boolean => {
+const containsExtraWaypoints = (waypoints: String, response: Response): boolean => {
 	if (!waypoints) return false;
-	var array = waypoints.split('|');
+	const array = waypoints.split('|');
 	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
 		response
 			.status(422)
@@ -73,7 +73,7 @@ let containsExtraWaypoints = (waypoints: String, response: Response): boolean =>
  * @param response Response to send an error message to the sender
  * @return True if the key is invalid or undefined, false if the key is valid
  */
-let containsInvalidKey = (key: string, response: Response): boolean => {
+const containsInvalidKey = (key: string, response: Response): boolean => {
 	if (key && key == process.env.RESEARCH_API_KEY) return false;
 	let message: string;
 	if (!key) message = 'An API key is required to perform this function.';
@@ -87,14 +87,14 @@ let containsInvalidKey = (key: string, response: Response): boolean => {
  * @param {String} String2
  * @returns True only if given strings are equal regardless of casing
  */
-let equalsIgnoreCase = (string1: string, string2: string): boolean =>
+const equalsIgnoreCase = (string1: string, string2: string): boolean =>
 	string1 && string2 && string1.toUpperCase() === string2.toUpperCase() ? true : false;
 
 /**
  * @param {String} String
  * @returns True only if given strings are equal regardless of casing
  */
-let equalsTrue = (string: string): boolean => equalsIgnoreCase(string, 'true');
+const equalsTrue = (string: string): boolean => equalsIgnoreCase(string, 'true');
 
 export {
 	containsUndefinedValues,

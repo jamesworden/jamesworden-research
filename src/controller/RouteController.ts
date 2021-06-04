@@ -6,8 +6,8 @@ import Route from '../model/Route';
 import { RouteOption } from '../model/RouteOption';
 import constants from '../config/Constants';
 
-let express = require('express');
-let routes = express.Router({ mergeParams: true });
+const express = require('express');
+const routes = express.Router({ mergeParams: true });
 
 routes.get('/', async function (req: Request, res: Response) {
 	const sample: string = req.query.sample as string;
@@ -29,11 +29,11 @@ routes.get('/', async function (req: Request, res: Response) {
 	if (validation.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
 	if (validation.containsInvalidIncrement(increment, res)) return;
 
-	let options: RouteOption[] = [];
+	const options: RouteOption[] = [];
 	if (panoramaId) options.push(RouteOption.PANORAMA_ID);
 	if (panoramaText) options.push(RouteOption.PANORAMA_TEXT);
 
-	var route: Route = await new Route(origin, destination, increment, waypoints).build(options);
+	const route: Route = await new Route(origin, destination, increment, waypoints).build(options);
 	res.status(200).send(route);
 });
 
