@@ -19,10 +19,11 @@ const handler = () => {
 	// app.listen(constants.PORT, () => {
 	// 	console.log(`Development server starting on port ${constants.PORT}`);
 	// });
-	const response = {
-		statusCode: 200,
-		body: JSON.stringify('Hello world'),
-	};
+	// const response = {
+	// 	statusCode: 200,
+	// 	body: JSON.stringify('Hello world'),
+	// };
+	console.log('Hello world');
 };
 
 if (!constants.__prod__) {
