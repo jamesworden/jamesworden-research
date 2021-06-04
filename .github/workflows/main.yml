@@ -31,7 +31,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - run: npm install
             - run: npm run build --if-present
-            - run: npm run coverage || true
+            # - run: npm run coverage || true
 
             - name: Inject enviornment variables with GitHub secrets
               run: |
@@ -44,16 +44,32 @@ jobs:
                   touch GoogleServiceCredentials.json
                   echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
 
-            - name: Install dependencies, Build application and Zip dist folder contents
-              run: npm install && npm run build && cp -r ./node_modules dist && cd dist && zip -qq -r ./bundle.zip . && mv bundle.zip ..
-            - name: deploy zip to aws lambda
+            - name: Zip Node Modules
+              run: npm install && zip -qq -r -j ./node_modules.zip ./node_modules/*
+
+            - name: Deploy node modules to Lambda Layer
+            - name: AWS Lambda Layer Publish
+              uses: taotao2345/aws-lambda-publishlayer@v1.0.0
+              env:
+                  AWS_REGION: ${{ secrets.AWS_REGION }}
+                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              with:
+                  layer_name: jamesworden-research-dependencies
+                  zip_file: node_modules.zip
+
+            - name: Compile typescript and zip api js files
+              run: npm build && zip -qq -r -j ./api.zip ./dist/*
+
+            - name: Deploy API to AWS Lambda
+              run: npm install && zip -qq -r -j ./node_modules.zip ./node_modules/*
               uses: appleboy/lambda-action@master
               with:
                   aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws_region: ${{ secrets.AWS_REGION }}
                   function_name: jamesworden-research
-                  zip_file: bundle.zip
+                  zip_file: api.zip
     test:
         name: Run tests
         runs-on: ubuntu-latest
