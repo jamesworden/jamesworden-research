@@ -44,13 +44,16 @@ jobs:
                   touch GoogleServiceCredentials.json
                   echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
 
-            - name: Deploy with Serverless
-              uses: serverless/github-action@master
+            - name: Install dependencies, Build application and Zip dist folder contents
+              run: npm install && npm run build && zip -qq -r -j ./bundle.zip ./dist/*
+            - name: deploy zip to aws lambda
+              uses: appleboy/lambda-action@master
               with:
-                  args: deploy
-              env:
-                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws_region: ${{ secrets.AWS_REGION }}
+                  function_name: jamesworden-research
+                  zip_file: bundle.zip
     test:
         name: Run tests
         runs-on: ubuntu-latest
