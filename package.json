@@ -11,7 +11,8 @@
 		"build": "tsc",
 		"test": "jest",
 		"coverage": "jest --coverage",
-		"deploy": "serverless deploy"
+		"deploy": "serverless deploy",
+		"test-actions": "act -n"
 	},
 	"author": "James Worden",
 	"license": "ISC",
