@@ -62,7 +62,6 @@ jobs:
               run: npm build && zip -qq -r -j ./api.zip ./dist/*
 
             - name: Deploy API to AWS Lambda
-              run: npm install && zip -qq -r -j ./node_modules.zip ./node_modules/*
               uses: appleboy/lambda-action@master
               with:
                   aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
