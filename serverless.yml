@@ -11,11 +11,11 @@ useDotenv: true
 
 functions:
     api:
-        handler: src/index.handler
+        handler: .build/index.handler
         package:
             include:
-                - 'dist/**/*'
-                - '!dist/**/*.map'
+                - 'build/**/*'
+                - '!build/**/*.map'
                 - '!node_modules/aws-sdk/**/*'
         events:
             - http:
@@ -33,4 +33,3 @@ functions:
 
 plugins:
     - serverless-dotenv-plugin
-    - serverless-plugin-typescript
