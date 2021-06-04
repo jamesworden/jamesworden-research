@@ -7,12 +7,11 @@ provider:
     runtime: nodejs12.x
     lambdaHashingVersion: 20201221
 
-stage: dev
-region: us-east-1
+useDotenv: true
 
 functions:
     api:
-        handler: Handler.handler
+        handler: src/index.handler
         events:
             - http:
                   path: /
@@ -28,6 +27,5 @@ functions:
                   cors: true
 
 plugins:
-    - serverless-offline
     - serverless-dotenv-plugin
     - serverless-plugin-typescript

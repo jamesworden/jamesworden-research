@@ -1,36 +1,39 @@
 import * as validation from '../util/Validation';
 
+import { Request, Response } from 'express';
+
 import Route from '../model/Route';
+import { RouteOption } from '../model/RouteOption';
 import constants from '../config/Constants';
 
 let express = require('express');
 let routes = express.Router({ mergeParams: true });
 
-routes.get('/', async function (req, res) {
-	// Define query parameters
-	const key = req.query.key,
-		origin = req.query.origin,
-		destination = req.query.destination,
-		panoramaId = validation.equalsTrue(req.query.panoid),
-		panoramaText = validation.equalsTrue(req.query.panotext),
-		increment = req.query.increment || constants.DEFAULT_INCREMENT_DISTANCE,
-		waypoints = req.query.waypoints || '';
-
-	if (req.query.sample && validation.equalsIgnoreCase(req.query.sample, 'true')) {
-		res.status(200).send({ route: require('../sampledata/route.json') });
+routes.get('/', async function (req: Request, res: Response) {
+	const sample: string = req.query.sample as string;
+	if (validation.equalsIgnoreCase(sample, 'true')) {
+		res.status(200).send({ route: require('../json/sampleRoute.json') });
 		return;
 	}
+	const key: string = req.query.key as string,
+		origin: string = req.query.origin as string,
+		destination: string = req.query.destination as string,
+		panoramaId: boolean = validation.equalsTrue(req.query.panoid as string),
+		panoramaText: boolean = validation.equalsTrue(req.query.panotext as string),
+		waypoints: string = (req.query.waypoints as string) || '',
+		increment: number =
+			parseInt(req.query.increment as string) || constants.DEFAULT_INCREMENT_DISTANCE;
 
-	// Validate query parameters
 	if (validation.containsInvalidKey(key, res)) return;
 	if (validation.containsExtraWaypoints(waypoints, res)) return;
+	if (validation.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
 	if (validation.containsInvalidIncrement(increment, res)) return;
-	if (validation.containsUndefinedValues({ origin, destination }, res)) return;
 
-	// Return route from addresses
-	var route: Route = new Route(origin, destination, increment, waypoints),
-		route = await route.initialize(),
-		route = await route.addParameters(panoramaId, panoramaText);
+	let options: RouteOption[] = [];
+	if (panoramaId) options.push(RouteOption.PANORAMA_ID);
+	if (panoramaText) options.push(RouteOption.PANORAMA_TEXT);
+
+	var route: Route = await new Route(origin, destination, increment, waypoints).build(options);
 	res.status(200).send(route);
 });
 

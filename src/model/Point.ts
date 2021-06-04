@@ -4,7 +4,7 @@ export default class Point {
 	panoramaId: string;
 	panoramaText: string[];
 
-	constructor(latitude, longitude) {
+	constructor(latitude: number, longitude: number) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

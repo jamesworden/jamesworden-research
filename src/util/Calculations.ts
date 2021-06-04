@@ -80,7 +80,7 @@ let toDegrees = (radians: number): number => (radians * 180) / Math.PI;
  * @param {Object[]} legs Array of legs
  * @returns Distance in meters
  */
-let getDistanceFromLegs = (legs: Object[]): number => {
+let getDistanceFromLegs = (legs: google.maps.DirectionsLeg[]): number => {
 	let distance = 0;
 	for (let leg of legs) {
 		if (leg['distance'] != undefined && leg['distance']['value'] != undefined)

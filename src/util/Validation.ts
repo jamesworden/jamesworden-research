@@ -7,7 +7,7 @@ import constants from '../config/Constants';
  * @param response Response to send an error message to the sender
  * @return True if at least one value is are undefined, false if all are defined
  */
-let containsUndefinedValues = (object: Object, response: Response): boolean => {
+let containsUndefinedValues = (object: any, response: Response): boolean => {
 	let values: String[] = []; // Undefined values
 	for (let value in object) if (!object[value]) values.push(value);
 	if (values.length == 0) return false;

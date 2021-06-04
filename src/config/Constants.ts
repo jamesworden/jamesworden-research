@@ -11,4 +11,6 @@ export default Object.freeze({
 		error: 'Unable to create complete request!',
 		message: 'Please contact James for assistance.',
 	},
+	__prod__: process.env.NODE_ENV === 'production',
+	PORT: process.env.SERVER_PORT || 3000,
 });

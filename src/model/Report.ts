@@ -17,7 +17,12 @@ export default class Report {
 		this.route = route;
 		this.detour = detour;
 
-		if (!(this.detour['route'][0]['panoramaText'] && this.route['route'][0]['panoramaText'])) {
+		if (
+			!(
+				this.detour.getPoints()[0]['panoramaText'] &&
+				this.route.getPoints()[0]['panoramaText']
+			)
+		) {
 			this.status = Status.NO_TEXT_DATA;
 			return;
 		}
@@ -28,7 +33,7 @@ export default class Report {
 				a = r.filter((element) => d.includes(element));
 			if (a.length > 0) {
 				this.matchingText.push(a, this.route['points'][index]);
-				this.divergencePoint = this.route['points']['index'];
+				this.divergencePoint = this.route['points'][index];
 			} else {
 				this.status = Status.DIFFERENT_ROUTES;
 				break;
@@ -36,7 +41,7 @@ export default class Report {
 		}
 		// Backwards through route
 		let difference = this.detour['points'].length - this.route['points'].length;
-		for (let index = this.route['length'] - 1; index >= 0; index--) {
+		for (let index = this.route['points']['length'] - 1; index >= 0; index--) {
 			let d = this.detour['points'][difference + index]['panoramaText'],
 				r = this.route['points'][index]['panoramaText'],
 				a = r.filter((element) => d.includes(element));
