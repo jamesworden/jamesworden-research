@@ -8,7 +8,7 @@
 		"start": "concurrently \"npm run dev\" \"npm run watch\"",
 		"dev": "node .build/index.js",
 		"watch": "tsc -w",
-		"deploy": "tsc serverless deploy",
+		"build": "tsc",
 		"test": "jest",
 		"coverage": "jest --coverage"
 	},
