@@ -9,7 +9,7 @@
 		"dev": "concurrently \"npm run watch-typescript\" \"npm run watch-assets\" \"npm run start\"",
 		"watch-typescript": "tsc -w",
 		"watch-assets": "nodemon --watch src -e css,js,html,jpg,png --exec npm run copy-assets",
-		"build": "npm-run-all clean copy-assets tsc lint",
+		"build": "npm-run-all clean copy-assets tsc",
 		"clean": "rimraf .build/*",
 		"lint": "tslint -c tslint.json -p tsconfig.json --fix",
 		"tsc": "tsc",
