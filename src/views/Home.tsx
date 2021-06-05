@@ -1,7 +1,11 @@
-import React from 'react';
+import * as React from 'react';
+
+import { Layout } from './Layout';
 
 interface Home {}
 
-export const Home: React.FC<Home> = ({}) => {
-	return <div>Home page</div>;
-};
+export default class extends React.Component<Home> {
+	render() {
+		return <Layout title='Mitigate GPS Spoofing'>Index</Layout>;
+	}
+}

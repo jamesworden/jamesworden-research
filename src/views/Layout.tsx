@@ -13,7 +13,7 @@ export const Layout: React.FC<Layout> = ({ children, title }) => {
 			<head>
 				<title>{title}</title>
 				<link rel='stylesheet' href='https://use.typekit.net/tbs8oug.css' />
-				{/* <link rel='stylesheet' href='global.css' /> */}
+				<link rel='stylesheet' href='global.css' />
 			</head>
 			<body>
 				<Navbar>
