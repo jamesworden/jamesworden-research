@@ -31,7 +31,8 @@
 		"polyline": "^0.2.0",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
-		"serverless-dotenv-plugin": "^3.9.0"
+		"serverless-dotenv-plugin": "^3.9.0",
+		"shelljs": "^0.8.4"
 	},
 	"devDependencies": {
 		"@types/aws-lambda": "^8.10.76",
