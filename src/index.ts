@@ -13,7 +13,6 @@ const app = express();
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'js');
 app.engine('js', require('express-react-views').createEngine());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/report', ReportContoller);
 app.use('/api/route', RouteContoller);

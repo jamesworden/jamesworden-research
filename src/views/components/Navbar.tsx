@@ -6,10 +6,16 @@ interface Navbar {
 	children: ReactElement<typeof NavLink> | ReactElement<typeof NavLink>[];
 }
 
+const ulStyle: React.CSSProperties = {
+	listStyle: 'none',
+	margin: 0,
+	padding: 0,
+};
+
 export const Navbar: React.FC<Navbar> = ({ children }) => {
 	return (
 		<nav>
-			<ul>{children}</ul>
+			<ul style={ulStyle}>{children}</ul>
 		</nav>
 	);
 };
