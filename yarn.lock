@@ -1370,14 +1370,6 @@
   "resolved" "https://registry.npmjs.org/@types/geojson/-/geojson-7946.0.7.tgz"
   "version" "7946.0.7"
 
-"@types/glob@*":
-  "integrity" "sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w=="
-  "resolved" "https://registry.npmjs.org/@types/glob/-/glob-7.1.3.tgz"
-  "version" "7.1.3"
-  dependencies:
-    "@types/minimatch" "*"
-    "@types/node" "*"
-
 "@types/google-maps@^3.2.3":
   "integrity" "sha512-+GR/7sMvo2bENS26H4t2QqoCqE4FE5qhsG8aaDM9mJAlsorkLyaFdTQra8VkmS1RNE09fx9c1kac+GKG0RtA2A=="
   "resolved" "https://registry.npmjs.org/@types/google-maps/-/google-maps-3.2.3.tgz"
@@ -1444,11 +1436,6 @@
   "resolved" "https://registry.npmjs.org/@types/mime/-/mime-1.3.2.tgz"
   "version" "1.3.2"
 
-"@types/minimatch@*":
-  "integrity" "sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA=="
-  "resolved" "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.4.tgz"
-  "version" "3.0.4"
-
 "@types/node@*", "@types/node@^15.6.2", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
   "integrity" "sha512-zyxJM8I1c9q5sRMtVF+zdd13Jt6RU4r4qfhTd7lQubyThvLfx6yYekWSQjGCGV2Tkecgxnlpl/DNlb6Hg+dmEw=="
   "resolved" "https://registry.npmjs.org/@types/node/-/node-15.12.1.tgz"
@@ -1493,13 +1480,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-helmet@^6.1.1":
-  "integrity" "sha512-VmSCMz6jp/06DABoY60vQa++h1YFt0PfAI23llxBJHbowqFgLUL0dhS1AQeVPNqYfRp9LAfokrfWACTNeobOrg=="
-  "resolved" "https://registry.npmjs.org/@types/react-helmet/-/react-helmet-6.1.1.tgz"
-  "version" "6.1.1"
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-router-dom@^5.1.7":
   "integrity" "sha512-D5mHD6TbdV/DNHYsnwBTv+y73ei+mMjrkGrla86HthE4/PVvL1J94Bu3qABU+COXzpL23T1EZapVVpwHuBXiUg=="
   "resolved" "https://registry.npmjs.org/@types/react-router-dom/-/react-router-dom-5.1.7.tgz"
@@ -1537,14 +1517,6 @@
   "version" "1.13.9"
   dependencies:
     "@types/mime" "^1"
-    "@types/node" "*"
-
-"@types/shelljs@^0.8.8":
-  "integrity" "sha512-lD3LWdg6j8r0VRBFahJVaxoW0SIcswxKaFUrmKl33RJVeeoNYQAz4uqCJ5Z6v4oIBOsC5GozX+I5SorIKiTcQA=="
-  "resolved" "https://registry.npmjs.org/@types/shelljs/-/shelljs-0.8.8.tgz"
-  "version" "0.8.8"
-  dependencies:
-    "@types/glob" "*"
     "@types/node" "*"
 
 "@types/stack-utils@^2.0.0":
