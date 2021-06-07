@@ -12,6 +12,8 @@ interface Layout {
 
 const bodyStyle: React.CSSProperties = {
 	fontFamily: 'neue-haas-grotesk-display',
+	margin: 0,
+	padding: 0,
 };
 
 export const Layout: React.FC<Layout> = ({ children, title }) => {
