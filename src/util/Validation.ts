@@ -51,7 +51,7 @@ const containsExtraWaypoints = (waypoints: String, response: Response): boolean 
  * @param response Response to send an error message to the sender
  * @return True if the key is invalid or undefined, false if the key is valid
  */
-const containsInvalidKey = (key: string, response: Response): boolean => {
+const containsInvalidKey = (key: string | undefined, response: Response): boolean => {
 	if (key && key == process.env.RESEARCH_API_KEY) return false;
 	let message: string;
 	if (!key) message = 'An API key is required to perform this function.';

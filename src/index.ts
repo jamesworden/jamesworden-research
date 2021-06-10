@@ -20,18 +20,5 @@ app.use('/api/report', ReportContoller);
 app.use('/api/route', RouteContoller);
 app.use('/', ViewContoller);
 
-const handler = (event: APIGatewayProxyEvent, context: Context) => {
+export const handler = (event: APIGatewayProxyEvent, context: Context) =>
 	awsServerlessExpress.proxy(awsServerlessExpress.createServer(app), event, context);
-};
-
-const run = () => {
-	app.listen(PORT, () => {
-		console.log(`Development server starting on port ${PORT}`);
-	});
-};
-
-if (!__prod__) {
-	run();
-}
-
-export { handler };

@@ -21,15 +21,15 @@ functions:
             - http:
                   path: /
                   method: get
-                  cors: true
+                  cors: false
             - http:
                   path: /docs
                   method: get
-                  cors: true
+                  cors: false
             - http:
                   path: /schedule
                   method: get
-                  cors: true
+                  cors: false
             - http:
                   path: /api/image
                   method: get
@@ -41,7 +41,8 @@ functions:
             - http:
                   path: /api/report
                   method: get
-                  cors: true
+                  cors: false
 
 plugins:
     - serverless-dotenv-plugin
+    - serverless-offline
