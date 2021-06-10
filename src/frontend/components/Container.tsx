@@ -4,13 +4,13 @@ interface Container {
 	children: JSX.Element | Array<JSX.Element>;
 }
 
-const divStyle: React.CSSProperties = {
-	maxWidth: '50rem',
+const containerStyle: React.CSSProperties = {
+	maxWidth: '36rem',
 	margin: 'auto',
 	paddingLeft: '1rem',
 	paddingRight: '1rem',
 };
 
 export const Container: React.FC<Container> = ({ children }) => {
-	return <div style={divStyle}>{children}</div>;
+	return <div style={containerStyle}>{children}</div>;
 };

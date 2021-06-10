@@ -1377,14 +1377,7 @@
   "resolved" "https://registry.npmjs.org/@types/geojson/-/geojson-7946.0.7.tgz"
   "version" "7946.0.7"
 
-"@types/google-maps@^3.2.3":
-  "integrity" "sha512-+GR/7sMvo2bENS26H4t2QqoCqE4FE5qhsG8aaDM9mJAlsorkLyaFdTQra8VkmS1RNE09fx9c1kac+GKG0RtA2A=="
-  "resolved" "https://registry.npmjs.org/@types/google-maps/-/google-maps-3.2.3.tgz"
-  "version" "3.2.3"
-  dependencies:
-    "@types/google.maps" "*"
-
-"@types/google.maps@*":
+"@types/google.maps@^3.45.1":
   "integrity" "sha512-0zOfnLrkLQkZh3rhjdHPodcWsKHj6BFqhIOp7t/g3y6/cKImxowBpcBva+Iq9WrpHPBRAqbdu0rPnAiK66M06w=="
   "resolved" "https://registry.npmjs.org/@types/google.maps/-/google.maps-3.45.1.tgz"
   "version" "3.45.1"

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-interface FormattedList {
-	children: JSX.Element | Array<JSX.Element>;
+interface Ul {
+	children: React.DetailedHTMLProps<React.LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
 }
 
 const ulStyle: React.CSSProperties = {
@@ -12,6 +12,6 @@ const ulStyle: React.CSSProperties = {
 	flexDirection: 'row',
 };
 
-export const FormattedList: React.FC<FormattedList> = ({ children }) => {
+export const Ul: React.FC<Ul> = ({ children }) => {
 	return <ul style={ulStyle}>{children}</ul>;
 };

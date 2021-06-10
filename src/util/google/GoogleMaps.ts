@@ -3,21 +3,59 @@ import axios from 'axios';
 
 const key = process.env.GOOGLE_MAPS_BACKEND_KEY;
 
+type DirectionsResponse = {
+	result: google.maps.DirectionsResult | null;
+	status: google.maps.DirectionsStatus;
+};
+
 /**
  * Get directions from Google Maps
  * @param {String} origin
  * @param {String} destination
- * @param {String} waypoints
- * @returns Object containing directions data
+ * @param {google.maps.DirectionsWaypoint[]} waypoints
+ * @return {Promise<DirectionsResponse>}
  */
 const getDirections = async (
 	origin: string,
 	destination: string,
-	waypoints: string
-): Promise<any> => {
-	const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${key}&waypoints=${waypoints}`,
-		response = await axios.get(url);
-	return response.data;
+	waypoints: google.maps.DirectionsWaypoint[]
+): Promise<DirectionsResponse> => {
+	const options = {
+		origin,
+		destination,
+		waypoints,
+		travelMode: google.maps.TravelMode.DRIVING,
+	};
+	let response: DirectionsResponse = {
+		result: null,
+		status: google.maps.DirectionsStatus.UNKNOWN_ERROR,
+	};
+	await new google.maps.DirectionsService().route(
+		options,
+		(result: google.maps.DirectionsResult | null, status: google.maps.DirectionsStatus) => {
+			response = {
+				result,
+				status,
+			};
+		}
+	);
+	return response;
+};
+
+/**
+ * @param waypointString A string containing addresses and cooridinate pairs using '|' characters
+ * as separators. Example: 'address 1|40.4323235r3,-70.4342543534|address 3...'
+ */
+const getWaypoints = (waypointString: String): google.maps.DirectionsWaypoint[] => {
+	let waypoints: google.maps.DirectionsWaypoint[] = [];
+	let array = waypointString.split('|');
+	array.forEach((string: string) => {
+		waypoints.push({
+			location: string,
+			stopover: true,
+		});
+	});
+	return waypoints;
 };
 
 /**
@@ -56,4 +94,4 @@ const getSnappedPoints = async (points: Point[]): Promise<Point[]> => {
 	return route;
 };
 
-export { getDirections, getSnappedPoints };
+export { getDirections, getSnappedPoints, getWaypoints, DirectionsResponse };

@@ -2,9 +2,9 @@ import * as validation from '../util/Validation';
 
 import { Request, Response } from 'express';
 
+import { DEFAULT_INCREMENT_DISTANCE } from '../config/Constants';
 import Route from '../model/Route';
 import { RouteOption } from '../model/RouteOption';
-import constants from '../config/Constants';
 
 const express = require('express');
 const routes = express.Router({ mergeParams: true });
@@ -21,13 +21,11 @@ routes.get('/', async function (req: Request, res: Response) {
 		panoramaId: boolean = validation.equalsTrue(req.query.panoid as string),
 		panoramaText: boolean = validation.equalsTrue(req.query.panotext as string),
 		waypoints: string = (req.query.waypoints as string) || '',
-		increment: number =
-			parseInt(req.query.increment as string) || constants.DEFAULT_INCREMENT_DISTANCE;
+		increment: number = parseInt(req.query.increment as string) || DEFAULT_INCREMENT_DISTANCE;
 
 	if (validation.containsInvalidKey(key, res)) return;
 	if (validation.containsExtraWaypoints(waypoints, res)) return;
 	if (validation.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
-	if (validation.containsInvalidIncrement(increment, res)) return;
 
 	const options: RouteOption[] = [];
 	if (panoramaId) options.push(RouteOption.PANORAMA_ID);

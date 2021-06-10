@@ -1,3 +1,4 @@
+import { BLACK } from '../Colors';
 import { NavIcon } from './NavIcon';
 import React from 'react';
 
@@ -7,15 +8,17 @@ interface NavLink {
 }
 
 const aStyle: React.CSSProperties = {
-	float: 'left',
 	display: 'block',
-	color: '#f2f2f2',
+	color: BLACK,
 	textAlign: 'center',
 	textDecoration: 'none',
+	paddingLeft: '.5rem',
 };
 
 const liStyle: React.CSSProperties = {
 	marginRight: '1rem',
+	display: 'flex',
+	flexDirection: 'row',
 };
 
 export const NavLink: React.FC<NavLink> = ({ children, href }) => {

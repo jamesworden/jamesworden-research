@@ -1,25 +1,30 @@
+import { LIGHT_GREY, WHITE } from '../Colors';
 import React, { ReactElement } from 'react';
 
 import { Container } from './Container';
-import { FormattedList } from './FormattedList';
 import { NavLink } from '../components/NavLink';
+import { Ul } from './Ul';
 
 interface Navbar {
-	children: ReactElement<typeof NavLink> | ReactElement<typeof NavLink>[];
+	children: ReactElement<typeof NavLink>[];
 }
 
 const navStyle: React.CSSProperties = {
 	width: '100%',
 	overflow: 'hidden',
-	backgroundColor: '#333',
+	borderBottom: `.05rem solid ${LIGHT_GREY}`,
 	paddingBlock: '1rem',
+	top: 0,
+	position: 'sticky',
+	backgroundColor: WHITE,
+	zIndex: 1,
 };
 
 export const Navbar: React.FC<Navbar> = ({ children }) => {
 	return (
 		<nav style={navStyle}>
 			<Container>
-				<FormattedList>{children}</FormattedList>
+				<Ul>{children}</Ul>
 			</Container>
 		</nav>
 	);

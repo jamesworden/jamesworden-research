@@ -1,5 +1,5 @@
+import { MAX_WAYPOINTS_PER_ROUTE } from '../config/Constants';
 import { Response } from 'express';
-import constants from '../config/Constants';
 
 /**
  * Validates query parameters for routes by ensureing specified variables are defined
@@ -25,28 +25,6 @@ const containsUndefinedValues = (object: any, response: Response): boolean => {
 };
 
 /**
- * Validates the increment query parameter is within appropriate bounds
- * @param increment Increment distance
- * @param response Response to send an error message to the sender
- * @return True if the increment is too large or too small, false if increment is valid
- */
-const containsInvalidIncrement = (increment: number, response: Response): boolean => {
-	const min = constants.MIN_INCREMENT_DISTANCE,
-		max = constants.MAX_INCREMENT_DISTANCE;
-	if (isNaN(increment) || increment < min || increment > max) {
-		response
-			.status(422)
-			.send(
-				new ErrorMessage(
-					`Invalid increment size (${increment} meters).`,
-					`Your increment parameter must be a value between ${min} and ${max}!`
-				)
-			);
-		return true;
-	} else return false;
-};
-
-/**
  * @param {String} waypoints A string of waypoints separated by '|'
  * @returns If there are too many waypoints return true, otherwise return false
  * If waypoints is undefined, it will return false as this function only cares
@@ -55,13 +33,13 @@ const containsInvalidIncrement = (increment: number, response: Response): boolea
 const containsExtraWaypoints = (waypoints: String, response: Response): boolean => {
 	if (!waypoints) return false;
 	const array = waypoints.split('|');
-	if (array.length > constants.MAXIMUM_WAYPOINTS_PER_ROUTE) {
+	if (array.length > MAX_WAYPOINTS_PER_ROUTE) {
 		response
 			.status(422)
 			.send(
 				new ErrorMessage(
 					`Too many waypoints in this route (${array.length} waypoints).`,
-					'Maximum waypoints: ' + constants.MAXIMUM_WAYPOINTS_PER_ROUTE + '\n' + array
+					'Maximum waypoints: ' + MAX_WAYPOINTS_PER_ROUTE + '\n' + array
 				)
 			);
 	}
@@ -98,7 +76,6 @@ const equalsTrue = (string: string): boolean => equalsIgnoreCase(string, 'true')
 
 export {
 	containsUndefinedValues,
-	containsInvalidIncrement,
 	containsExtraWaypoints,
 	containsInvalidKey,
 	equalsIgnoreCase,

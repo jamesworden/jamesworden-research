@@ -5,8 +5,8 @@ interface NavIcon {}
 export const NavIcon: React.FC<NavIcon> = ({}) => {
 	return (
 		<svg
-			stroke='white'
-			fill='white'
+			stroke='black'
+			fill='black'
 			strokeWidth='0'
 			viewBox='0 0 18 18'
 			height='1em'
