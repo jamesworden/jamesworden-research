@@ -43,12 +43,17 @@ export const Layout: React.FC<Layout> = ({ children, title }) => {
 					content='ocr, text, spoofing, gps, coordinate, research, api'
 				></meta>
 				<meta name='author' content='James Worden'></meta>
-				<meta
-					property='og:image'
-					content='https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Fgps-icon-location-map-navigation-4172635%2F&psig=AOvVaw1oPdYW5EL7En3A2oWw2_T1&ust=1623451396351000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCND_mfWRjvECFQAAAAAdAAAAABAD'
-				/>
 				<meta property='og:url' content='//research.jamesworden.com/' />
-				<meta property='article:published_time' content='2021-6-10' />
+				<meta
+					name='image'
+					property='og:image'
+					content='https://cdn.pixabay.com/photo/2019/05/02/04/52/gps-4172635_1280.png'
+				></meta>
+				<meta
+					name='publish_date'
+					property='og:publish_date'
+					content='2021-06-10T00:00:00-0600'
+				></meta>
 			</head>
 			<body style={bodyStyle}>
 				<Navbar>
