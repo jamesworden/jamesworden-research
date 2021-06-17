@@ -3,8 +3,9 @@ import * as validation from '../util/Validation';
 import { Request, Response } from 'express';
 
 import { DEFAULT_INCREMENT_DISTANCE } from '../config/Constants';
-import Route from '../model/Route';
-import { RouteOption } from '../model/RouteOption';
+import { Route } from '../model/Route';
+import { RouteOption } from '../model/Option';
+import { WaypointCollection } from 'src/model/WaypointCollection';
 
 const express = require('express');
 const routes = express.Router({ mergeParams: true });
@@ -20,12 +21,13 @@ routes.get('/', async function (req: Request, res: Response) {
 		destination: string = req.query.destination as string,
 		panoramaId: boolean = validation.equalsTrue(req.query.panoid as string),
 		panoramaText: boolean = validation.equalsTrue(req.query.panotext as string),
-		waypoints: string = (req.query.waypoints as string) || '',
-		increment: number = parseInt(req.query.increment as string) || DEFAULT_INCREMENT_DISTANCE;
+		increment: number = parseInt(req.query.increment as string) || DEFAULT_INCREMENT_DISTANCE,
+		waypoints: WaypointCollection | null = new WaypointCollection(
+			req.query.waypoints as string
+		);
 
 	if (validation.containsInvalidKey(key, res)) return;
-	if (validation.containsExtraWaypoints(waypoints, res)) return;
-	if (validation.containsUndefinedValues({ origin, destination, waypoints }, res)) return;
+	if (validation.containsUndefinedValues({ origin, destination }, res)) return;
 
 	const options: RouteOption[] = [];
 	if (panoramaId) options.push(RouteOption.PANORAMA_ID);
