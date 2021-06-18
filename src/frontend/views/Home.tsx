@@ -12,7 +12,7 @@ export default class extends React.Component<Home> {
     return (
       <Layout title="Mitigate GPS Spoofing">
         <Header title="Mitigate GPS Spoofing">
-          <span>Research with Dr. Erald Troja & James Worden</span>
+          <span>Research with James Worden</span>
         </Header>
         <Section>
           <p>
@@ -50,13 +50,11 @@ export default class extends React.Component<Home> {
             </ul>
             Check out the <A href="/docs">documentation</A> for related API's,
             the <A href="/schedule">schedule</A> for seeing which features will
-            be added to further our understanding of this topic, the{' '}
+            be added to further our understanding of this topic, or the{' '}
             <A href="https://github.com/jamesworden/jamesworden-research">
               source code
             </A>{' '}
-            to see how this webiste and the API's work under the hood, or keep
-            reading below for a technical understanding of how we would approach
-            implementing this idea.
+            to see how this webiste and the API's work under the hood.
           </p>
         </Section>
         <Section paddingTop={true}>

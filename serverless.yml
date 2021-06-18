@@ -27,10 +27,6 @@ functions:
           method: get
           cors: false
       - http:
-          path: /schedule
-          method: get
-          cors: false
-      - http:
           path: /api/image
           method: get
           cors: true

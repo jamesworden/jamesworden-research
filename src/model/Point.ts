@@ -1,8 +1,8 @@
 export class Point {
   latitude: number
   longitude: number
-  panoramaId: string
-  panoramaText: string[]
+  panoramaId?: string
+  panoramaText?: string[]
 
   constructor(latitude: number, longitude: number) {
     this.latitude = latitude

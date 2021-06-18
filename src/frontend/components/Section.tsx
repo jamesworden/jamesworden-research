@@ -12,8 +12,7 @@ export const Section: React.FC<Section> = ({children, paddingTop}) => {
     <section
       style={{
         paddingTop: paddingTop ? PADDING : 0
-      }}
-    >
+      }}>
       {children}
     </section>
   )

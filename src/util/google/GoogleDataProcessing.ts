@@ -1,4 +1,4 @@
-import {LatLng, RouteLeg} from '@googlemaps/google-maps-services-js'
+import {DirectionsRoute, LatLng} from '@googlemaps/google-maps-services-js'
 import {getDistanceBetweenPoints, getIntermediatePoint} from '../Calculations'
 
 import {MAX_WAYPOINTS_PER_ROUTE} from '../../config/Constants'
@@ -10,8 +10,9 @@ import {decode} from 'polyline'
  * @param {Object[]} legs Array of legs
  * @returns Distance in meters
  */
-const getDistance = (legs: RouteLeg[]): number => {
-  let distance = 0
+const getDistance = (route: DirectionsRoute): number => {
+  let legs = route.legs,
+    distance = 0
 
   for (const leg of legs) {
     if (leg.distance && leg.distance.value) {
@@ -67,8 +68,8 @@ const getPoints = (encodedPolyline: string, increment: number): Point[] => {
 }
 
 const getWaypoints = (input: string): LatLng[] | string => {
-  // Tests for whitespace
-  if (!input.replace(/\s/g, '').length) {
+  // Tests for undefined or whitespace only
+  if (!input || !input.replace(/\s/g, '').length) {
     return 'There were no specified waypoints!'
   }
 

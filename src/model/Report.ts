@@ -30,41 +30,11 @@ export class Report {
       return
     }
 
-    // Fowards through route
-    for (const index in this.route.points) {
-      const d = this.detour.points[index].panoramaText,
-        r = this.route.points[index].panoramaText,
-        a = r.filter(element => d.includes(element))
-
-      if (a.length > 0) {
-        this.matchingText.push(a, this.route.points[index])
-        this.divergencePoint = this.route.points[index]
-      } else {
-        this.status = Status.DIFFERENT_ROUTES
-        break
-      }
-    }
-    // Backwards through route
-    const difference = this.detour.points.length - this.route.points.length
-    for (let index = this.route.points.length - 1; index >= 0; index--) {
-      const d = this.detour.points[difference + index].panoramaText,
-        r = this.route.points[index].panoramaText,
-        a = r.filter(element => d.includes(element))
-
-      if (a.length > 0) {
-        this.matchingText.push(a, this.route.points[index])
-        this.convergencePoint = this.route.points[index]
-      } else if (a.length == 0 && r.length == 0) {
-        // No mathing text at either point, can't compare
-      } else {
-        this.status = Status.DIFFERENT_ROUTES
-        break
-      }
-    }
+    // Todo: Generate report on route and detour data.
   }
 }
 
 export enum Status {
-  NO_TEXT_DATA = 'No text was detected within the route and detor data.',
+  NO_TEXT_DATA = 'No text was detected within the route and detour data.',
   DIFFERENT_ROUTES = 'The route and detor have differences in their locations based on the text data.'
 }

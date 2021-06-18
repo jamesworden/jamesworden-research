@@ -2,9 +2,11 @@
   "origin": "40.758091, -73.996619",
   "destination": "40.759290, -73.995755",
   "waypoints": "",
-  "increment": "5",
   "distance": 152,
-  "route": [
+  "increment": "5",
+  "status": "Success!",
+  "options": ["PANORAMA_TEXT", "PANORAMA_ID"],
+  "points": [
     {
       "location": {
         "latitude": 40.75809114909745,

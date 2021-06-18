@@ -17,9 +17,12 @@ const getTextFromBase64 = async (base64: string): Promise<string[]> => {
     return panotext
   }
 
-  result.textAnnotations.forEach(annotation => {
+  result.textAnnotations.forEach((annotation) => {
     const text: string = annotation.description || ''
-    if (!text.includes('©') && !text.includes('Google')) panotext.push(text)
+
+    if (!text.includes('©') && !text.includes('Google')) {
+      panotext.push(text)
+    }
   })
 
   return panotext

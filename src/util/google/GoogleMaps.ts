@@ -3,11 +3,12 @@ import {
   DirectionsResponse,
   DirectionsResponseData
 } from '@googlemaps/google-maps-services-js/dist/directions'
+import axios, {AxiosResponse} from 'axios'
 
 import {Point} from '../../model/Point'
-import axios from 'axios'
 
-const googleMapsClient = new Client({})
+const googleMapsClient = new Client({}),
+  key = process.env.GOOGLE_MAPS_BACKEND_KEY as string
 
 /**
  * Get directions from Google Maps
@@ -60,8 +61,8 @@ const getSnappedPoints = async (points: Point[]): Promise<Point[]> => {
 
     path = path.slice(0, -1)
 
-    const url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=''}`, //TODO KEY
-      response = await axios.get(url),
+    const url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&key=${key}`,
+      response: AxiosResponse = await axios.get(url),
       snappedPoints = response.data.snappedPoints
 
     if (!snappedPoints) {

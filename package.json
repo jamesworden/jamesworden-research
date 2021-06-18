@@ -5,18 +5,16 @@
   "main": "src/index.ts",
   "type": "commonjs",
   "scripts": {
-    "start": "node .build/Index.js",
-    "serverless-offline": "serverless offline --noPrependStageInUrl",
-    "dev": "concurrently \"npm run watch-typescript\" \"npm run serverless-offline \"",
-    "watch-typescript": "tsc -w",
+    "start": "concurrently \"tsc -w\" \"serverless offline --noPrependStageInUrl\"",
     "build": "npm-run-all clean tsc",
     "clean": "rimraf .build/*",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "tsc": "tsc",
-    "test": "jest",
+    "jest": "jest",
+    "test": "npm-run-all jest test:github-actions",
     "coverage": "jest --coverage",
     "deploy": "serverless deploy",
-    "test-github-actions": "act -n"
+    "test:github-actions": "act -n"
   },
   "author": "James Worden",
   "license": "ISC",

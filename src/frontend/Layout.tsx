@@ -32,32 +32,30 @@ export const Layout: React.FC<Layout> = ({children, title}) => {
         <link rel="stylesheet" href="https://use.typekit.net/tbs8oug.css" />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1"
-        ></meta>
+          content="width=device-width, initial-scale=1"></meta>
         <meta charSet="utf-8"></meta>
         <meta
           name="description"
           property="og:description"
-          content="Research with Dr. Erald Troja and James Worden exploring how we can verify locations based on visual cues in the surrounding enviornment. We leverage optical character recognition to extract text from imagery at given locations."
-        ></meta>
+          content="Research with Dr. Erald Troja and James Worden exploring how we can verify locations based on visual cues in the surrounding enviornment. We leverage optical character recognition to extract text from imagery at given locations."></meta>
         <meta property="og:title" content={title} />
         <meta
           name="keywords"
-          content="ocr, text, spoofing, gps, coordinate, research, api"
-        ></meta>
+          content="ocr, text, spoofing, gps, coordinate, research, api"></meta>
         <meta name="author" content="James Worden"></meta>
         <meta property="og:url" content="//research.jamesworden.com/" />
         <meta
           name="image"
           property="og:image"
-          content="https://cdn.pixabay.com/photo/2019/05/02/04/52/gps-4172635_1280.png"
-        ></meta>
+          content="https://cdn.pixabay.com/photo/2019/05/02/04/52/gps-4172635_1280.png"></meta>
       </head>
       <body style={bodyStyle}>
         <Navbar>
           <NavLink href="/">Home</NavLink>
           <NavLink href="/docs">Docs</NavLink>
-          <NavLink href="/schedule">Schedule</NavLink>
+          <NavLink href="https://github.com/users/jamesworden/projects/5">
+            Backlog
+          </NavLink>
           <NavLink href="https://github.com/jamesworden/jamesworden-research">
             Source Code
           </NavLink>
