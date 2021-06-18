@@ -1,60 +1,60 @@
 name: Deploy master branch
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
-    workflow_dispatch:
-        inputs:
-            logLevel:
-                description: 'Log level'
-                required: true
-                default: 'warning'
-            tags:
-                description: 'Test'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test'
 
 jobs:
-    deploy:
-        name: Deploy
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [14.x]
-        steps:
-            - name: Begin deployment...
-              uses: actions/checkout@v2
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Begin deployment...
+        uses: actions/checkout@v2
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-            - name: Install dependencies
-              run: npm install
+      - name: Install dependencies
+        run: npm install
 
-            - name: Build package
-              run: npm run build --if-present
+      - name: Build package
+        run: npm run build --if-present
 
-            - name: Run tests
-              run: npm run coverage
+      - name: Run tests
+        run: npm run coverage
 
-            - name: Inject enviornment variables with GitHub secrets
-              run: |
-                  touch .env
-                  echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
-                  echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
-                  echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
-                  echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
-                  echo "NODE_ENV=production" >> .env
+      - name: Inject enviornment variables with GitHub secrets
+        run: |
+          touch .env
+          echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
+          echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
+          echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
+          echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
+          echo "NODE_ENV=production" >> .env
 
-                  touch GoogleServiceCredentials.json
-                  echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
+          touch GoogleServiceCredentials.json
+          echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
 
-            - name: Deploy with Serverless
-              uses: serverless/github-action@master
-              with:
-                  args: deploy
-              env:
-                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Deploy with Serverless
+        uses: serverless/github-action@master
+        with:
+          args: deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
