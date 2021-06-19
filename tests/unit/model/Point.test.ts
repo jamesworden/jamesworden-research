@@ -16,6 +16,7 @@ describe('Point declaration', () => {
     expect(point.panoramaId).toBeUndefined()
     point.panoramaId = 'test'
     expect(point.panoramaId).toEqual('test')
+
     expect(point.panoramaText).toBeUndefined()
     point.addPanoramaText(['test'])
     expect(point.panoramaText).toEqual(['test'])

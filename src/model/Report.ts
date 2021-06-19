@@ -19,9 +19,6 @@ export class Report {
       this.status = RouteStatus.NOT_INITALIZED
     }
 
-    this.route = route
-    this.detour = detour
-
     if (
       !this.route.options.includes(Option.PANORAMA_TEXT) ||
       !this.detour.options.includes(Option.PANORAMA_TEXT)
