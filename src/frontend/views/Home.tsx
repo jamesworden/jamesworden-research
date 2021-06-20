@@ -49,8 +49,12 @@ export default class extends React.Component<Home> {
               <li>The highest crime rates are in urban areas.</li>
             </ul>
             Check out the <A href="/docs">documentation</A> for related API's,
-            the <A href="/schedule">schedule</A> for seeing which features will
-            be added to further our understanding of this topic, or the{' '}
+            the{' '}
+            <A href="https://github.com/users/jamesworden/projects/5">
+              backlog
+            </A>{' '}
+            for seeing which features will be added to further our understanding
+            of this topic, or the{' '}
             <A href="https://github.com/jamesworden/jamesworden-research">
               source code
             </A>{' '}
