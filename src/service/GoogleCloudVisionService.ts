@@ -1,7 +1,6 @@
 import vision, {ImageAnnotatorClient} from '@google-cloud/vision'
 
 class GoogleCloudVisionService {
-  //Todo: Find correct type
   client: ImageAnnotatorClient
 
   constructor() {
