@@ -22,14 +22,10 @@ const containsUndefinedValues = (object: any, response: Response): boolean => {
   const parameters: string = values.join(values.length == 2 ? ' and ' : ', '),
     s = values.length > 1 ? 's' : ''
 
-  response
-    .status(422)
-    .send(
-      new ErrorMessage(
-        'Missing query parameters.',
-        `You must specify the ${parameters} query parameter${s}!`
-      )
-    )
+  response.status(422).send({
+    error: 'Missing query parameters.',
+    message: `You must specify the ${parameters} query parameter${s}!`
+  })
   return true
 }
 
@@ -54,7 +50,11 @@ const containsInvalidKey = (
     message = 'The specified API key is invalid.'
   }
 
-  response.status(422).send(new ErrorMessage('API Key Required', message))
+  response.status(422).send({
+    error: 'API Key Required',
+    message
+  })
+
   return true
 }
 
@@ -79,17 +79,4 @@ export {
   containsInvalidKey,
   equalsIgnoreCase,
   equalsTrue
-}
-
-/**
- * Used for returning errors in query validation only.
- */
-class ErrorMessage {
-  error: string
-  message: string
-
-  constructor(error: string, message: string) {
-    this.error = error
-    this.message = message
-  }
 }

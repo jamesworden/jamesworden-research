@@ -1,21 +1,18 @@
+import * as Validation from '../util/Validation'
+
 import {Option, Route} from '../model/Route'
 import {Request, Response} from 'express'
-import {
-  containsInvalidKey,
-  containsUndefinedValues,
-  equalsIgnoreCase
-} from '../util/Validation'
 
 import {DEFAULT_INCREMENT_DISTANCE} from '../config/Constants'
 import {Report} from '../model/Report'
+import express from 'express'
 
-const express = require('express')
 const routes = express.Router({mergeParams: true})
 
 routes.get('/', async function (req: Request, res: Response) {
   const sample: string = req.query.sample as string
 
-  if (equalsIgnoreCase(sample as string, 'true')) {
+  if (Validation.equalsIgnoreCase(sample as string, 'true')) {
     const route: Route = require('../json/sampleRoute.json'),
       detour: Route = require('../json/sampleDetour.json'),
       report: Report = new Report(route, detour)
@@ -32,20 +29,19 @@ routes.get('/', async function (req: Request, res: Response) {
       ? parseInt(req.query.increment as string)
       : DEFAULT_INCREMENT_DISTANCE
 
-  if (containsInvalidKey(key, res)) {
+  if (Validation.containsInvalidKey(key, res)) {
     return
   }
 
-  if (containsUndefinedValues({origin, destination, waypoints}, res)) {
+  if (
+    Validation.containsUndefinedValues({origin, destination, waypoints}, res)
+  ) {
     return
   }
 
-  const route: Route = await new Route(
-    origin,
-    destination,
-    increment,
-    ''
-  ).build([Option.PANORAMA_TEXT])
+  const route: Route = await new Route(origin, destination, increment).build([
+    Option.PANORAMA_TEXT
+  ])
 
   const detour: Route = await new Route(
     origin,

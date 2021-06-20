@@ -20,8 +20,8 @@ export class Report {
     }
 
     if (
-      !this.route.options.includes(Option.PANORAMA_TEXT) ||
-      !this.detour.options.includes(Option.PANORAMA_TEXT)
+      !this.route.options?.includes(Option.PANORAMA_TEXT) ||
+      !this.detour.options?.includes(Option.PANORAMA_TEXT)
     ) {
       this.status = Status.NO_TEXT_DATA
       return
