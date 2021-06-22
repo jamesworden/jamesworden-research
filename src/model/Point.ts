@@ -1,7 +1,7 @@
-import {Location} from './Location'
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 
 export class Point {
-  location: Location
+  location: LatLngLiteralVerbose
   panoramaId?: string
   panoramaText?: string[]
 

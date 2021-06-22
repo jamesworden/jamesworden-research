@@ -1,3 +1,8 @@
+/**
+ * Used by node script => env:<ENV_NAME>
+ * This sets the environment for running tests.
+ */
+
 const args: string[] | undefined = process.argv.slice(1)
 
 ;(() => {

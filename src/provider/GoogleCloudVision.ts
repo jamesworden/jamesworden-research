@@ -1,13 +1,15 @@
 import vision, {ImageAnnotatorClient} from '@google-cloud/vision'
 
-class GoogleCloudVisionService {
+import {OcrProvider} from './OcrProvider'
+
+class GoogleCloudVision implements OcrProvider {
   client: ImageAnnotatorClient
 
   constructor() {
     this.client = new vision.ImageAnnotatorClient()
   }
 
-  getTextFromImage = async (base64: string): Promise<string[]> => {
+  extractTextFromImage = async (base64: string): Promise<string[]> => {
     const request = {
       image: {
         content: Buffer.from(base64, 'base64')
@@ -34,4 +36,4 @@ class GoogleCloudVisionService {
   }
 }
 
-export const googleCloudVisionService = new GoogleCloudVisionService()
+export const googleCloudVisionProvider = new GoogleCloudVision()

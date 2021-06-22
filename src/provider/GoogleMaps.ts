@@ -1,6 +1,7 @@
 import {
   Client,
   LatLng,
+  LatLngLiteralVerbose,
   SnapToRoadsResponse,
   TravelMode
 } from '@googlemaps/google-maps-services-js'
@@ -9,14 +10,12 @@ import {
   DirectionsResponseData
 } from '@googlemaps/google-maps-services-js/dist/directions'
 
-import {Location} from '../model/Location'
-
 class GoogleMapsService {
-  private key: string
+  private apiKey: string
   private client: Client
 
   constructor() {
-    this.key = process.env.GOOGLE_MAPS_BACKEND_KEY as string
+    this.apiKey = process.env.GOOGLE_MAPS_BACKEND_KEY as string
     this.client = new Client()
   }
 
@@ -31,7 +30,7 @@ class GoogleMapsService {
           origin,
           destination,
           waypoints,
-          key: this.key,
+          key: this.apiKey,
           mode: TravelMode.driving
         }
       })
@@ -40,16 +39,18 @@ class GoogleMapsService {
       })
   }
 
-  getSnappedPoints = async (points: Location[]): Promise<Location[]> => {
+  getSnappedPoints = async (
+    points: LatLngLiteralVerbose[]
+  ): Promise<LatLngLiteralVerbose[]> => {
     return await this.client
       .snapToRoads({
         params: {
           path: points,
-          key: this.key
+          key: this.apiKey
         }
       })
       .then((response: SnapToRoadsResponse) => {
-        let locations: Location[] = []
+        let locations: LatLngLiteralVerbose[] = []
 
         response.data.snappedPoints.forEach((snappedPoint) => {
           locations.push(snappedPoint.location)

@@ -19,6 +19,11 @@ app.use('/api/report', ReportContoller)
 app.use('/api/route', RouteContoller)
 app.use('/', ViewContoller)
 
+// Make this a class
+// Create app config class
+// Assign factories to the app
+// Clean way to differentiate between app and handler
+
 const handler = (event: APIGatewayProxyEvent, context: Context) => {
   awsServerlessExpress.proxy(
     awsServerlessExpress.createServer(app),
@@ -27,4 +32,4 @@ const handler = (event: APIGatewayProxyEvent, context: Context) => {
   )
 }
 
-export {handler}
+export {handler, app}
