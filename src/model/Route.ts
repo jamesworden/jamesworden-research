@@ -1,48 +1,33 @@
-import * as DataProcessing from '../util/DataProcessing'
-
-import {
-  DirectionsRoute,
-  LatLng,
-  LatLngLiteralVerbose
-} from '@googlemaps/google-maps-services-js'
-import {
-  MAX_POINTS_PER_ROUTE,
-  MAX_WAYPOINTS_PER_ROUTE
-} from '../config/Constants'
-
-import {DirectionsResponseData} from '@googlemaps/google-maps-services-js/dist/directions'
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 import {Point} from '../model/Point'
-import {googleCloudVisionService} from '../service/GoogleCloudVisionService'
-import {googleMapsService} from '../service/GoogleMapsService'
-import {googleStreetViewService} from '../service/GoogleStreetViewService'
 
 class Route {
   origin: string
   destination: string
-  waypoints: LatLngLiteralVerbose[]
   distance: number
-  increment: number
   status: Status
   points: Point[]
   options?: Option[]
+  increment?: number
+  waypoints?: LatLngLiteralVerbose[]
 
   constructor(
     origin: string,
     destination: string,
-    increment: number,
     status: Status,
     points: Point[],
+    options: Option[],
+    increment?: number,
     waypoints?: LatLngLiteralVerbose[]
   ) {
     this.origin = origin
     this.destination = destination
-    this.increment = increment
     this.status = status
     this.points = points
 
-    if (waypoints) {
-      this.waypoints = waypoints
-    }
+    if (options) this.options = options
+    if (increment) this.increment = increment
+    if (waypoints) this.waypoints = waypoints
   }
 }
 
@@ -56,7 +41,8 @@ enum Status {
   ERROR_SNAPPING_POINTS = 'We were unable to snap your points to nearby roads!',
   TOO_MANY_WAYPOINTS = 'There were too many waypoints in your request!',
   INVALID_WAYPOINT_FORMAT = "Invalid waypoint format. Try this: 'latitude1,longitude1|latitude2,longitude2|...'",
-  INVALID_WAYPOINT_VALUES = 'Invalid waypoint values. Please use valid latitude and longitude coordinates.'
+  INVALID_WAYPOINT_VALUES = 'Invalid waypoint values. Please use valid latitude and longitude coordinates.',
+  NON_INCREMENTAL_ROUTE = 'This route does not list points incrementally.'
 }
 
 enum Option {

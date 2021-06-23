@@ -1,23 +1,25 @@
 import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js'
 import { DirectionsResponseData } from '@googlemaps/google-maps-services-js/dist/directions';
+import { DirectionsProvider } from 'src/provider/DirectionsProvider';
+import { ImageProvider } from 'src/provider/ImageProvider';
+import { OcrProvider } from 'src/provider/OcrProvider';
 import { Option } from './Route'
 
 class RouteFactory {
 
-  directionsService: DirectionsService
-  imageService: ImageService
-  ocrService: OcrService
+  directionsProvider: DirectionsProvider
+  imageProvider: ImageProvider
+  ocrProvider: OcrProvider
 
-  constructor(directionsService: DirectionsService, imageService: ImageService, ocrService: OcrService) {
-    // DirectionsService
-    //  Points from polyline
-    //  Getting snapped points
-    // Street View Imagery service
-    // OCR Service
+  constructor(directionsProvider: DirectionsProvider, imageProvider: ImageProvider, ocrProvider: OcrProvider) {
+    this.directionsProvider = directionsProvider
+    this.imageProvider = imageProvider
+    this.ocrProvider = ocrProvider
   }
 
   createRoute(origin: string, destination: string, waypointString: string, options: Option[]) {
   // Rely on directions service
+
   // Rely on location fetcher from polyline
   // Rely on getting snapped points
   // Streetview service
@@ -33,15 +35,7 @@ class RouteFactory {
     this.waypoints
   )
 
-  // Todo: add logging function for when the status is INTERNAL ERROR
-  if (data.status != 'OK') {
-    if (data.status == 'NOT_FOUND' || data.status == 'ZERO_RESULTS') {
-      this.status = Status.ROUTE_NOT_FOUND
-    } else {
-      this.status = Status.INTERNAL_ERROR
-    }
-    return this
-  } 
+  
 
   const route: DirectionsRoute = data.routes[0]
 

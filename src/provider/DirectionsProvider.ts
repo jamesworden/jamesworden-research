@@ -6,8 +6,18 @@ interface DirectionsProvider {
     origin: string,
     destination: string,
     waypoints: LatLngLiteralVerbose[]
-  ): LatLngLiteralVerbose[]
+  ): Promise<Directions>
   readonly apiKey: string
 }
 
-export {DirectionsProvider}
+type Directions = {
+  distance: number
+  coordinates: LatLngLiteralVerbose[]
+  status: string
+}
+
+enum DirectionsStatus {
+  test = 'test'
+}
+
+export {Directions, DirectionsProvider, DirectionsStatus}
