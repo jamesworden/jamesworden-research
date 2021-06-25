@@ -1,9 +1,9 @@
-import {Location} from 'src/model/Location'
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 
 //https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
 const getDistanceBetweenPoints = (
-  pointA: Location,
-  pointB: Location
+  pointA: LatLngLiteralVerbose,
+  pointB: LatLngLiteralVerbose
 ): number => {
   var p = 0.017453292519943295 // Math.PI / 180
   var c = Math.cos
@@ -19,16 +19,19 @@ const getDistanceBetweenPoints = (
 }
 
 const getIntermediatePoint = (
-  pointA: Location,
-  pointB: Location,
+  pointA: LatLngLiteralVerbose,
+  pointB: LatLngLiteralVerbose,
   distance: number
-): Location => {
+): LatLngLiteralVerbose => {
   const bearing = getBearingFromPoints(pointA, pointB)
   return getPointFromDistance(pointA, distance, bearing)
 }
 
 // https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
-const getBearingFromPoints = (pointA: Location, pointB: Location): number => {
+const getBearingFromPoints = (
+  pointA: LatLngLiteralVerbose,
+  pointB: LatLngLiteralVerbose
+): number => {
   const startLat: number = toRadians(pointA.latitude)
   const startLng: number = toRadians(pointA.longitude)
   const destLat: number = toRadians(pointB.latitude)
@@ -45,10 +48,10 @@ const getBearingFromPoints = (pointA: Location, pointB: Location): number => {
 
 // https://stackoverflow.com/a/46410871/13549
 const getPointFromDistance = function (
-  point: Location,
+  point: LatLngLiteralVerbose,
   distance: number,
   bearing: number
-): Location {
+): LatLngLiteralVerbose {
   distance /= 1000 // Convert distance from M to KM
   bearing = (bearing * Math.PI) / 180 // Convert bearing to radian
   let radius = 6378.1, // Radius of the Earth

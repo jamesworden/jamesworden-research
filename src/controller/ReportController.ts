@@ -1,10 +1,11 @@
 import * as Validation from '../util/Validation'
 
-import {Option, Route} from '../model/Route'
 import {Request, Response} from 'express'
+import {Route, RouteOption} from '../model/Route'
 
 import {DEFAULT_INCREMENT_DISTANCE} from '../config/Constants'
 import {Report} from '../model/Report'
+import {app} from '../index'
 import express from 'express'
 
 const routes = express.Router({mergeParams: true})
@@ -39,9 +40,7 @@ routes.get('/', async function (req: Request, res: Response) {
     return
   }
 
-  const route: Route = await new Route(origin, destination, increment).build([
-    Option.PANORAMA_TEXT
-  ])
+  const route: Route = await app.routeFactory
 
   const detour: Route = await new Route(
     origin,

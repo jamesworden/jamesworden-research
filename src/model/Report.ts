@@ -1,9 +1,9 @@
-import {Option, Route, Status as RouteStatus} from './Route'
+import {Route, RouteOption} from './Route'
 
 import {Point} from './Point'
 
 export class Report {
-  status: RouteStatus | Status // If any of the routes have an error, the report status will assume that error.
+  status: ReportStatus
   convergencePoint: Point
   divergencePoint: Point
   matchingText: [string[], Point]
@@ -11,19 +11,8 @@ export class Report {
   detour: Route
 
   constructor(route: Route, detour: Route) {
-    if (route.status != RouteStatus.OK) {
-      this.status = route.status
-    } else if (detour.status != RouteStatus.OK) {
-      this.status = detour.status
-    } else {
-      this.status = RouteStatus.NOT_INITALIZED
-    }
-
-    if (
-      !this.route.options?.includes(Option.PANORAMA_TEXT) ||
-      !this.detour.options?.includes(Option.PANORAMA_TEXT)
-    ) {
-      this.status = Status.NO_TEXT_DATA
+    if (!route.containsPanoramaText() || !detour.containsPanoramaText()) {
+      this.status = ReportStatus.NO_TEXT_DATA
       return
     }
 
@@ -31,7 +20,7 @@ export class Report {
   }
 }
 
-export enum Status {
+export enum ReportStatus {
   NO_TEXT_DATA = 'No text was detected within the route and detour data.',
   DIFFERENT_ROUTES = 'The route and detor have differences in their locations based on the text data.'
 }

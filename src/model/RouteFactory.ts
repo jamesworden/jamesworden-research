@@ -1,177 +1,144 @@
-import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js'
-import { DirectionsResponseData } from '@googlemaps/google-maps-services-js/dist/directions';
-import { DirectionsProvider } from 'src/provider/DirectionsProvider';
-import { ImageProvider } from 'src/provider/ImageProvider';
-import { OcrProvider } from 'src/provider/OcrProvider';
-import { Option } from './Route'
+import {
+  DirectionsProvider,
+  DirectionsResponse,
+  DirectionsStatus
+} from 'src/provider/DirectionsProvider'
+import {
+  ExtractedTextResponse,
+  ExtractedTextStatus,
+  OcrProvider
+} from 'src/provider/OcrProvider'
+import {
+  PanoramaImageIdResponse,
+  PanoramaImageIdStatus,
+  PanoramaImageProvider,
+  PanoramaImageResponse,
+  PanoramaImageStatus
+} from 'src/provider/PanoramaImageProvider'
+import {Route, RouteOption} from './Route'
+
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
+import {Point} from './Point'
+
+type RouteFactoryResponse = {
+  data?: {
+    route: Route
+  }
+  status: RouteFactoryStatus
+}
+
+enum RouteFactoryStatus {
+  OK = 'Successfully created route!',
+  INTERNAL_ERROR = 'There was an error creating the route!'
+}
 
 class RouteFactory {
-
   directionsProvider: DirectionsProvider
-  imageProvider: ImageProvider
+  panoramaImageProvider: PanoramaImageProvider
   ocrProvider: OcrProvider
 
-  constructor(directionsProvider: DirectionsProvider, imageProvider: ImageProvider, ocrProvider: OcrProvider) {
+  constructor(
+    directionsProvider: DirectionsProvider,
+    imageProvider: PanoramaImageProvider,
+    ocrProvider: OcrProvider
+  ) {
     this.directionsProvider = directionsProvider
-    this.imageProvider = imageProvider
+    this.panoramaImageProvider = imageProvider
     this.ocrProvider = ocrProvider
   }
 
-  createRoute(origin: string, destination: string, waypointString: string, options: Option[]) {
-  // Rely on directions service
-
-  // Rely on location fetcher from polyline
-  // Rely on getting snapped points
-  // Streetview service
-  // Cloudvision service
-
-  const waypoints: LatLngLiteralVerbose[] = createWaypoints(waypointString);
-
-  const directions: Directions = this.directionsService.getDirections(origin, destination, waypoints)
-
-  const data: DirectionsResponseData = await googleMapsService.getDirections(
-    origin,
-    destination,
-    this.waypoints
-  )
-
-  
-
-  const route: DirectionsRoute = data.routes[0]
-
-  this.distance = DataProcessing.getDistance(route)
-
-  const numPoints: number = this.distance / this.increment
-
-  if (numPoints > MAX_POINTS_PER_ROUTE) {
-    this.status = Status.EXCEEDED_MAXIMUM_DISTANCE
-    return this
-  }
-
-  const points: Location[] = DataProcessing.getLocations(
-    data.routes[0].overview_polyline.points,
-    this.increment
-  )
-
-  if (points.length <= 0) {
-    this.status = Status.ERROR_FETCHING_DIRECTIONS
-    return this
-  }
-
-  // Todo: add logging function for when there is an error
-  const snappedPoints: Location[] = await googleMapsService
-    .getSnappedPoints(points)
-    .catch(() => {
-      this.status = Status.ERROR_SNAPPING_POINTS
-      return []
-    })
-
-  this.status = Status.OK
-
-  if (options.length <= 0) {
-    return this
-  }
-
-  this.options = options
-  const optionPromises: Promise<any>[] = []
-
-  // Create new points for each location
-  snappedPoints.forEach((point) => {
-    this.points.push(new Point(point.latitude, point.longitude))
-  })
-
-  this.points.forEach((point) => {
-    const location = point.location
-
-    if (options.includes(Option.PANORAMA_ID)) {
-      optionPromises.push(
-        googleStreetViewService
-          .getPanoramaId(location.latitude, location.longitude)
-          .then((pano_id: string) => {
-            point.panoramaId = pano_id
-          })
-          .catch((err) => {
-            // Todo: logging functionality
-            console.log(`Error fetching panorama id  \n ${err}`)
-            return
-          })
+  async createRoute(
+    origin: string,
+    destination: string,
+    increment: number,
+    waypoints: LatLngLiteralVerbose[],
+    options: RouteOption[]
+  ): Promise<RouteFactoryResponse> {
+    const directionsResponse: DirectionsResponse =
+      await this.directionsProvider.getDirections(
+        origin,
+        destination,
+        waypoints,
+        increment
       )
+
+    if (
+      directionsResponse.status != DirectionsStatus.OK ||
+      !directionsResponse.data
+    ) {
+      return {status: RouteFactoryStatus.INTERNAL_ERROR}
     }
 
-    if (options.includes(Option.PANORAMA_TEXT)) {
-      // Gather text from three different images to simulate a panorama image
-      for (let heading = 0; heading < 360; heading += 120) {
+    const coordinates = directionsResponse.data.coordinates
+
+    let points: Point[] = []
+    const optionPromises: Promise<any>[] = []
+
+    coordinates.forEach((coordinatePair: LatLngLiteralVerbose) => {
+      const lat = coordinatePair.latitude
+      const lng = coordinatePair.longitude
+
+      const point: Point = new Point(lat, lng)
+
+      if (options.includes(RouteOption.PANORAMA_ID)) {
         optionPromises.push(
-          googleStreetViewService
-            .getPanoramaImage(location.latitude, location.longitude, heading)
-            .then((base64: string) => {
-              return googleCloudVisionService.getTextFromImage(base64)
-            })
-            .then((textArray) => {
-              point.addPanoramaText(textArray)
-            })
-            .catch((err) => {
-              // Todo: logging functionality
-              console.log(`Error fetching panorama text  \n ${err}`)
-              return
+          this.panoramaImageProvider
+            .getPanoramaImageId(lat, lng)
+            .then((res: PanoramaImageIdResponse) => {
+              // Todo: better error handling
+              if (res.status != PanoramaImageIdStatus.OK || !res.data) {
+                return
+              }
+
+              point.panoramaId = res.data.panoramaId
             })
         )
       }
-  })
-  await Promise.all(optionPromises)
-  return this
-}
 
-}
+      if (options.includes(RouteOption.PANORAMA_TEXT)) {
+        // Gather text from three different images to simulate a panorama image
+        for (let heading = 0; heading < 360; heading += 120) {
+          optionPromises.push(
+            this.panoramaImageProvider
+              .getPanoramaImage(lat, lng, heading)
+              .then((res: PanoramaImageResponse) => {
+                // Todo: better error handling
+                if (res.status != PanoramaImageStatus.OK || !res.data) {
+                  return
+                }
 
-private createWaypoints = (input: string): boolean => {
-  this.waypoints = [] // Default value
+                return this.ocrProvider.extractTextFromImage(res.data.base64)
+              })
+              .then((res: ExtractedTextResponse | undefined) => {
+                // Todo: better error handling
+                if (!res || res.status != ExtractedTextStatus.OK || !res.data) {
+                  return
+                }
 
-  // Falsey value or whitespace only
-  if (!input || input.trim() === '') {
-    return true
-  }
+                point.addPanoramaText(res.data.text)
+              })
+          )
+        }
+      }
 
-  const locationStrings: string[] = input!.split('|')
-
-  if (locationStrings.length > MAX_WAYPOINTS_PER_ROUTE) {
-    this.status = Status.TOO_MANY_WAYPOINTS
-    return false
-  }
-
-  let locations: LatLngLiteralVerbose[] = []
-
-  locationStrings.forEach((locationString: string) => {
-    let latLng: string[] = locationString.split(',')
-
-    if (latLng.length != 2) {
-      this.status = Status.INVALID_WAYPOINT_FORMAT
-      return false
-    }
-
-    const latitude: number = parseInt(latLng[0])
-    const longitude: number = parseInt(latLng[1])
-
-    if (
-      isNaN(latitude) ||
-      isNaN(longitude) ||
-      latitude < -90 ||
-      latitude > 90 ||
-      longitude < -180 ||
-      longitude > 180
-    ) {
-      this.status = Status.INVALID_WAYPOINT_VALUES
-      return false
-    }
-
-    locations.push({
-      latitude,
-      longitude
+      points.push(point)
     })
-  })
 
-  return true
-}
+    if (points.length == 0 || points.length != coordinates.length) {
+      return {status: RouteFactoryStatus.INTERNAL_ERROR}
+    }
+
+    const route = new Route(origin, destination, points, increment)
+    route.addWaypoints(waypoints)
+    route.addOptions(options)
+
+    return {
+      data: {
+        route
+      },
+      status: RouteFactoryStatus.OK
+    }
+  }
 }
 
-export const routeFactory = new RouteFactory()
+export {RouteFactory, RouteFactoryResponse, RouteFactoryStatus}

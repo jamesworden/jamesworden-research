@@ -3,32 +3,36 @@ import * as Calculations from '../util/Calculations'
 import {
   Client,
   DirectionsRoute,
-  LatLng,
   LatLngLiteralVerbose,
   SnapToRoadsResponse,
   TravelMode
 } from '@googlemaps/google-maps-services-js'
+import {
+  DirectionsProvider,
+  DirectionsResponse,
+  DirectionsStatus
+} from './DirectionsProvider'
 
-import {Directions} from './DirectionsProvider'
-import {DirectionsResponse} from '@googlemaps/google-maps-services-js/dist/directions'
+import {DirectionsResponse as GoogleDirectionsResponse} from '@googlemaps/google-maps-services-js/dist/directions'
+import {MAX_POINTS_PER_ROUTE} from 'src/config/Constants'
 import {decode} from 'polyline'
 
-class GoogleMapsService {
-  private apiKey: string
-  private client: Client
-
-  constructor() {
-    this.apiKey = process.env.GOOGLE_MAPS_BACKEND_KEY as string
-    this.client = new Client()
-  }
+/**
+ * Todo: split this class into the directions provider and incremental point creator from directions
+ * Ideally, many different API's can return directions that we can get incremental coordiante arrays from
+ * This method for getting incremental points is too connected to Google Maps API
+ */
+class GoogleMaps implements DirectionsProvider {
+  readonly apiKey: string = process.env.GOOGLE_MAPS_BACKEND_KEY as string
+  private client: Client = new Client()
 
   async getDirections(
     origin: string,
     destination: string,
-    waypoints: LatLng[],
+    waypoints: LatLngLiteralVerbose[],
     increment: number
-  ): Promise<Directions> {
-    const response: DirectionsResponse = await this.client.directions({
+  ): Promise<DirectionsResponse> {
+    const response: GoogleDirectionsResponse = await this.client.directions({
       params: {
         origin,
         destination,
@@ -37,28 +41,45 @@ class GoogleMapsService {
         mode: TravelMode.driving
       }
     })
+    const responseStatus: string = response.data.status
+
+    if (responseStatus != 'OK') {
+      if (responseStatus == 'NOT_FOUND' || responseStatus == 'ZERO_RESULTS') {
+        return {status: DirectionsStatus.NOT_FOUND}
+      }
+
+      // Todo: add logging function for when the status is INTERNAL ERROR
+      return {status: DirectionsStatus.INTERNAL_ERROR}
+    }
 
     const route: DirectionsRoute = response.data.routes[0]
-    const encodedPolyline = route.overview_polyline.points
+    const encodedPolyline: string = route.overview_polyline.points
 
     const distance = this.getDistance(route)
-    const coordinates = this.getCoordinates(encodedPolyline, increment)
-    const status = this.getStatus(response.data.status)
+
+    if (distance / increment > MAX_POINTS_PER_ROUTE) {
+      return {status: DirectionsStatus.TOO_MANY_POINTS}
+    }
+
+    const rawCoordinates = this.getCoordinates(encodedPolyline, increment)
+    const coordinates = await this.getSnappedCoordinates(rawCoordinates)
 
     return {
-      distance,
-      coordinates,
-      status
+      data: {
+        distance,
+        coordinates
+      },
+      status: DirectionsStatus.OK
     }
   }
 
-  async getSnappedPoints(
-    points: LatLngLiteralVerbose[]
+  private async getSnappedCoordinates(
+    coordinates: LatLngLiteralVerbose[]
   ): Promise<LatLngLiteralVerbose[]> {
     return await this.client
       .snapToRoads({
         params: {
-          path: points,
+          path: coordinates,
           key: this.apiKey
         }
       })
@@ -132,8 +153,6 @@ class GoogleMapsService {
     }
     return validPoints
   }
-
-  private getStatus(status: string): string {}
 }
 
-export const googleMapsService = new GoogleMapsService()
+export const googleMaps = new GoogleMaps()

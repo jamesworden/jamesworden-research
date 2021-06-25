@@ -1,32 +1,46 @@
 import {APIGatewayProxyEvent, Context} from 'aws-lambda'
+import express, {Express} from 'express'
 
 import ImageController from './controller/ImageController'
 import ReportContoller from './controller/ReportController'
 import RouteContoller from './controller/RouteController'
+import {RouteFactory} from './model/RouteFactory'
 import ViewContoller from './controller/ViewController'
 import awsServerlessExpress from 'aws-serverless-express'
-import express from 'express'
+import {googleCloudVision} from './provider/GoogleCloudVision'
+import {googleMaps} from './provider/GoogleMaps'
+import {googleStreetView} from './provider/GoogleStreetView'
 import path from 'path'
 
-const app = express()
+class App {
+  routeFactory: RouteFactory
+  expressApp: Express
 
-app.set('views', path.join(__dirname, '/frontend/views'))
-app.set('view engine', 'js')
-app.engine('js', require('express-react-views').createEngine())
+  constructor() {
+    this.expressApp = express()
 
-app.use('/api/image', ImageController)
-app.use('/api/report', ReportContoller)
-app.use('/api/route', RouteContoller)
-app.use('/', ViewContoller)
+    this.expressApp.set('views', path.join(__dirname, '/frontend/views'))
+    this.expressApp.set('view engine', 'js')
+    this.expressApp.engine('js', require('express-react-views').createEngine())
 
-// Make this a class
-// Create app config class
-// Assign factories to the app
-// Clean way to differentiate between app and handler
+    this.expressApp.use('/api/image', ImageController)
+    this.expressApp.use('/api/report', ReportContoller)
+    this.expressApp.use('/api/route', RouteContoller)
+    this.expressApp.use('/', ViewContoller)
 
-const handler = (event: APIGatewayProxyEvent, context: Context) => {
+    this.routeFactory = new RouteFactory(
+      googleMaps,
+      googleStreetView,
+      googleCloudVision
+    )
+  }
+}
+
+const app = new App()
+
+function handler(event: APIGatewayProxyEvent, context: Context) {
   awsServerlessExpress.proxy(
-    awsServerlessExpress.createServer(app),
+    awsServerlessExpress.createServer(app.expressApp),
     event,
     context
   )
