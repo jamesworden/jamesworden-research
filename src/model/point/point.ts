@@ -20,4 +20,4 @@ export class Point {
   }
 }
 
-// Todo: make point into a type
+// TODO: make point into a type

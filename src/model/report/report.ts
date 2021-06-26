@@ -15,7 +15,7 @@ export class Report {
       return
     }
 
-    // Todo: Generate report on route and detour data.
+    // TODO: Generate report on route and detour data.
   }
 }
 

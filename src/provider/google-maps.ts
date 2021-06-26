@@ -14,7 +14,7 @@ import {calculations} from '../util/calculations'
 import {decode} from 'polyline'
 
 /**
- * Todo: split this class into the directions provider and incremental point creator from directions
+ * TODO: split this class into the directions provider and incremental point creator from directions
  *
  * Ideally, many different API's can return directions that we can get incremental coordiante arrays from
  * This method for getting incremental points is too connected to Google Maps API
@@ -49,7 +49,7 @@ class GoogleMaps implements DirectionsProvider {
         }
       }
 
-      // Todo: add logging function for when the status is INTERNAL ERROR
+      // TODO: add logging function for when the status is INTERNAL ERROR
       return {
         error: 'Error fetching data from Google.',
         status: Status.INTERNAL_ERROR

@@ -49,7 +49,7 @@ routes.get('/', async function (req: Request, res: ExpressResponse) {
     parser.parseWaypointString(waypointString)
 
   /**
-   * Todo: Send the actual reason there was an error
+   * TODO: Send the actual reason there was an error
    */
   if (wRes.status != Status.OK || !wRes.data) {
     res.status(200).send({

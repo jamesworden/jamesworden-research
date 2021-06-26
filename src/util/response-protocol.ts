@@ -15,7 +15,7 @@ type Data<Type> = {
 }
 
 /**
- * Todo: Change name so it doesn't conflict with Express
+ * TODO: Change name so it doesn't conflict with Express
  */
 type Response<Type> = ErrorMessage<Type> | Data<Type>
 

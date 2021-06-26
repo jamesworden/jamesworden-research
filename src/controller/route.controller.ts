@@ -40,7 +40,7 @@ routes.get('/', async function (req: Request, res: ExpressResponse) {
     parser.parseWaypointString(waypointString)
 
   /**
-   * Todo: Send the actual reason there was an error
+   * TODO: Send the actual reason there was an error
    */
   if (wRes.status != Status.OK || !wRes.data) {
     res.status(200).send({
@@ -60,9 +60,9 @@ routes.get('/', async function (req: Request, res: ExpressResponse) {
   )
 
   /**
-   * Todo: send more informative response
+   * TODO: send more informative response
    *
-   * Todo: break controller up from service - this class should send some
+   * TODO: break controller up from service - this class should send some
    * sort of response type to the actual mechanism that SENDS the HTTP response
    * back to the user
    */
@@ -74,7 +74,7 @@ routes.get('/', async function (req: Request, res: ExpressResponse) {
   }
 
   /**
-   * Todo: make the status code dynamic according to a new Status class.
+   * TODO: make the status code dynamic according to a new Status class.
    *
    * This class should have 3 properties:
    *   string: enumerated identifier, ex: 'INTERNAL_ERROR'

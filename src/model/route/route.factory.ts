@@ -103,7 +103,7 @@ class RouteFactory {
                 return this.ocrProvider.extractTextFromImage(res.data.base64)
               })
               .then((res: Response<ExtractedText>) => {
-                // Todo: better error handling
+                // TODO: better error handling
                 if (res.status != Status.OK || !res.data) {
                   return {
                     error: 'Unable to extract text from image.',
