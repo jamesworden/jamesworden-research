@@ -1,7 +1,7 @@
 import {Request, Response} from 'express'
 
 import express from 'express'
-import {validation} from '../util/Validation'
+import {validation} from '../util/validation'
 
 const routes = express.Router({mergeParams: true})
 

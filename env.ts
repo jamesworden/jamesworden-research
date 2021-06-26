@@ -23,11 +23,7 @@ const args: string[] | undefined = process.argv.slice(1)
   const fileConfigs: fileConfig[] = [
     {
       name: 'cypress.env.json',
-      dir: './tests/e2e/'
-    },
-    {
-      name: 'env.json',
-      dir: './tests/unit/'
+      dir: './test/ui/'
     }
   ]
 

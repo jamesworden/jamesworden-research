@@ -19,3 +19,5 @@ export class Point {
     this.panoramaText = this.panoramaText.concat(panoramaText)
   }
 }
+
+// Todo: make point into a type

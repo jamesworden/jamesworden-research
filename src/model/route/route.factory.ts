@@ -1,15 +1,18 @@
-import {Directions, DirectionsProvider} from 'src/provider/DirectionsProvider'
-import {ExtractedText, OcrProvider} from 'src/provider/OcrProvider'
+import {
+  Directions,
+  DirectionsProvider
+} from '../../provider/directions.provider'
+import {ExtractedText, OcrProvider} from '../../provider/ocr.provider'
 import {
   PanoramaImage,
   PanoramaImageId,
   PanoramaImageProvider
-} from 'src/provider/PanoramaImageProvider'
-import {Response, Status} from '../util/Status'
-import {Route, RouteOption} from './Route'
+} from 'src/provider/panorama-image.provider'
+import {Response, Status} from '../../util/response-protocol'
+import {Route, RouteOption} from './route'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Point} from './Point'
+import {Point} from '../point/point'
 
 type RouteFactoryResponse = {
   data?: {

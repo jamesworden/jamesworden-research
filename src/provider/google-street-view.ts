@@ -2,8 +2,8 @@ import {
   PanoramaImage,
   PanoramaImageId,
   PanoramaImageProvider
-} from './PanoramaImageProvider'
-import {Response, Status} from 'src/util/Status'
+} from './panorama-image.provider'
+import {Response, Status} from 'src/util/response-protocol'
 
 import axios from 'axios'
 

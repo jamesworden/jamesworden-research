@@ -1,5 +1,5 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Response} from 'src/model/Status'
+import {Response} from 'src/util/response-protocol'
 
 /**
  * Todo: As stated in the Google Maps class, we should break this up into

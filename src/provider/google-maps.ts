@@ -5,12 +5,12 @@ import {
   SnapToRoadsResponse,
   TravelMode
 } from '@googlemaps/google-maps-services-js'
-import {Directions, DirectionsProvider} from './DirectionsProvider'
-import {Response, Status} from '../util/Status'
+import {Directions, DirectionsProvider} from './directions.provider'
+import {Response, Status} from '../util/response-protocol'
 
 import {DirectionsResponse} from '@googlemaps/google-maps-services-js/dist/directions'
-import {MAX_POINTS_PER_ROUTE} from 'src/config/Constants'
-import {calculations} from '../util/Calculations'
+import {MAX_POINTS_PER_ROUTE} from 'src/config/constants'
+import {calculations} from '../util/calculations'
 import {decode} from 'polyline'
 
 /**

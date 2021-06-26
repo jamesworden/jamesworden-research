@@ -11,7 +11,7 @@ useDotenv: true
 
 functions:
   api:
-    handler: .build/index.handler
+    handler: .build/handler.handler
     package:
       include:
         - 'build/**/*'

@@ -1,13 +1,13 @@
-import {Response, Status} from 'src/util/Status'
-import {WaypointData, parser} from 'src/util/Parser'
+import {Response, Status} from 'src/util/response-protocol'
+import {WaypointData, parser} from 'src/util/parser'
 import express, {Response as ExpressResponse, Request} from 'express'
 
-import {DEFAULT_INCREMENT_DISTANCE} from '../config/Constants'
+import {DEFAULT_INCREMENT_DISTANCE} from '../config/constants'
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {RouteData} from 'src/model/RouteFactory'
-import {RouteOption} from '../model/Route'
-import {app} from 'src'
-import {validation} from '../util/Validation'
+import {RouteData} from 'src/model/route/route.factory'
+import {RouteOption} from '../model/route/route'
+import {app} from 'src/app'
+import {validation} from '../util/validation'
 
 const routes = express.Router({mergeParams: true})
 

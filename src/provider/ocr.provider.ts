@@ -1,4 +1,4 @@
-import {Response} from 'src/util/Status'
+import {Response} from 'src/util/response-protocol'
 
 interface OcrProvider {
   extractTextFromImage(base64: string): Promise<Response<ExtractedText>>

@@ -1,7 +1,7 @@
-import {Response, Status} from './Status'
+import {Response, Status} from './response-protocol'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {MAX_WAYPOINTS_PER_ROUTE} from 'src/config/Constants'
+import {MAX_WAYPOINTS_PER_ROUTE} from '../config/constants'
 
 type WaypointData = {
   waypoints: LatLngLiteralVerbose[]

@@ -1,5 +1,5 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Point} from '../model/Point'
+import {Point} from '../point/point'
 
 class Route {
   origin: string
@@ -14,12 +14,14 @@ class Route {
     origin: string,
     destination: string,
     points: Point[],
-    increment: number
+    increment: number,
+    distance: number
   ) {
     this.origin = origin
     this.destination = destination
     this.points = points
     this.increment = increment
+    this.distance = distance
   }
 
   addOptions(options: RouteOption[]) {

@@ -1,5 +1,5 @@
-import {Point} from './Point'
-import {Route} from './Route'
+import {Point} from '../point/point'
+import {Route} from '../route/route'
 
 export class Report {
   status: ReportStatus
