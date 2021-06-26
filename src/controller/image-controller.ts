@@ -6,8 +6,8 @@ import {validation} from '../util/validation'
 const routes = express.Router({mergeParams: true})
 
 routes.get('/', async function (req: Request, res: Response) {
-  const key: string = req.query.key as string,
-    location: string = req.query.origin as string
+  const key: string = req.query.key as string
+  const location: string = req.query.origin as string
 
   if (validation.containsInvalidKey(key, res)) return
   if (validation.containsUndefinedValues({location}, res)) return

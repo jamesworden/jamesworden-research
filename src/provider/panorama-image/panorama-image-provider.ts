@@ -1,4 +1,4 @@
-import {Response} from '../util/response-protocol'
+import {Response} from '../../util/response-utils'
 
 interface PanoramaImageProvider {
   getPanoramaImage(

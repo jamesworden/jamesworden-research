@@ -1,5 +1,5 @@
-import {ExtractedText, OcrProvider} from './ocr.provider'
-import {Response, Status} from 'src/util/response-protocol'
+import {ExtractedText, OcrProvider} from './ocr-provider'
+import {Response, Status} from 'src/util/response-utils'
 import vision, {ImageAnnotatorClient} from '@google-cloud/vision'
 
 class GoogleCloudVision implements OcrProvider {

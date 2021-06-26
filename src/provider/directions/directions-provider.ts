@@ -1,12 +1,10 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Response} from 'src/util/response-protocol'
+import {Response} from 'src/util/response-utils'
 
-/**
- * TODO: As stated in the Google Maps class, we should break this up into
- * an incremental waypoint provider from directions.
- */
 interface DirectionsProvider {
-  // Get directions from an origin address, destination address, and detour waypoints
+  /**
+   * Get directions from an origin address, destination address, and detour waypoints
+   */
   getDirections(
     origin: string,
     destination: string,

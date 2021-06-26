@@ -1,10 +1,10 @@
-import {Response, Status} from 'src/util/response-protocol'
+import {Response, Status} from 'src/util/response-utils'
 import {WaypointData, parser} from 'src/util/parser'
 import express, {Response as ExpressResponse, Request} from 'express'
 
 import {DEFAULT_INCREMENT_DISTANCE} from '../config/constants'
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {RouteData} from 'src/model/route/route.factory'
+import {RouteData} from 'src/model/route/route-factory'
 import {RouteOption} from '../model/route/route'
 import {app} from 'src/app'
 import {validation} from '../util/validation'
@@ -19,15 +19,17 @@ routes.get('/', async function (req: Request, res: ExpressResponse) {
     return
   }
 
-  const key: string = req.query.key as string,
-    origin: string = req.query.origin as string,
-    destination: string = req.query.destination as string,
-    panoramaId: boolean = validation.equalsTrue(req.query.panoid as string),
-    panoramaText: boolean = validation.equalsTrue(req.query.panotext as string),
-    waypointString: string = req.query.waypoints as string,
-    increment: number = req.query.increment
-      ? parseInt(req.query.increment as string)
-      : DEFAULT_INCREMENT_DISTANCE
+  const key: string = req.query.key as string
+  const origin: string = req.query.origin as string
+  const destination: string = req.query.destination as string
+  const panoramaId: boolean = validation.equalsTrue(req.query.panoid as string)
+  const panoramaText: boolean = validation.equalsTrue(
+    req.query.panotext as string
+  )
+  const waypointString: string = req.query.waypoints as string
+  const increment: number = req.query.increment
+    ? parseInt(req.query.increment as string)
+    : DEFAULT_INCREMENT_DISTANCE
 
   if (validation.containsInvalidKey(key, res)) return
   if (validation.containsUndefinedValues({origin, destination}, res)) return

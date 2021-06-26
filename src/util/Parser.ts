@@ -1,4 +1,4 @@
-import {Response, Status} from './response-protocol'
+import {Response, Status} from './response-utils'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 import {MAX_WAYPOINTS_PER_ROUTE} from '../config/constants'

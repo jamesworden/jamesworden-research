@@ -1,24 +1,21 @@
 import {
   Directions,
   DirectionsProvider
-} from '../../provider/directions.provider'
-import {ExtractedText, OcrProvider} from '../../provider/ocr.provider'
+} from '../../provider/directions/directions-provider'
+import {ExtractedText, OcrProvider} from '../../provider/ocr/ocr-provider'
 import {
   PanoramaImage,
   PanoramaImageId,
   PanoramaImageProvider
-} from 'src/provider/panorama-image.provider'
-import {Response, Status} from '../../util/response-protocol'
+} from 'src/provider/panorama-image/panorama-image-provider'
+import {Response, Status} from '../../util/response-utils'
 import {Route, RouteOption} from './route'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 import {Point} from '../point/point'
 
-type RouteFactoryResponse = {
-  data?: {
-    route: Route
-  }
-  status: Status
+type RouteData = {
+  route: Route
 }
 
 class RouteFactory {
@@ -127,7 +124,9 @@ class RouteFactory {
       }
     }
 
-    const route = new Route(origin, destination, points, increment)
+    const distance = res.data.distance
+
+    const route = new Route(origin, destination, points, increment, distance)
     route.addWaypoints(waypoints)
     route.addOptions(options)
 
@@ -140,14 +139,4 @@ class RouteFactory {
   }
 }
 
-/**
- * Wrapping route within an object so we can always access
- * data via 'response.data.route'.
- *
- * Otherwise, we would access it like 'response.data.RouteProperties'
- */
-type RouteData = {
-  route: Route
-}
-
-export {RouteFactory, RouteFactoryResponse, RouteData}
+export {RouteFactory, RouteData}

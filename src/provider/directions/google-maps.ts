@@ -5,12 +5,12 @@ import {
   SnapToRoadsResponse,
   TravelMode
 } from '@googlemaps/google-maps-services-js'
-import {Directions, DirectionsProvider} from './directions.provider'
-import {Response, Status} from '../util/response-protocol'
+import {Directions, DirectionsProvider} from './directions-provider'
+import {Response, Status} from '../../util/response-utils'
 
 import {DirectionsResponse} from '@googlemaps/google-maps-services-js/dist/directions'
 import {MAX_POINTS_PER_ROUTE} from 'src/config/constants'
-import {calculations} from '../util/calculations'
+import {coordinateUtils} from 'src/util/coordinate-utils'
 import {decode} from 'polyline'
 
 /**
@@ -69,13 +69,20 @@ class GoogleMaps implements DirectionsProvider {
       }
     }
 
-    const rawCoordinates = this.getCoordinates(encodedPolyline, increment)
-    const coordinates = await this.getSnappedCoordinates(rawCoordinates)
+    const decodedCoodrinates: number[][] = decode(encodedPolyline)
+
+    const incrementalCoordinates = coordinateUtils.getIncrementalCoordinates(
+      decodedCoodrinates,
+      increment
+    )
+    const snappedIncrementalCoordinates = await this.getSnappedCoordinates(
+      incrementalCoordinates
+    )
 
     return {
       data: {
         distance,
-        coordinates
+        coordinates: snappedIncrementalCoordinates
       },
       status: Status.OK
     }
@@ -112,54 +119,6 @@ class GoogleMaps implements DirectionsProvider {
     })
 
     return distance
-  }
-
-  private getCoordinates(
-    encodedPolyline: string,
-    increment: number
-  ): LatLngLiteralVerbose[] {
-    let decodedPoints: any[] = decode(encodedPolyline),
-      validPoints: LatLngLiteralVerbose[] = [],
-      distanceUntilNextPoint: number = 0, // Starts at 0 because 1st point should be added immediately
-      i: number = 0,
-      currentPoint: LatLngLiteralVerbose = {
-        latitude: decodedPoints[0][0],
-        longitude: decodedPoints[0][1]
-      }
-
-    while (i < decodedPoints.length) {
-      const decodedNextPoint = decodedPoints[i + 1]
-
-      if (decodedNextPoint == undefined) {
-        break
-      }
-
-      const nextPoint: LatLngLiteralVerbose = {
-        latitude: decodedNextPoint[0],
-        longitude: decodedNextPoint[1]
-      }
-
-      const distanceBetweenPoints: number =
-        calculations.getDistanceBetweenPoints(currentPoint, nextPoint)
-
-      if (distanceBetweenPoints < distanceUntilNextPoint) {
-        distanceUntilNextPoint -= distanceBetweenPoints
-        currentPoint = nextPoint
-        i++
-      } else {
-        const newPoint: LatLngLiteralVerbose =
-          calculations.getIntermediatePoint(
-            currentPoint,
-            nextPoint,
-            distanceUntilNextPoint
-          )
-
-        validPoints.push(newPoint)
-        currentPoint = newPoint // Set current position to newly added point
-        distanceUntilNextPoint = increment // Point added, reset distance
-      }
-    }
-    return validPoints
   }
 }
 

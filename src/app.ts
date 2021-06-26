@@ -1,13 +1,13 @@
 import express, {Express} from 'express'
 
-import ImageController from './controller/image.controller'
-import ReportContoller from './controller/report.controller'
-import RouteContoller from './controller/route.controller'
-import {RouteFactory} from './model/route/route.factory'
-import ViewContoller from './controller/view.controller'
-import {googleCloudVision} from './provider/google-cloud-vision'
-import {googleMaps} from './provider/google-maps'
-import {googleStreetView} from './provider/google-street-view'
+import ImageController from './controller/image-controller'
+import ReportContoller from './controller/report-controller'
+import RouteContoller from './controller/route-controller'
+import {RouteFactory} from './model/route/route-factory'
+import ViewContoller from './controller/view-controller'
+import {googleCloudVision} from './provider/ocr/google-cloud-vision'
+import {googleMaps} from './provider/directions/google-maps'
+import {googleStreetView} from './provider/panorama-image/google-street-view'
 import path from 'path'
 
 class App {
@@ -28,6 +28,12 @@ class App {
 
     this.server = server
 
+    /**
+     * Any providers can be injected into this applications route factory.
+     * Get directions, street view imagery, and optical character recognition
+     * services from using any API - so long as it extends the appropriate
+     * provider interface.
+     */
     this.routeFactory = new RouteFactory(
       googleMaps,
       googleStreetView,
