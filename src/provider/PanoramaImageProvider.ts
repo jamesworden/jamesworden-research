@@ -1,46 +1,24 @@
+import {Response} from 'src/util/Status'
+
 interface PanoramaImageProvider {
   getPanoramaImage(
     latitude: number,
     longitude: number,
     heading: number
-  ): Promise<PanoramaImageResponse>
+  ): Promise<Response<PanoramaImage>>
 
   getPanoramaImageId(
     latitude: number,
     longitude: number
-  ): Promise<PanoramaImageIdResponse>
+  ): Promise<Response<PanoramaImageId>>
 }
 
-type PanoramaImageResponse = {
-  data?: {
-    base64: string
-  }
-  status: PanoramaImageStatus
-  message?: string
+type PanoramaImage = {
+  base64: string
 }
 
-type PanoramaImageIdResponse = {
-  data?: {
-    panoramaId: string
-  }
-  status: PanoramaImageIdStatus
-  message?: string
+type PanoramaImageId = {
+  panoramaId: string
 }
 
-enum PanoramaImageStatus {
-  OK = 'Success!',
-  INTERNAL_ERROR = 'There was an error processing your request!'
-}
-
-enum PanoramaImageIdStatus {
-  OK = 'Success!',
-  INTERNAL_ERROR = 'There was an error processing your request!'
-}
-
-export {
-  PanoramaImageProvider,
-  PanoramaImageIdResponse,
-  PanoramaImageResponse,
-  PanoramaImageIdStatus,
-  PanoramaImageStatus
-}
+export {PanoramaImageProvider, PanoramaImage, PanoramaImageId}

@@ -1,20 +1,11 @@
+import {Directions, DirectionsProvider} from 'src/provider/DirectionsProvider'
+import {ExtractedText, OcrProvider} from 'src/provider/OcrProvider'
 import {
-  DirectionsProvider,
-  DirectionsResponse,
-  DirectionsStatus
-} from 'src/provider/DirectionsProvider'
-import {
-  ExtractedTextResponse,
-  ExtractedTextStatus,
-  OcrProvider
-} from 'src/provider/OcrProvider'
-import {
-  PanoramaImageIdResponse,
-  PanoramaImageIdStatus,
-  PanoramaImageProvider,
-  PanoramaImageResponse,
-  PanoramaImageStatus
+  PanoramaImage,
+  PanoramaImageId,
+  PanoramaImageProvider
 } from 'src/provider/PanoramaImageProvider'
+import {Response, Status} from '../util/Status'
 import {Route, RouteOption} from './Route'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
@@ -24,12 +15,7 @@ type RouteFactoryResponse = {
   data?: {
     route: Route
   }
-  status: RouteFactoryStatus
-}
-
-enum RouteFactoryStatus {
-  OK = 'Successfully created route!',
-  INTERNAL_ERROR = 'There was an error creating the route!'
+  status: Status
 }
 
 class RouteFactory {
@@ -53,8 +39,8 @@ class RouteFactory {
     increment: number,
     waypoints: LatLngLiteralVerbose[],
     options: RouteOption[]
-  ): Promise<RouteFactoryResponse> {
-    const directionsResponse: DirectionsResponse =
+  ): Promise<Response<RouteData>> {
+    const res: Response<Directions> =
       await this.directionsProvider.getDirections(
         origin,
         destination,
@@ -62,14 +48,14 @@ class RouteFactory {
         increment
       )
 
-    if (
-      directionsResponse.status != DirectionsStatus.OK ||
-      !directionsResponse.data
-    ) {
-      return {status: RouteFactoryStatus.INTERNAL_ERROR}
+    if (res.status != Status.OK || !res.data) {
+      return {
+        error: 'Unable to fetch directions for the route',
+        status: Status.INTERNAL_ERROR
+      }
     }
 
-    const coordinates = directionsResponse.data.coordinates
+    const coordinates = res.data.coordinates
 
     let points: Point[] = []
     const optionPromises: Promise<any>[] = []
@@ -84,10 +70,12 @@ class RouteFactory {
         optionPromises.push(
           this.panoramaImageProvider
             .getPanoramaImageId(lat, lng)
-            .then((res: PanoramaImageIdResponse) => {
-              // Todo: better error handling
-              if (res.status != PanoramaImageIdStatus.OK || !res.data) {
-                return
+            .then((res: Response<PanoramaImageId>) => {
+              if (res.status != Status.OK || !res.data) {
+                return {
+                  error: 'Unable to fetch panorama id.',
+                  status: Status.INTERNAL_ERROR
+                }
               }
 
               point.panoramaId = res.data.panoramaId
@@ -101,18 +89,23 @@ class RouteFactory {
           optionPromises.push(
             this.panoramaImageProvider
               .getPanoramaImage(lat, lng, heading)
-              .then((res: PanoramaImageResponse) => {
-                // Todo: better error handling
-                if (res.status != PanoramaImageStatus.OK || !res.data) {
-                  return
+              .then((res: Response<PanoramaImage>) => {
+                if (res.status != Status.OK || !res.data) {
+                  return {
+                    error: 'Unable to fetch panorama text.',
+                    status: Status.INTERNAL_ERROR
+                  }
                 }
 
                 return this.ocrProvider.extractTextFromImage(res.data.base64)
               })
-              .then((res: ExtractedTextResponse | undefined) => {
+              .then((res: Response<ExtractedText>) => {
                 // Todo: better error handling
-                if (!res || res.status != ExtractedTextStatus.OK || !res.data) {
-                  return
+                if (res.status != Status.OK || !res.data) {
+                  return {
+                    error: 'Unable to extract text from image.',
+                    status: Status.INTERNAL_ERROR
+                  }
                 }
 
                 point.addPanoramaText(res.data.text)
@@ -125,7 +118,10 @@ class RouteFactory {
     })
 
     if (points.length == 0 || points.length != coordinates.length) {
-      return {status: RouteFactoryStatus.INTERNAL_ERROR}
+      return {
+        error: 'Points were missing in this route!',
+        status: Status.INTERNAL_ERROR
+      }
     }
 
     const route = new Route(origin, destination, points, increment)
@@ -136,9 +132,19 @@ class RouteFactory {
       data: {
         route
       },
-      status: RouteFactoryStatus.OK
+      status: Status.OK
     }
   }
 }
 
-export {RouteFactory, RouteFactoryResponse, RouteFactoryStatus}
+/**
+ * Wrapping route within an object so we can always access
+ * data via 'response.data.route'.
+ *
+ * Otherwise, we would access it like 'response.data.RouteProperties'
+ */
+type RouteData = {
+  route: Route
+}
+
+export {RouteFactory, RouteFactoryResponse, RouteData}

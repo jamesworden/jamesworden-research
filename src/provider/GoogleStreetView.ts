@@ -1,10 +1,9 @@
 import {
-  PanoramaImageIdResponse,
-  PanoramaImageIdStatus,
-  PanoramaImageProvider,
-  PanoramaImageResponse,
-  PanoramaImageStatus
+  PanoramaImage,
+  PanoramaImageId,
+  PanoramaImageProvider
 } from './PanoramaImageProvider'
+import {Response, Status} from 'src/util/Status'
 
 import axios from 'axios'
 
@@ -14,7 +13,7 @@ class GoogleStreetView implements PanoramaImageProvider {
   getPanoramaImageId = async (
     latitude: number,
     longitude: number
-  ): Promise<PanoramaImageIdResponse> => {
+  ): Promise<Response<PanoramaImageId>> => {
     const data = await axios
       .get(
         `https://maps.googleapis.com/maps/api/streetview/metadata?&location=${latitude},${longitude}&key=${this.apiKey}`
@@ -26,14 +25,17 @@ class GoogleStreetView implements PanoramaImageProvider {
     const panoramaId: string = data.pano_id
 
     if (data.status != 'OK' || !data.pano_id) {
-      return {status: PanoramaImageIdStatus.INTERNAL_ERROR}
+      return {
+        error: 'Error fetching data from Google.',
+        status: Status.INTERNAL_ERROR
+      }
     }
 
     return {
       data: {
         panoramaId
       },
-      status: PanoramaImageIdStatus.OK
+      status: Status.OK
     }
   }
 
@@ -41,27 +43,34 @@ class GoogleStreetView implements PanoramaImageProvider {
     latitude: number,
     longitude: number,
     heading: number
-  ): Promise<PanoramaImageResponse> => {
+  ): Promise<Response<PanoramaImage>> => {
     if (!heading) {
       heading = 90
     }
 
-    const base64: string = await axios
+    const data = await axios
       .get(
         `https://maps.googleapis.com/maps/api/streetview?size=1600x1600&fov=120&heading=${heading}&location=${latitude},${longitude}&key=${this.apiKey}`,
         {responseType: 'arraybuffer'}
       )
       .then((res) => {
-        return Buffer.from(res.data).toString('base64')
+        return res.data
       })
 
-    // Todo: Error handling if error with status
+    if (data.status != 'OK' || !data.pano_id) {
+      return {
+        error: 'Error fetching image from Google Street View.',
+        status: Status.INTERNAL_ERROR
+      }
+    }
+
+    const base64: string = Buffer.from(data).toString('base64')
 
     return {
       data: {
         base64
       },
-      status: PanoramaImageStatus.OK
+      status: Status.OK
     }
   }
 }

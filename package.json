@@ -13,8 +13,8 @@
     "env:local": "ts-node env.ts local",
     "env:prod": "ts-node env.ts prod",
     "test": "npm-run-all test:unit test:ui",
-    "test:ui": "cd tests/ui && cypress open",
-    "test:unit": "cd tests/unit && jest --coverage",
+    "test:ui": "cd test/ui && cypress open",
+    "test:unit": "jest --coverage",
     "test:github-actions": "act -n"
   },
   "author": "James Worden",

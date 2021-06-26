@@ -1,26 +1,20 @@
-import {LatLngLiteralVerbose, Status} from '@googlemaps/google-maps-services-js'
+import {Response, Status} from './Status'
 
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 import {MAX_WAYPOINTS_PER_ROUTE} from 'src/config/Constants'
 
-type WaypointStringResponse = {
-  data?: {
-    waypoints: LatLngLiteralVerbose[]
-  }
-  status: WaypointStringStatus
-}
-
-enum WaypointStringStatus {
-  OK = 'Success!',
-  TOO_MANY_WAYPOINTS = 'There were too many waypoints in your request!',
-  INVALID_WAYPOINT_FORMAT = "Invalid waypoint format. Try this: 'latitude1,longitude1|latitude2,longitude2|...'",
-  INVALID_WAYPOINT_VALUES = 'Invalid waypoint values. Please use valid latitude and longitude coordinates.'
+type WaypointData = {
+  waypoints: LatLngLiteralVerbose[]
 }
 
 class Parser {
-  parseWaypointString(input: string): WaypointStringResponse {
+  parseWaypointString(input: string): Response<WaypointData> {
     if (!input || input.trim() === '') {
       return {
-        status: WaypointStringStatus.OK
+        data: {
+          waypoints: []
+        },
+        status: Status.OK
       }
     }
 
@@ -28,7 +22,8 @@ class Parser {
 
     if (locationStrings.length > MAX_WAYPOINTS_PER_ROUTE) {
       return {
-        status: WaypointStringStatus.TOO_MANY_WAYPOINTS
+        error: 'There were too many waypoints in your request!',
+        status: Status.INTERNAL_ERROR
       }
     }
 
@@ -39,7 +34,9 @@ class Parser {
 
       if (latLng.length != 2) {
         return {
-          status: WaypointStringStatus.INVALID_WAYPOINT_FORMAT
+          error:
+            "Invalid waypoint format. Try this: 'latitude1,longitude1|latitude2,longitude2|...'",
+          status: Status.INTERNAL_ERROR
         }
       }
 
@@ -55,7 +52,9 @@ class Parser {
         longitude > 180
       ) {
         return {
-          status: WaypointStringStatus.INVALID_WAYPOINT_VALUES
+          error:
+            'Invalid waypoint values. Please use valid latitude and longitude coordinates.',
+          status: Status.INTERNAL_ERROR
         }
       }
 
@@ -69,11 +68,11 @@ class Parser {
       data: {
         waypoints
       },
-      status: WaypointStringStatus.OK
+      status: Status.OK
     }
   }
 }
 
 const parser = new Parser()
 
-export {parser, WaypointStringStatus, WaypointStringResponse}
+export {parser, WaypointData}

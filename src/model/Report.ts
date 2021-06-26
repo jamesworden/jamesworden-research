@@ -1,6 +1,5 @@
-import {Route, RouteOption} from './Route'
-
 import {Point} from './Point'
+import {Route} from './Route'
 
 export class Report {
   status: ReportStatus

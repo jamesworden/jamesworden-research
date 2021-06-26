@@ -1,8 +1,5 @@
-import {
-  ExtractedTextResponse,
-  ExtractedTextStatus,
-  OcrProvider
-} from './OcrProvider'
+import {ExtractedText, OcrProvider} from './OcrProvider'
+import {Response, Status} from 'src/util/Status'
 import vision, {ImageAnnotatorClient} from '@google-cloud/vision'
 
 class GoogleCloudVision implements OcrProvider {
@@ -10,7 +7,7 @@ class GoogleCloudVision implements OcrProvider {
 
   extractTextFromImage = async (
     base64: string
-  ): Promise<ExtractedTextResponse> => {
+  ): Promise<Response<ExtractedText>> => {
     const request = {
       image: {
         content: Buffer.from(base64, 'base64')
@@ -19,7 +16,10 @@ class GoogleCloudVision implements OcrProvider {
 
     await this.client.textDetection(request).then(([result]) => {
       if (!result.textAnnotations || result.textAnnotations.length == 0) {
-        return {status: ExtractedTextStatus.NO_TEXT_FOUND}
+        return {
+          error: 'No data found for this image.',
+          status: Status.INTERNAL_ERROR
+        }
       }
 
       let textArray: string[] = []
@@ -37,11 +37,14 @@ class GoogleCloudVision implements OcrProvider {
         data: {
           text: textArray
         },
-        status: ExtractedTextStatus.OK
+        status: Status.OK
       }
     })
 
-    return {status: ExtractedTextStatus.INTERNAL_ERROR}
+    return {
+      error: 'Unable to fetch data from Google Cloud Vision.',
+      status: Status.INTERNAL_ERROR
+    }
   }
 }
 
