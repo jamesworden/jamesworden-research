@@ -1,92 +1,70 @@
-import {Response, Status} from 'src/util/response-utils'
-import {WaypointData, parser} from 'src/util/parser'
-import express, {Response as ExpressResponse, Request} from 'express'
+import { CoordinateData, FunctionResponse, QueryValidatior, parser, validation } from '../util';
+import { Option, RouteData } from '../model';
+import { Request, Response, Router } from 'express';
 
-import {DEFAULT_INCREMENT_DISTANCE} from '../config/constants'
-import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {RouteData} from 'src/model/route/route-factory'
-import {RouteOption} from '../model/route/route'
-import {app} from 'src/app'
-import {validation} from '../util/validation'
+import { DEFAULT_INCREMENT_DISTANCE } from '../config';
+import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
+import { app } from '../app';
+import { sampleRoute } from '../json';
 
-const routes = express.Router({mergeParams: true})
+const routeRoutes: Router = Router({ mergeParams: true });
 
-routes.get('/', async function (req: Request, res: ExpressResponse) {
-  const sample: string = req.query.sample as string
+routeRoutes.get('/', async function (req: Request, res: Response) {
+	const sample: string = req.query.sample as string;
 
-  if (validation.equalsTrue(sample)) {
-    res.status(200).send({route: require('../json/sampleRoute.json')})
-    return
-  }
+	if (validation.equalsTrue(sample)) {
+		res.status(200).send({ route: sampleRoute });
+		return;
+	}
 
-  const key: string = req.query.key as string
-  const origin: string = req.query.origin as string
-  const destination: string = req.query.destination as string
-  const panoramaId: boolean = validation.equalsTrue(req.query.panoid as string)
-  const panoramaText: boolean = validation.equalsTrue(
-    req.query.panotext as string
-  )
-  const waypointString: string = req.query.waypoints as string
-  const increment: number = req.query.increment
-    ? parseInt(req.query.increment as string)
-    : DEFAULT_INCREMENT_DISTANCE
+	const key: string = req.query.key as string;
+	const origin: string = req.query.origin as string;
+	const destination: string = req.query.destination as string;
+	const panoramaId: boolean = validation.equalsTrue(req.query.panoid as string);
+	const panoramaText: boolean = validation.equalsTrue(req.query.panotext as string);
+	const waypointString: string = req.query.waypoints as string;
+	const increment: number = req.query.increment
+		? parseInt(req.query.increment as string)
+		: DEFAULT_INCREMENT_DISTANCE;
 
-  if (validation.containsInvalidKey(key, res)) return
-  if (validation.containsUndefinedValues({origin, destination}, res)) return
+	const queryValidator = new QueryValidatior(res);
+	if (queryValidator.containsUndefinedValues({ origin, destination })) return;
+	if (queryValidator.containsInvalidKey(key)) return;
 
-  const options: RouteOption[] = []
-  if (panoramaId) options.push(RouteOption.PANORAMA_ID)
-  if (panoramaText) options.push(RouteOption.PANORAMA_TEXT)
+	const options: Option[] = [];
 
-  const wRes: Response<WaypointData> =
-    parser.parseWaypointString(waypointString)
+	if (panoramaId) {
+		options.push(Option.PANORAMA_ID);
+	}
 
-  /**
-   * TODO: Send the actual reason there was an error
-   */
-  if (wRes.status != Status.OK || !wRes.data) {
-    res.status(200).send({
-      error: 'There was an error fetching the waypoints!',
-      status: Status.INTERNAL_ERROR
-    })
-  }
+	if (panoramaText) {
+		options.push(Option.PANORAMA_TEXT);
+	}
 
-  const waypoints: LatLngLiteralVerbose[] = wRes.data!.waypoints
+	const coordsData: FunctionResponse<CoordinateData> =
+		parser.parseCoordinateString(waypointString);
 
-  const rRes: Response<RouteData> = await app.routeFactory.createRoute(
-    origin,
-    destination,
-    increment,
-    waypoints,
-    options
-  )
+	if (coordsData.error) {
+		res.status(coordsData.httpStatusCode).send(coordsData.httpResponse);
+		return;
+	}
 
-  /**
-   * TODO: send more informative response
-   *
-   * TODO: break controller up from service - this class should send some
-   * sort of response type to the actual mechanism that SENDS the HTTP response
-   * back to the user
-   */
-  if (rRes.status != Status.OK || !rRes.data) {
-    res.status(200).send({
-      error: 'There was an error fetching the desired route',
-      status: Status.INTERNAL_ERROR
-    })
-  }
+	const waypoints: LatLngLiteralVerbose[] = coordsData.httpResponse.coordinates;
 
-  /**
-   * TODO: make the status code dynamic according to a new Status class.
-   *
-   * This class should have 3 properties:
-   *   string: enumerated identifier, ex: 'INTERNAL_ERROR'
-   *   string: human readable message, ex: 'Error processing your request.'
-   *   number: status code, ex: 500
-   *
-   * This way, we could send the response easily without a wrapper or adapter
-   * to make it work with Express. Make there's an express type for this?
-   */
-  res.status(200).send(rRes)
-})
+	const routeData: FunctionResponse<RouteData> = await app.routeFactory.createRoute(
+		origin,
+		destination,
+		increment,
+		waypoints,
+		options
+	);
 
-export default routes
+	if (routeData.error) {
+		res.status(routeData.httpStatusCode).send(routeData.httpResponse);
+		return;
+	}
+
+	res.status(routeData.httpStatusCode).send(routeData.httpResponse);
+});
+
+export { routeRoutes };

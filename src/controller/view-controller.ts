@@ -1,15 +1,15 @@
-import {Request, Response} from 'express'
+import { Request, Response } from 'express';
 
-import express from 'express'
+import express from 'express';
 
-const routes = express.Router({mergeParams: true})
+const viewRoutes = express.Router({ mergeParams: true });
 
-routes.get('/', async function (_req: Request, res: Response) {
-  res.render('Home')
-})
+viewRoutes.get('/', async function (_req: Request, res: Response) {
+	res.render('Home');
+});
 
-routes.get('/docs', async function (_req: Request, res: Response) {
-  res.render('Docs')
-})
+viewRoutes.get('/docs', async function (_req: Request, res: Response) {
+	res.render('Docs');
+});
 
-export default routes
+export { viewRoutes };

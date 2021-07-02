@@ -1,33 +1,24 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {calculations} from './calculations'
+import {calculations} from '../calculations/calculations'
 
 class CoordinateUtils {
   /**
-   * TODO: Have one single protocol to connect coordinate pairs.
-   * Make a utility function in this class to convert 'number[][]'
-   * into 'LatLngLiteralVerbose[]' - which is the better unit.
-   *
-   * The polyline NPM package decodes polylines into number[][]
-   * arrays, maybe stick the polyline stuff here in some utility function?
-   * Like: get LatLngLiteralVerbose[] from encoded polyline?
-   *
-   * Other API's might demand new coordinateUtils to function, which is good
-   * model of expanding providers.
    *
    * @param coordinates array of gps coordinate pairs
    * @param increment distance to increment returned array of coordinates by
    * @returns array incrementally spaced coordinates
    */
   getIncrementalCoordinates(
-    coordinates: number[][],
+    coordinates: LatLngLiteralVerbose[],
     increment: number
   ): LatLngLiteralVerbose[] {
     let validPoints: LatLngLiteralVerbose[] = []
     let distanceUntilNextPoint: number = 0 // Starts at 0 because 1st point should be added immediately
-    let i: number = 0
+    let i: number = 1
+
     let currentPoint: LatLngLiteralVerbose = {
-      latitude: coordinates[0][0],
-      longitude: coordinates[0][1]
+      latitude: coordinates[0].latitude,
+      longitude: coordinates[0].longitude
     }
 
     while (i < coordinates.length) {
@@ -38,8 +29,8 @@ class CoordinateUtils {
       }
 
       const nextPoint: LatLngLiteralVerbose = {
-        latitude: decodedNextPoint[0],
-        longitude: decodedNextPoint[1]
+        latitude: decodedNextPoint.latitude,
+        longitude: decodedNextPoint.longitude
       }
 
       const distanceBetweenPoints: number =
@@ -62,7 +53,21 @@ class CoordinateUtils {
         distanceUntilNextPoint = increment // Point added, reset distance
       }
     }
+
     return validPoints
+  }
+
+  numToLatLng(coordinates: number[][]): LatLngLiteralVerbose[] {
+    let latLngArr: LatLngLiteralVerbose[] = []
+
+    coordinates.forEach((coordinatePair) => {
+      latLngArr.push({
+        latitude: coordinatePair[0],
+        longitude: coordinatePair[1]
+      })
+    })
+
+    return latLngArr
   }
 }
 

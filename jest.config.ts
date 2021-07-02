@@ -7,11 +7,11 @@
  * In other words, this config file is also acting like a loader
  * for environment variables.
  */
-require('dotenv').config()
+require('dotenv').config();
 
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  setupFiles: ['<rootDir>/jest.config.ts'],
-  testMatch: ['<rootDir>/src/**/*.test.ts']
-}
+	preset: 'ts-jest',
+	testEnvironment: 'node',
+	setupFiles: ['<rootDir>/jest.config.ts'],
+	testMatch: ['<rootDir>/src/**/*.test.ts'],
+};

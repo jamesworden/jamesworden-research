@@ -1,23 +1,15 @@
-import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
+import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
 
-export class Point {
-  location: LatLngLiteralVerbose
-  panoramaId?: string
-  panoramaText?: string[]
+export type Point = {
+	location: LatLngLiteralVerbose;
+	panoramaId?: string;
+	panoramaText?: string[];
+};
 
-  constructor(latitude: number, longitude: number) {
-    this.location = {
-      latitude,
-      longitude
-    }
-  }
-
-  addPanoramaText(panoramaText: string[]): void {
-    if (this.panoramaText == undefined) {
-      this.panoramaText = []
-    }
-    this.panoramaText = this.panoramaText.concat(panoramaText)
-  }
+export function addPanoramaText(point: Point, text: string[]) {
+	if (point.panoramaText) {
+		point.panoramaText.concat(text);
+	} else {
+		point.panoramaText = [];
+	}
 }
-
-// TODO: make point into a type

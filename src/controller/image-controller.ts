@@ -1,20 +1,24 @@
-import {Request, Response} from 'express'
+import { Request, Response, Router } from 'express';
 
-import express from 'express'
-import {validation} from '../util/validation'
+import { QueryValidatior } from '../util';
 
-const routes = express.Router({mergeParams: true})
+const imageRoutes: Router = Router({ mergeParams: true });
 
-routes.get('/', async function (req: Request, res: Response) {
-  const key: string = req.query.key as string
-  const location: string = req.query.origin as string
+/**
+ * TODO: totally not functional. Need to pass in google street view image
+ * or have a panorama image provider here.
+ */
+imageRoutes.get('/', async function (req: Request, res: Response) {
+	const key: string = req.query.key as string;
+	const location: string = req.query.origin as string;
 
-  if (validation.containsInvalidKey(key, res)) return
-  if (validation.containsUndefinedValues({location}, res)) return
+	const queryValidator = new QueryValidatior(res);
+	if (queryValidator.containsUndefinedValues({ location })) return;
+	if (queryValidator.containsInvalidKey(key)) return;
 
-  res.render('Image', {
-    location
-  })
-})
+	res.render('Image', {
+		location,
+	});
+});
 
-export default routes
+export { imageRoutes };

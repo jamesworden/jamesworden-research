@@ -2,23 +2,32 @@ import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 
 class Calculations {
   /**
-   * https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+   * https://www.movable-type.co.uk/scripts/latlong.html
+   * @returns distance in meters
    */
   getDistanceBetweenPoints(
     pointA: LatLngLiteralVerbose,
     pointB: LatLngLiteralVerbose
   ): number {
-    var p = 0.017453292519943295 // Math.PI / 180
-    var c = Math.cos
-    var a =
-      0.5 -
-      c((pointB.latitude - pointA.latitude) * p) / 2 +
-      (c(pointA.latitude * p) *
-        c(pointB.latitude * p) *
-        (1 - c((pointB.longitude - pointA.longitude) * p))) /
-        2
+    const lat1 = pointA.latitude
+    const lat2 = pointB.latitude
+    const lon1 = pointA.longitude
+    const lon2 = pointB.longitude
 
-    return 12742 * Math.asin(Math.sqrt(a)) // 2 * R; R = 6371 km
+    const R = 6371e3 // metres
+    const φ1 = (lat1 * Math.PI) / 180 // φ, λ in radians
+    const φ2 = (lat2 * Math.PI) / 180
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    const d = R * c // in metres
+
+    return d
   }
 
   getIntermediatePoint(
@@ -51,7 +60,11 @@ class Calculations {
     return (bearing + 360) % 360
   }
 
-  // https://stackoverflow.com/a/46410871/13549
+  /**
+   * https://stackoverflow.com/a/46410871/13549
+   *
+   * TODO: Gives super inaccurate answer when calculating large distances horizontally
+   */
   getPointFromDistance(
     point: LatLngLiteralVerbose,
     distance: number,

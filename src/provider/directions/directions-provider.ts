@@ -1,22 +1,19 @@
-import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Response} from 'src/util/response-utils'
+import { FunctionResponse } from '../../util';
+import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
 
 interface DirectionsProvider {
-  /**
-   * Get directions from an origin address, destination address, and detour waypoints
-   */
-  getDirections(
-    origin: string,
-    destination: string,
-    waypoints: LatLngLiteralVerbose[],
-    increment: number
-  ): Promise<Response<Directions>>
-  readonly apiKey: string
+	getDirections(
+		origin: string,
+		destination: string,
+		waypoints: LatLngLiteralVerbose[],
+		increment: number
+	): Promise<FunctionResponse<Directions>>;
+	readonly apiKey: string;
 }
 
 type Directions = {
-  distance: number
-  coordinates: LatLngLiteralVerbose[]
-}
+	distance: number;
+	coordinates: LatLngLiteralVerbose[];
+};
 
-export {DirectionsProvider, Directions}
+export { DirectionsProvider, Directions };

@@ -1,142 +1,94 @@
-import {
-  Directions,
-  DirectionsProvider
-} from '../../provider/directions/directions-provider'
-import {ExtractedText, OcrProvider} from '../../provider/ocr/ocr-provider'
-import {
-  PanoramaImage,
-  PanoramaImageId,
-  PanoramaImageProvider
-} from 'src/provider/panorama-image/panorama-image-provider'
-import {Response, Status} from '../../util/response-utils'
-import {Route, RouteOption} from './route'
+import { Directions, DirectionsProvider } from '../../provider';
+import { FunctionError, FunctionResponse, HttpStatusCode } from '../../util';
 
-import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Point} from '../point/point'
+import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
+import { Option } from '..';
+import { Point } from '..';
+import { Route } from '.';
+import { app } from '../../app';
 
 type RouteData = {
-  route: Route
-}
+	route: Route;
+};
 
 class RouteFactory {
-  directionsProvider: DirectionsProvider
-  panoramaImageProvider: PanoramaImageProvider
-  ocrProvider: OcrProvider
+	directionsProvider: DirectionsProvider;
 
-  constructor(
-    directionsProvider: DirectionsProvider,
-    imageProvider: PanoramaImageProvider,
-    ocrProvider: OcrProvider
-  ) {
-    this.directionsProvider = directionsProvider
-    this.panoramaImageProvider = imageProvider
-    this.ocrProvider = ocrProvider
-  }
+	constructor(directionsProvider: DirectionsProvider) {
+		this.directionsProvider = directionsProvider;
+	}
 
-  async createRoute(
-    origin: string,
-    destination: string,
-    increment: number,
-    waypoints: LatLngLiteralVerbose[],
-    options: RouteOption[]
-  ): Promise<Response<RouteData>> {
-    const res: Response<Directions> =
-      await this.directionsProvider.getDirections(
-        origin,
-        destination,
-        waypoints,
-        increment
-      )
+	async createRoute(
+		origin: string,
+		destination: string,
+		increment: number,
+		waypoints: LatLngLiteralVerbose[],
+		options: Option[]
+	): Promise<FunctionResponse<RouteData>> {
+		const res: FunctionResponse<Directions> = await this.directionsProvider.getDirections(
+			origin,
+			destination,
+			waypoints,
+			increment
+		);
 
-    if (res.status != Status.OK || !res.data) {
-      return {
-        error: 'Unable to fetch directions for the route',
-        status: Status.INTERNAL_ERROR
-      }
-    }
+		if (res.error) {
+			return res;
+		}
 
-    const coordinates = res.data.coordinates
+		const directions: Directions = res.httpResponse;
+		const coordinates = directions.coordinates;
 
-    let points: Point[] = []
-    const optionPromises: Promise<any>[] = []
+		let points: Point[] = [];
+		let error: FunctionError | null = null;
 
-    coordinates.forEach((coordinatePair: LatLngLiteralVerbose) => {
-      const lat = coordinatePair.latitude
-      const lng = coordinatePair.longitude
+		const pointPromises: Promise<void>[] = [];
 
-      const point: Point = new Point(lat, lng)
+		for (let coordinatePair of coordinates) {
+			pointPromises.push(
+				app.pointFactory.createPoint(coordinatePair, options).then((res) => {
+					if (res.error) {
+						error = res;
+					} else {
+						const point: Point = res.httpResponse.point;
 
-      if (options.includes(RouteOption.PANORAMA_ID)) {
-        optionPromises.push(
-          this.panoramaImageProvider
-            .getPanoramaImageId(lat, lng)
-            .then((res: Response<PanoramaImageId>) => {
-              if (res.status != Status.OK || !res.data) {
-                return {
-                  error: 'Unable to fetch panorama id.',
-                  status: Status.INTERNAL_ERROR
-                }
-              }
+						points.push(point);
+					}
+				})
+			);
+		}
 
-              point.panoramaId = res.data.panoramaId
-            })
-        )
-      }
+		Promise.all(pointPromises);
 
-      if (options.includes(RouteOption.PANORAMA_TEXT)) {
-        // Gather text from three different images to simulate a panorama image
-        for (let heading = 0; heading < 360; heading += 120) {
-          optionPromises.push(
-            this.panoramaImageProvider
-              .getPanoramaImage(lat, lng, heading)
-              .then((res: Response<PanoramaImage>) => {
-                if (res.status != Status.OK || !res.data) {
-                  return {
-                    error: 'Unable to fetch panorama text.',
-                    status: Status.INTERNAL_ERROR
-                  }
-                }
+		if (error) {
+			return error;
+		}
 
-                return this.ocrProvider.extractTextFromImage(res.data.base64)
-              })
-              .then((res: Response<ExtractedText>) => {
-                // TODO: better error handling
-                if (res.status != Status.OK || !res.data) {
-                  return {
-                    error: 'Unable to extract text from image.',
-                    status: Status.INTERNAL_ERROR
-                  }
-                }
+		if (points.length == 0 || points.length != coordinates.length) {
+			return {
+				error: true,
+				httpResponse: {
+					error: 'Points were missing in this route!',
+				},
+				httpStatusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+			};
+		}
 
-                point.addPanoramaText(res.data.text)
-              })
-          )
-        }
-      }
+		const distance = res.httpResponse.distance;
 
-      points.push(point)
-    })
+		const route = new Route(origin, destination, points, increment, distance);
 
-    if (points.length == 0 || points.length != coordinates.length) {
-      return {
-        error: 'Points were missing in this route!',
-        status: Status.INTERNAL_ERROR
-      }
-    }
+		route.addWaypoints(waypoints);
+		route.addOptions(options);
 
-    const distance = res.data.distance
-
-    const route = new Route(origin, destination, points, increment, distance)
-    route.addWaypoints(waypoints)
-    route.addOptions(options)
-
-    return {
-      data: {
-        route
-      },
-      status: Status.OK
-    }
-  }
+		return {
+			httpResponse: {
+				route,
+			},
+			error: false,
+			httpStatusCode: HttpStatusCode.OK,
+		};
+	}
 }
 
-export {RouteFactory, RouteData}
+export { RouteFactory, RouteData };

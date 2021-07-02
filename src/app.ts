@@ -1,47 +1,46 @@
-import express, {Express} from 'express'
+import { PointFactory, RouteFactory } from './model';
+import { boundsRoutes, imageRoutes, reportRoutes, routeRoutes, viewRoutes } from './controller';
+import express, { Express } from 'express';
+import { googleCloudVision, googleMaps, googleStreetView, tesseract } from './provider';
 
-import ImageController from './controller/image-controller'
-import ReportContoller from './controller/report-controller'
-import RouteContoller from './controller/route-controller'
-import {RouteFactory} from './model/route/route-factory'
-import ViewContoller from './controller/view-controller'
-import {googleCloudVision} from './provider/ocr/google-cloud-vision'
-import {googleMaps} from './provider/directions/google-maps'
-import {googleStreetView} from './provider/panorama-image/google-street-view'
-import path from 'path'
+import { __prod__ } from './config';
+import path from 'path';
 
 class App {
-  routeFactory: RouteFactory
-  server: Express
+	routeFactory: RouteFactory;
+	pointFactory: PointFactory;
+	server: Express;
+	port: number;
 
-  constructor() {
-    const server: Express = express()
+	constructor() {
+		const server: Express = express();
 
-    server.set('views', path.join(__dirname, '/frontend/views'))
-    server.set('view engine', 'js')
-    server.engine('js', require('express-react-views').createEngine())
+		server.set('views', path.join(__dirname, '/frontend/views'));
+		server.set('view engine', 'js');
 
-    server.use('/api/image', ImageController)
-    server.use('/api/report', ReportContoller)
-    server.use('/api/route', RouteContoller)
-    server.use('/', ViewContoller)
+		server.engine('js', require('express-react-views').createEngine());
 
-    this.server = server
+		server.use('/api/image', imageRoutes);
+		server.use('/api/report', reportRoutes);
+		server.use('/api/route', routeRoutes);
+		server.use('/api/bounds', boundsRoutes);
+		server.use('/', viewRoutes);
 
-    /**
-     * Any providers can be injected into this applications route factory.
-     * Get directions, street view imagery, and optical character recognition
-     * services from using any API - so long as it extends the appropriate
-     * provider interface.
-     */
-    this.routeFactory = new RouteFactory(
-      googleMaps,
-      googleStreetView,
-      googleCloudVision
-    )
-  }
+		this.routeFactory = new RouteFactory(googleMaps);
+		this.pointFactory = new PointFactory(googleStreetView, googleCloudVision);
+		this.server = server;
+		this.port = 3000;
+	}
+
+	run(port?: number) {
+		let env: string = __prod__ ? 'production' : 'development';
+
+		this.server.listen(port, () => {
+			console.log(`Application running in ${env} on port ${port || this.port}`);
+		});
+	}
 }
 
-const app = new App()
+const app = new App();
 
-export {app}
+export { app };

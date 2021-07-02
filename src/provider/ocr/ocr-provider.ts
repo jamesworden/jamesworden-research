@@ -1,11 +1,11 @@
-import {Response} from 'src/util/response-utils'
+import { FunctionResponse } from '../../util';
 
 interface OcrProvider {
-  extractTextFromImage(base64: string): Promise<Response<ExtractedText>>
+	extractTextFromImage(base64: string): Promise<FunctionResponse<ExtractedText>>;
 }
 
 type ExtractedText = {
-  text: string[]
-}
+	text: string[];
+};
 
-export {OcrProvider, ExtractedText}
+export { OcrProvider, ExtractedText };

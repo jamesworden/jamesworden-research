@@ -1,89 +1,80 @@
-import {Response, Status} from '../util/response-utils'
-import {Route, RouteOption} from '../model/route/route'
-import {WaypointData, parser} from 'src/util/parser'
-import express, {Response as ExpressResponse, Request} from 'express'
+import { CoordinateData, FunctionResponse, QueryValidatior, parser, validation } from '../util';
+import { Option, Report, Route, RouteData } from '../model';
+import { Request, Response, Router } from 'express';
+import { sampleDetour, sampleRoute } from '../json';
 
-import {DEFAULT_INCREMENT_DISTANCE} from '../config/constants'
-import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Report} from '../model/report/report'
-import {RouteData} from 'src/model/route/route-factory'
-import {app} from '../app'
-import {validation} from '../util/validation'
+import { DEFAULT_INCREMENT_DISTANCE } from '../config';
+import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
+import { app } from '../app';
 
-const routes = express.Router({mergeParams: true})
+const reportRoutes: Router = Router({ mergeParams: true });
 
-routes.get('/', async function (req: Request, res: ExpressResponse) {
-  const sample: string = req.query.sample as string
+reportRoutes.get('/', async function (req: Request, res: Response) {
+	const sample: string = req.query.sample as string;
 
-  if (validation.equalsIgnoreCase(sample as string, 'true')) {
-    const route: Route = require('../json/sampleRoute.json')
-    const detour: Route = require('../json/sampleDetour.json')
-    const report: Report = new Report(route, detour)
+	if (validation.equalsIgnoreCase(sample as string, 'true')) {
+		const route = sampleRoute;
+		const detour = sampleDetour;
+		const report: Report = new Report(route, detour);
 
-    res.status(200).send(report)
-    return
-  }
+		res.status(200).send(report);
+		return;
+	}
 
-  const key: string = req.query.key as string
-  const origin: string = req.query.origin as string
-  const destination: string = req.query.destination as string
-  const waypointString: string = req.query.waypoints as string
-  const increment: number = req.query.increment
-    ? parseInt(req.query.increment as string)
-    : DEFAULT_INCREMENT_DISTANCE
+	const key: string = req.query.key as string;
+	const origin: string = req.query.origin as string;
+	const destination: string = req.query.destination as string;
+	const waypointString: string = req.query.waypoints as string;
+	const increment: number = req.query.increment
+		? parseInt(req.query.increment as string)
+		: DEFAULT_INCREMENT_DISTANCE;
 
-  if (validation.containsInvalidKey(key, res)) {
-    return
-  }
+	const queryValidator = new QueryValidatior(res);
+	if (queryValidator.containsUndefinedValues({ origin, destination, waypointString })) return;
+	if (queryValidator.containsInvalidKey(key)) return;
 
-  if (
-    validation.containsUndefinedValues(
-      {origin, destination, waypointString},
-      res
-    )
-  ) {
-    return
-  }
+	const coordinateData: FunctionResponse<CoordinateData> =
+		parser.parseCoordinateString(waypointString);
 
-  const wRes: Response<WaypointData> =
-    parser.parseWaypointString(waypointString)
+	if (coordinateData.error) {
+		res.status(coordinateData.httpStatusCode).send(coordinateData.httpResponse);
+		return;
+	}
 
-  /**
-   * TODO: Send the actual reason there was an error
-   */
-  if (wRes.status != Status.OK || !wRes.data) {
-    res.status(200).send({
-      error: 'There was an error fetching the waypoints!',
-      status: Status.INTERNAL_ERROR
-    })
-  }
+	const waypoints: LatLngLiteralVerbose[] = coordinateData.httpResponse.coordinates;
 
-  const waypoints: LatLngLiteralVerbose[] = wRes.data!.waypoints
+	const routeData: FunctionResponse<RouteData> = await app.routeFactory.createRoute(
+		origin,
+		destination,
+		increment,
+		[],
+		[Option.PANORAMA_TEXT]
+	);
 
-  const rRes: Response<RouteData> = await app.routeFactory.createRoute(
-    origin,
-    destination,
-    increment,
-    [],
-    [RouteOption.PANORAMA_TEXT]
-  )
+	const detourData: FunctionResponse<RouteData> = await app.routeFactory.createRoute(
+		origin,
+		destination,
+		increment,
+		waypoints,
+		[Option.PANORAMA_TEXT]
+	);
 
-  const dRes: Response<RouteData> = await app.routeFactory.createRoute(
-    origin,
-    destination,
-    increment,
-    waypoints,
-    [RouteOption.PANORAMA_TEXT]
-  )
+	if (routeData.error) {
+		res.status(routeData.httpStatusCode).send(routeData.httpResponse);
+		return;
+	}
 
-  if (!rRes.data || !dRes.data) {
-    res.status(202).send({
-      error: 'Route or detour data invalid!',
-      status: Status.INTERNAL_ERROR
-    })
-  }
+	if (detourData.error) {
+		res.status(detourData.httpStatusCode).send(detourData.httpResponse);
+		return;
+	}
 
-  res.status(200).send(new Report(rRes.data!.route, dRes.data!.route))
-})
+	const route: Route = routeData.httpResponse.route;
+	const detour: Route = detourData.httpResponse.route;
 
-export default routes
+	const report: Report = new Report(route, detour);
+
+	res.status(200).send(report);
+});
+
+export { reportRoutes };
