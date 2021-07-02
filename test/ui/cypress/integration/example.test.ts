@@ -1,5 +1,5 @@
 describe('Cypress example typescript test', () => {
-  test('Test', () => {
-    expect(true).toBe(true)
+  it('Test', () => {
+    expect(true).to.be.equal(true)
   })
 })
