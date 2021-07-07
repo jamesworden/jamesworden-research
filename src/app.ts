@@ -1,46 +1,68 @@
-import { PointFactory, RouteFactory } from './model';
-import { boundsRoutes, imageRoutes, reportRoutes, routeRoutes, viewRoutes } from './controller';
-import express, { Express } from 'express';
-import { googleCloudVision, googleMaps, googleStreetView, tesseract } from './provider';
+import {
+  DirectionsProvider,
+  OcrProvider,
+  PanoramaImageProvider,
+  googleCloudVision,
+  googleMaps,
+  googleStreetView
+} from './provider'
+import {PointFactory, RouteFactory} from './model'
+import express, {Express} from 'express'
+import {reportRouter, routeRouter, viewRouter} from './controller'
 
-import { __prod__ } from './config';
-import path from 'path';
+import {__prod__} from './config'
+import path from 'path'
+import {pointRouter} from './controller/api'
 
 class App {
-	routeFactory: RouteFactory;
-	pointFactory: PointFactory;
-	server: Express;
-	port: number;
+  directionsProvider: DirectionsProvider = googleMaps
+  panoramaImageProvider: PanoramaImageProvider = googleStreetView
+  ocrProvider: OcrProvider = googleCloudVision
 
-	constructor() {
-		const server: Express = express();
+  routeFactory: RouteFactory
+  pointFactory: PointFactory
 
-		server.set('views', path.join(__dirname, '/frontend/views'));
-		server.set('view engine', 'js');
+  server: Express
+  port: number
 
-		server.engine('js', require('express-react-views').createEngine());
+  constructor() {
+    const server: Express = express()
 
-		server.use('/api/image', imageRoutes);
-		server.use('/api/report', reportRoutes);
-		server.use('/api/route', routeRoutes);
-		server.use('/api/bounds', boundsRoutes);
-		server.use('/', viewRoutes);
+    server.set('views', path.join(__dirname, '/frontend/views'))
+    server.set('view engine', 'js')
 
-		this.routeFactory = new RouteFactory(googleMaps);
-		this.pointFactory = new PointFactory(googleStreetView, googleCloudVision);
-		this.server = server;
-		this.port = 3000;
-	}
+    server.engine('js', require('express-react-views').createEngine())
 
-	run(port?: number) {
-		let env: string = __prod__ ? 'production' : 'development';
+    server.use('/api/v1/report', reportRouter)
+    server.use('/api/v1/route', routeRouter)
+    server.use('/api/v1/point', pointRouter)
 
-		this.server.listen(port, () => {
-			console.log(`Application running in ${env} on port ${port || this.port}`);
-		});
-	}
+    server.use('/', viewRouter)
+
+    this.routeFactory = new RouteFactory(this.directionsProvider)
+
+    this.pointFactory = new PointFactory(
+      this.panoramaImageProvider,
+      this.ocrProvider
+    )
+
+    this.server = server
+    this.port = 3000
+  }
+
+  run(port?: number) {
+    let env: string = this.getEnvironmentString()
+
+    this.server.listen(port, () => {
+      console.log(`Application running in ${env} on port ${port || this.port}`)
+    })
+  }
+
+  getEnvironmentString(): string {
+    return __prod__ ? 'production' : 'development'
+  }
 }
 
-const app = new App();
+const app = new App()
 
-export { app };
+export {app}

@@ -1,112 +1,108 @@
-import { CoordinateData, FunctionResponse } from '..';
+import {Failure, isFailure} from '../response-utils'
 
-import { MAX_WAYPOINTS_PER_ROUTE } from '../../config';
-import { parser } from '.';
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
+import {MAX_WAYPOINTS_PER_ROUTE} from '../../config'
+import {parser} from '.'
 
 describe('Parse coordinate string correctly', () => {
-	let str: string;
-	let res: FunctionResponse<CoordinateData>;
+  let str: string
+  let res: LatLngLiteralVerbose[] | Failure
 
-	it('Valid pair', () => {
-		str = '40,-70';
-		res = parser.parseCoordinateString(str);
+  it('Valid pair', () => {
+    str = '40,-70'
+    res = parser.getLocationsFromString(str)
 
-		if (res.error) {
-			expect(res.error).toBe(false);
-			return;
-		}
+    if (isFailure(res)) {
+      return
+    }
 
-		expect(res.httpResponse).toStrictEqual({
-			data: {
-				coordinates: [
-					{
-						latitude: 40,
-						longitude: -70,
-					},
-				],
-			},
-		});
-	});
+    expect(res).toStrictEqual({
+      coordinates: [
+        {
+          latitude: 40,
+          longitude: -70
+        }
+      ]
+    })
+  })
 
-	it('Invalid pair', () => {
-		str = '40,-70,';
-		res = parser.parseCoordinateString(str);
+  it('Invalid pair', () => {
+    str = '40,-70,'
+    res = parser.getLocationsFromString(str)
 
-		if (res.error) {
-			expect(res.error).toBe(true);
-			expect(res.httpResponse.error).toContain('Invalid');
-			return;
-		}
-	});
+    if (isFailure(res)) {
+      expect(isFailure(res)).toBe(true)
+      expect(res.response.error).toContain('Invalid')
+      return
+    }
+  })
 
-	it('Valid pairs', () => {
-		str = '40,-70.01|30.91,0';
-		res = parser.parseCoordinateString(str);
+  it('Valid pairs', () => {
+    str = '40,-70.01|30.91,0'
+    res = parser.getLocationsFromString(str)
 
-		if (res.error) {
-			expect(res.error).toBe(false);
-			return;
-		}
+    if (isFailure(res)) {
+      expect(isFailure(res)).toBe(false)
+      return
+    }
 
-		expect(res.httpResponse).toStrictEqual({
-			data: {
-				coordinates: [
-					{
-						latitude: 40,
-						longitude: -70.01,
-					},
-					{
-						latitude: 30.91,
-						longitude: 0,
-					},
-				],
-			},
-		});
-	});
+    expect(res).toStrictEqual({
+      coordinates: [
+        {
+          latitude: 40,
+          longitude: -70.01
+        },
+        {
+          latitude: 30.91,
+          longitude: 0
+        }
+      ]
+    })
+  })
 
-	it('Invalid pairs', () => {
-		str = '40,-70||30.911';
-		res = parser.parseCoordinateString(str);
+  it('Invalid pairs', () => {
+    str = '40,-70||30.911'
+    res = parser.getLocationsFromString(str)
 
-		if (res.error) {
-			expect(res.error).toBe(true);
-			expect(res.httpResponse.error).toContain('Invalid');
-			return;
-		}
-	});
+    if (isFailure(res)) {
+      expect(isFailure(res)).toBe(true)
+      expect(res.response.error).toContain('Invalid')
+      return
+    }
+  })
 
-	it('Too many waypoints', () => {
-		const tooMany: number = MAX_WAYPOINTS_PER_ROUTE + 1;
-		str = '';
+  it('Too many waypoints', () => {
+    const tooMany: number = MAX_WAYPOINTS_PER_ROUTE + 1
+    str = ''
 
-		for (let i = 0; i < tooMany; i++) {
-			str += '0,0|';
-		}
+    for (let i = 0; i < tooMany; i++) {
+      str += '0,0|'
+    }
 
-		str = str.substring(0, str.length - 1);
-		res = parser.parseCoordinateString(str);
+    str = str.substring(0, str.length - 1)
+    res = parser.getLocationsFromString(str)
 
-		if (res.error) {
-			expect(res.error).toBe(true);
-			expect(res.httpResponse.error).toContain('too many');
-			return;
-		}
-	});
+    if (isFailure(res)) {
+      expect(isFailure(res)).toBe(true)
+      expect(res.response.error).toContain('too many')
+      return
+    }
+  })
 
-	it('Invalid values', () => {
-		str = 'value,9';
-		expect(res.error).toBe(true);
+  it('Invalid values', () => {
+    str = 'value,9'
+    expect(isFailure(res)).toBe(true)
 
-		str = '0,900';
-		expect(res.error).toBe(true);
+    str = '0,900'
+    expect(isFailure(res)).toBe(true)
 
-		str = '78,9.32|test,9';
-		expect(res.error).toBe(true);
+    str = '78,9.32|test,9'
+    expect(isFailure(res)).toBe(true)
 
-		str = '-91,3|3,181';
-		expect(res.error).toBe(true);
+    str = '-91,3|3,181'
+    expect(isFailure(res)).toBe(true)
 
-		str = '91,3|3,-181';
-		expect(res.error).toBe(true);
-	});
-});
+    str = '91,3|3,-181'
+    expect(isFailure(res)).toBe(true)
+  })
+})

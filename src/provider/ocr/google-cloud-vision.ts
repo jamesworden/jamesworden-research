@@ -1,48 +1,67 @@
-import { ExtractedText, OcrProvider } from '.';
-import { FunctionResponse, HttpStatusCode } from '../../util';
-import vision, { ImageAnnotatorClient } from '@google-cloud/vision';
+import vision, {ImageAnnotatorClient} from '@google-cloud/vision'
+
+import {OcrProvider} from '.'
+import {google} from '@google-cloud/vision/build/protos/protos'
 
 class GoogleCloudVision implements OcrProvider {
-	client: ImageAnnotatorClient = new vision.ImageAnnotatorClient();
+  client: ImageAnnotatorClient = new vision.ImageAnnotatorClient()
 
-	extractTextFromImage = async (base64: string): Promise<FunctionResponse<ExtractedText>> => {
-		const request = {
-			image: {
-				content: Buffer.from(base64, 'base64'),
-			},
-		};
+  getTextFromImage = async (base64: string): Promise<string[]> => {
+    return await this.client
+      .textDetection(this.getImageOptions(base64))
+      .then(([result]) =>
+        this.getTextFromTextAnnotations(result.textAnnotations)
+      )
+  }
 
-		return await this.client.textDetection(request).then(([result]) => {
-			if (!result.textAnnotations || result.textAnnotations.length == 0) {
-				return {
-					error: true,
-					httpResponse: {
-						error: 'No data found for this image.',
-					},
-					httpStatusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
-				};
-			}
+  getTextFromTextAnnotations(annotations: TextAnnotations): string[] {
+    return annotations
+      ? this.getTextFromDefinedTextAnnotations(annotations)
+      : []
+  }
 
-			let textArray: string[] = [];
+  getTextFromDefinedTextAnnotations(
+    annotations: DefinedTextAnnotations
+  ): string[] {
+    let array: string[] = []
 
-			result.textAnnotations.forEach((annotation) => {
-				const text: string | null | undefined = annotation.description;
+    for (let annotation of annotations) {
+      const description: TextAnnotationDescription = annotation.description
 
-				// Streetview image contains watermarks at the bottom
-				if (text && !text.includes('©') && !text.includes('Google')) {
-					textArray.push(text);
-				}
-			});
+      if (description && this.isValidAnnotationDescription(description)) {
+        array.push(description)
+      }
+    }
 
-			return {
-				httpResponse: {
-					text: textArray,
-				},
-				error: false,
-				httpStatusCode: HttpStatusCode.OK,
-			};
-		});
-	};
+    return array
+  }
+
+  textContainsGoogleWatermark(text: string): boolean {
+    return text.includes('©') || text.includes('Google')
+  }
+
+  getImageOptions(base64: string) {
+    return {
+      image: {
+        content: Buffer.from(base64, 'base64')
+      }
+    }
+  }
+
+  isValidAnnotationDescription(
+    description: TextAnnotationDescription
+  ): boolean {
+    return !!description && this.textContainsGoogleWatermark(description)
+  }
 }
 
-export const googleCloudVision = new GoogleCloudVision();
+type TextAnnotations =
+  | google.cloud.vision.v1.IEntityAnnotation[]
+  | null
+  | undefined
+
+type DefinedTextAnnotations = google.cloud.vision.v1.IEntityAnnotation[]
+
+type TextAnnotationDescription = string | null | undefined
+
+export const googleCloudVision = new GoogleCloudVision()

@@ -1,24 +1,16 @@
-import { FunctionResponse } from '../../util';
+import {Failure} from 'src/util'
 
 interface PanoramaImageProvider {
-	getPanoramaImage(
-		latitude: number,
-		longitude: number,
-		heading: number
-	): Promise<FunctionResponse<PanoramaImage>>;
+  getPanoramaBase64EncodedImage(
+    latitude: number,
+    longitude: number,
+    heading: number
+  ): Promise<string | Failure>
 
-	getPanoramaImageId(
-		latitude: number,
-		longitude: number
-	): Promise<FunctionResponse<PanoramaImageId>>;
+  getPanoramaImageId(
+    latitude: number,
+    longitude: number
+  ): Promise<string | Failure>
 }
 
-type PanoramaImage = {
-	base64: string;
-};
-
-type PanoramaImageId = {
-	panoramaId: string;
-};
-
-export { PanoramaImageProvider, PanoramaImage, PanoramaImageId };
+export {PanoramaImageProvider}

@@ -1,5 +1,5 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {coordinateUtils} from './coordinate-utils'
+import {coordinateUtils} from '.'
 
 describe('Coordinate Utilities', () => {
   const numArr: number[][] = [
@@ -42,5 +42,19 @@ describe('Coordinate Utilities', () => {
     expect(incCoords[lastIncNum].longitude).toBeLessThan(
       latLngArr[latLatLngNum].longitude
     )
+  })
+
+  it('Increment distance longer than route distance', () => {
+    const increment: number = 100
+
+    const coordinates: LatLngLiteralVerbose[] = [
+      {latitude: 40.75809, longitude: -73.99661},
+      {latitude: 40.75928, longitude: -73.99573}
+    ]
+
+    const incCoords: LatLngLiteralVerbose[] =
+      coordinateUtils.getIncrementalCoordinates(coordinates, increment)
+
+    expect(incCoords.length).toBeLessThan(coordinates.length)
   })
 })

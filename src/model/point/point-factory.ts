@@ -1,85 +1,138 @@
-import {
-	ExtractedText,
-	OcrProvider,
-	PanoramaImage,
-	PanoramaImageId,
-	PanoramaImageProvider,
-} from '../../provider';
-import { FunctionResponse, HttpStatusCode } from '../../util';
+import {Failure, isFailure} from '../../util'
+import {OcrProvider, PanoramaImageProvider} from '../../provider'
 
-import { LatLngLiteralVerbose } from '@googlemaps/google-maps-services-js';
-import { Option } from '../option';
-import { Point } from '.';
-import { addPanoramaText } from './point';
-
-type PointData = {
-	point: Point;
-};
+import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
+import {Option} from '../option'
+import {Point} from '.'
 
 class PointFactory {
-	panoramaImageProvider: PanoramaImageProvider;
-	ocrProvider: OcrProvider;
+  panoramaImageProvider: PanoramaImageProvider
+  ocrProvider: OcrProvider
 
-	constructor(panoramaImageProvider: PanoramaImageProvider, ocrProvider: OcrProvider) {
-		this.panoramaImageProvider = panoramaImageProvider;
-		this.ocrProvider = ocrProvider;
-	}
+  constructor(
+    panoramaImageProvider: PanoramaImageProvider,
+    ocrProvider: OcrProvider
+  ) {
+    this.panoramaImageProvider = panoramaImageProvider
+    this.ocrProvider = ocrProvider
+  }
 
-	async createPoint(
-		coordinatePair: LatLngLiteralVerbose,
-		options: Option[]
-	): Promise<FunctionResponse<PointData>> {
-		const lat: number = coordinatePair.latitude;
-		const lon: number = coordinatePair.longitude;
+  async createPoint(
+    location: LatLngLiteralVerbose,
+    options: Option[]
+  ): Promise<Point | Failure> {
+    const lat: number = location.latitude
+    const lng: number = location.longitude
 
-		const point: Point = {
-			location: {
-				latitude: lat,
-				longitude: lon,
-			},
-		};
+    let panoramaText: string[] | undefined = undefined
+    let panoramaId: string | undefined = undefined
 
-		if (options.includes(Option.PANORAMA_ID)) {
-			await this.panoramaImageProvider
-				.getPanoramaImageId(lat, lon)
-				.then((res: FunctionResponse<PanoramaImageId>) => {
-					if (res.error) {
-						return res;
-					}
+    const optionRes: OptionData | Failure = await this.getOptionData(
+      location,
+      options
+    )
 
-					point.panoramaId = res.httpResponse.panoramaId;
-				});
-		}
+    if (isFailure(optionRes)) {
+      return optionRes
+    }
 
-		if (options.includes(Option.PANORAMA_TEXT)) {
-			// Gather text from three different images to simulate a panorama image
-			for (let heading = 0; heading < 360; heading += 120) {
-				await this.panoramaImageProvider
-					.getPanoramaImage(lat, lon, heading)
-					.then((res: FunctionResponse<PanoramaImage>) => {
-						if (res.error) {
-							return res;
-						}
+    panoramaText = optionRes.panoramaText
+    panoramaId = optionRes.panoramaId
 
-						return this.ocrProvider.extractTextFromImage(res.httpResponse.base64);
-					})
-					.then((res: FunctionResponse<ExtractedText>) => {
-						if (res.error) {
-							return res;
-						}
+    const point: Point = {
+      location: {
+        latitude: lat,
+        longitude: lng
+      },
+      panoramaId,
+      panoramaText
+    }
 
-						addPanoramaText(point, res.httpResponse.text);
-					});
-			}
-		}
+    return point
+  }
+  private async getOptionData(
+    location: LatLngLiteralVerbose,
+    options: Option[]
+  ): Promise<OptionData | Failure> {
+    let panoramaText: string[] | undefined = undefined
+    let panoramaId: string | undefined = undefined
 
-		return {
-			httpResponse: {
-				point,
-			},
-			httpStatusCode: HttpStatusCode.OK,
-			error: false,
-		};
-	}
+    if (options.includes(Option.PANORAMA_TEXT)) {
+      const panoramaTextRes = await this.getPanoramaText(location)
+
+      if (isFailure(panoramaTextRes)) {
+        return panoramaTextRes
+      }
+
+      panoramaText = panoramaTextRes
+    }
+
+    if (options.includes(Option.PANORAMA_ID)) {
+      const panoramaIdRes: string | Failure =
+        await this.panoramaImageProvider.getPanoramaImageId(
+          location.latitude,
+          location.longitude
+        )
+
+      if (isFailure(panoramaIdRes)) {
+        return panoramaIdRes
+      }
+
+      panoramaId = panoramaIdRes
+    }
+
+    return {
+      panoramaId,
+      panoramaText
+    }
+  }
+
+  private async getPanoramaText(
+    location: LatLngLiteralVerbose
+  ): Promise<Failure | string[]> {
+    const text: string[] = []
+
+    // Gather text from three different images to simulate a panorama image
+    for (let heading = 0; heading < 360; heading += 120) {
+      const textRes: Failure | string[] =
+        await this.getPanoramaTextFromLocationAndHeading(location, heading)
+
+      if (isFailure(textRes)) {
+        return textRes
+      }
+
+      text.concat(textRes)
+    }
+
+    return text
+  }
+
+  private async getPanoramaTextFromLocationAndHeading(
+    location: LatLngLiteralVerbose,
+    heading: number
+  ): Promise<Failure | string[]> {
+    const imageRes: string | Failure =
+      await this.panoramaImageProvider.getPanoramaBase64EncodedImage(
+        location.latitude,
+        location.longitude,
+        heading
+      )
+
+    if (isFailure(imageRes)) {
+      return imageRes
+    }
+
+    const textRes: string[] | Failure = await this.ocrProvider.getTextFromImage(
+      imageRes
+    )
+
+    return textRes
+  }
 }
-export { PointFactory, PointData };
+
+type OptionData = {
+  panoramaId?: string
+  panoramaText?: string[]
+}
+
+export {PointFactory}

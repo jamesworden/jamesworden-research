@@ -1,44 +1,34 @@
-import { ExtractedText, OcrProvider } from './ocr-provider';
-import { FunctionResponse, HttpStatusCode } from '../../util';
-import { Worker, createWorker } from 'tesseract.js';
+import {Worker, createWorker} from 'tesseract.js'
+
+import {OcrProvider} from './ocr-provider'
 
 class Tesseract implements OcrProvider {
-	worker: Worker;
+  worker: Worker
 
-	/**
-	 * TODO: replace with better logger
-	 */
-	constructor() {
-		this.worker = createWorker({
-			logger: (m) => console.log(m),
-		});
-	}
+  constructor() {
+    this.worker = createWorker()
+  }
 
-	extractTextFromImage = async (base64: string): Promise<FunctionResponse<ExtractedText>> => {
-		const imageBuffer = Buffer.from(base64);
+  async initWorker() {
+    await this.worker.load()
+    await this.worker.loadLanguage('eng')
+    await this.worker.initialize('eng')
+  }
 
-		/**
-		 * TODO: see if we should create some sort of init function so
-		 * all of this doesn't have to be repeated
-		 */
-		await this.worker.load();
-		await this.worker.loadLanguage('eng');
-		await this.worker.initialize('eng');
+  async terminateWorker() {
+    await this.worker.terminate()
+  }
 
-		const {
-			data: { text },
-		} = await this.worker.recognize(imageBuffer);
+  getTextFromImage = async (base64: string): Promise<string[]> => {
+    const imageBuffer = Buffer.from(base64)
+    await this.initWorker()
 
-		return {
-			httpResponse: {
-				text: text.split(','),
-			},
-			error: false,
-			httpStatusCode: HttpStatusCode.OK,
-		};
-	};
+    const {
+      data: {text}
+    } = await this.worker.recognize(imageBuffer)
 
-	// await worker.terminate()
+    return text.split(',')
+  }
 }
 
-export const tesseract = new Tesseract();
+export const tesseract = new Tesseract()

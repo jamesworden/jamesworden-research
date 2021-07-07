@@ -1,138 +1,198 @@
 import {
-	Client,
-	DirectionsRoute,
-	LatLngLiteralVerbose,
-	SnapToRoadsResponse,
-	TravelMode,
-} from '@googlemaps/google-maps-services-js';
-import { Directions, DirectionsProvider } from '.';
-import { FunctionResponse, HttpStatusCode, coordinateUtils } from '../../util';
+  Client,
+  DirectionsRoute,
+  LatLngLiteralVerbose,
+  SnapToRoadsResponse,
+  TravelMode
+} from '@googlemaps/google-maps-services-js'
+import {Directions, DirectionsProvider} from '.'
+import {
+  DirectionsRequest,
+  DirectionsResponse
+} from '@googlemaps/google-maps-services-js/dist/directions'
+import {Failure, HttpStatusCode, coordinateUtils, isFailure} from '../../util'
 
-import { DirectionsResponse } from '@googlemaps/google-maps-services-js/dist/directions';
-import { MAX_POINTS_PER_ROUTE } from '../../config';
-import { decode } from 'polyline';
+import {MAX_POINTS_PER_ROUTE} from '../../config'
+import {decode} from 'polyline'
 
-/**
- * TODO: split this class into the directions provider and incremental point creator from directions
- *
- * Ideally, many different API's can return directions that we can get incremental coordiante arrays from
- * This method for getting incremental points is too connected to Google Maps API
- */
 class GoogleMaps implements DirectionsProvider {
-	readonly apiKey: string = process.env.GOOGLE_MAPS_BACKEND_KEY as string;
-	private client: Client = new Client();
+  readonly apiKey: string = process.env.GOOGLE_MAPS_BACKEND_KEY as string
+  private client: Client = new Client()
+  private _increment: number
 
-	async getDirections(
-		origin: string,
-		destination: string,
-		waypoints: LatLngLiteralVerbose[],
-		increment: number
-	): Promise<FunctionResponse<Directions>> {
-		const response: DirectionsResponse = await this.client.directions({
-			params: {
-				origin,
-				destination,
-				waypoints,
-				key: this.apiKey,
-				mode: TravelMode.driving,
-			},
-		});
+  async getDirections(
+    origin: string,
+    destination: string,
+    waypoints: LatLngLiteralVerbose[],
+    increment: number
+  ): Promise<Directions | Failure> {
+    const directionsResponse: DirectionsResponse | Failure =
+      await this.getGoogleMapsDirectionsResponse(origin, destination, waypoints)
 
-		const responseStatus: string = response.data.status;
+    if (isFailure(directionsResponse)) {
+      return directionsResponse
+    }
 
-		if (responseStatus != 'OK') {
-			if (responseStatus == 'NOT_FOUND' || responseStatus == 'ZERO_RESULTS') {
-				return {
-					error: true,
-					httpResponse: {
-						error: 'The specified directions could not be found!',
-					},
-					httpStatusCode: HttpStatusCode.NOT_FOUND,
-				};
-			}
+    this._increment = increment
 
-			// TODO: add logging function for when the status is INTERNAL ERROR
-			return {
-				error: true,
-				httpResponse: {
-					error: 'Error fetching data from Google.',
-				},
-				httpStatusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
-			};
-		}
+    const directions: Directions | Failure =
+      await this.getDirectionsFromDirectionsResponse(directionsResponse)
 
-		const route: DirectionsRoute = response.data.routes[0];
-		const encodedPolyline: string = route.overview_polyline.points;
-		const distance = this.getDistance(route);
+    return directions
+  }
 
-		const numPoints = distance / increment;
+  private async getDirectionsFromDirectionsResponse(
+    directionsResponse: DirectionsResponse
+  ): Promise<Directions | Failure> {
+    const route: DirectionsRoute = directionsResponse.data.routes[0]
+    const distance = this.getDistance(route)
+    const numPoints = distance / this._increment
 
-		if (numPoints > MAX_POINTS_PER_ROUTE) {
-			return {
-				httpResponse: {
-					error: `There were too many points for this route! Your route: ${numPoints}, max: ${MAX_POINTS_PER_ROUTE} `,
-				},
-				error: true,
-				httpStatusCode: HttpStatusCode.NOT_ACCEPTABLE,
-			};
-		}
+    if (numPoints > MAX_POINTS_PER_ROUTE) {
+      return {
+        response: {
+          error: `There were too many points for this route! Your route: ${numPoints}, max: ${MAX_POINTS_PER_ROUTE} `
+        },
+        statusCode: HttpStatusCode.NOT_ACCEPTABLE
+      }
+    }
 
-		const decodedCoodrinates: number[][] = decode(encodedPolyline);
+    const encodedPolyline: string = route.overview_polyline.points
 
-		const decodedLatLngCoords: LatLngLiteralVerbose[] =
-			coordinateUtils.numToLatLng(decodedCoodrinates);
+    return this.getDirectionsFromEncodedPolylineAndDistance(
+      encodedPolyline,
+      distance
+    )
+  }
 
-		const incrementalCoordinates = coordinateUtils.getIncrementalCoordinates(
-			decodedLatLngCoords,
-			increment
-		);
+  private async getDirectionsFromEncodedPolylineAndDistance(
+    encodedPolyline: string,
+    distance: number
+  ) {
+    const coordinates: LatLngLiteralVerbose[] | Failure =
+      await this.getIncrementalCoordinatesFromEncodedPolyline(encodedPolyline)
 
-		const snappedIncrementalCoordinates = await this.getSnappedCoordinates(
-			incrementalCoordinates
-		);
+    if (isFailure(coordinates)) {
+      return coordinates
+    }
 
-		return {
-			httpResponse: {
-				coordinates: snappedIncrementalCoordinates,
-				distance,
-			},
-			error: false,
-			httpStatusCode: HttpStatusCode.OK,
-		};
-	}
+    return {
+      coordinates,
+      distance
+    }
+  }
 
-	private async getSnappedCoordinates(
-		coordinates: LatLngLiteralVerbose[]
-	): Promise<LatLngLiteralVerbose[]> {
-		return await this.client
-			.snapToRoads({
-				params: {
-					path: coordinates,
-					key: this.apiKey,
-				},
-			})
-			.then((response: SnapToRoadsResponse) => {
-				let coordinates: LatLngLiteralVerbose[] = [];
+  private async getIncrementalCoordinatesFromEncodedPolyline(
+    encodedPolyline: string
+  ): Promise<LatLngLiteralVerbose[] | Failure> {
+    const decodedCoodrinates: number[][] = decode(encodedPolyline)
 
-				response.data.snappedPoints.forEach((snappedPoint) => {
-					coordinates.push(snappedPoint.location);
-				});
+    const decodedLatLngCoords: LatLngLiteralVerbose[] =
+      coordinateUtils.numToLatLng(decodedCoodrinates)
 
-				return coordinates;
-			});
-	}
+    const incrementalCoordinates = coordinateUtils.getIncrementalCoordinates(
+      decodedLatLngCoords,
+      this._increment
+    )
 
-	private getDistance(route: DirectionsRoute): number {
-		let distance = 0;
+    if (incrementalCoordinates.length < decodedLatLngCoords.length) {
+      return {
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
+        response: {
+          error: 'There was an error with the incremental coordinate algorithm.'
+        }
+      }
+    }
 
-		route.legs.forEach((leg) => {
-			if (leg.distance && leg.distance.value) {
-				distance += leg.distance.value;
-			}
-		});
+    const snappedIncrementalCoordinates: LatLngLiteralVerbose[] =
+      await this.getSnappedCoordinates(incrementalCoordinates)
 
-		return distance;
-	}
+    return snappedIncrementalCoordinates
+  }
+
+  private async getGoogleMapsDirectionsResponse(
+    origin: string,
+    destination: string,
+    waypoints: LatLngLiteralVerbose[]
+  ) {
+    const request: DirectionsRequest = {
+      params: {
+        origin,
+        destination,
+        waypoints,
+        key: this.apiKey,
+        mode: TravelMode.driving
+      }
+    }
+
+    const response: DirectionsResponse = await this.client.directions(request)
+
+    const responseStatus: string = response.data.status
+
+    if (responseStatus != 'OK') {
+      return this.getFailureFromStatus(responseStatus)
+    }
+
+    return response
+  }
+
+  private getFailureFromStatus(status: string): Failure {
+    if (status == 'NOT_FOUND' || status == 'ZERO_RESULTS') {
+      return {
+        response: {
+          error: 'The specified directions could not be found!'
+        },
+        statusCode: HttpStatusCode.NOT_FOUND
+      }
+    }
+
+    return {
+      response: {
+        error: 'Error fetching data from Google.'
+      },
+      statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR
+    }
+  }
+
+  private async getSnappedCoordinates(
+    coordinates: LatLngLiteralVerbose[]
+  ): Promise<LatLngLiteralVerbose[]> {
+    if (coordinates.length <= 0) {
+      return []
+    }
+
+    const response: SnapToRoadsResponse = await this.client.snapToRoads({
+      params: {
+        path: coordinates,
+        key: this.apiKey,
+        interpolate: false
+      }
+    })
+
+    return this.getCoordinatesFromSnapToRoadsResponse(response)
+  }
+
+  private getCoordinatesFromSnapToRoadsResponse(response: SnapToRoadsResponse) {
+    let coordinates: LatLngLiteralVerbose[] = []
+
+    response.data.snappedPoints.forEach((snappedPoint) => {
+      coordinates.push(snappedPoint.location)
+    })
+
+    return coordinates
+  }
+
+  private getDistance(route: DirectionsRoute): number {
+    let distance = 0
+
+    route.legs.forEach((leg) => {
+      if (leg.distance && leg.distance.value) {
+        distance += leg.distance.value
+      }
+    })
+
+    return distance
+  }
 }
 
-export const googleMaps = new GoogleMaps();
+export const googleMaps = new GoogleMaps()

@@ -1,73 +1,60 @@
-import { FunctionResponse, HttpStatusCode } from '../../util';
-import { PanoramaImage, PanoramaImageId, PanoramaImageProvider } from './panorama-image-provider';
+import {Failure, HttpStatusCode} from '../../util'
+import axios, {AxiosResponse} from 'axios'
 
-import axios from 'axios';
+import {PanoramaImageProvider} from './panorama-image-provider'
 
 class GoogleStreetView implements PanoramaImageProvider {
-	private apiKey: string = process.env.GOOGLE_MAPS_BACKEND_KEY as string;
+  private apiKey: string = process.env.GOOGLE_MAPS_BACKEND_KEY as string
 
-	getPanoramaImageId = async (
-		latitude: number,
-		longitude: number
-	): Promise<FunctionResponse<PanoramaImageId>> => {
-		const data = await axios
-			.get(
-				`https://maps.googleapis.com/maps/api/streetview/metadata?&location=${latitude},${longitude}&key=${this.apiKey}`
-			)
-			.then((res) => {
-				return res.data;
-			});
+  getPanoramaImageId = async (
+    latitude: number,
+    longitude: number
+  ): Promise<string | Failure> => {
+    const res = await axios.get(
+      `https://maps.googleapis.com/maps/api/streetview/metadata?&location=${latitude},${longitude}&key=${this.apiKey}`
+    )
 
-		const panoramaId: string = data.pano_id;
+    if (res.data.status != 'OK') {
+      return {
+        response: {
+          error: 'Error fetching data from Google.'
+        },
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR
+      }
+    }
 
-		if (data.status != 'OK' || !data.pano_id) {
-			return {
-				error: true,
-				httpResponse: {
-					error: 'Error fetching data from Google.',
-				},
-				httpStatusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
-			};
-		}
+    const panoramaId: string = res.data.pano_id
 
-		return {
-			httpResponse: {
-				panoramaId,
-			},
-			error: false,
-			httpStatusCode: HttpStatusCode.OK,
-		};
-	};
+    return panoramaId
+  }
 
-	getPanoramaImage = async (
-		latitude: number,
-		longitude: number,
-		heading: number
-	): Promise<FunctionResponse<PanoramaImage>> => {
-		if (!heading) {
-			heading = 90;
-		}
+  getPanoramaBase64EncodedImage = async (
+    latitude: number,
+    longitude: number,
+    heading: number
+  ): Promise<string | Failure> => {
+    if (!heading) {
+      heading = 90
+    }
 
-		const data = await axios
-			.get(
-				`https://maps.googleapis.com/maps/api/streetview?size=1600x1600&fov=120&heading=${heading}&location=${latitude},${longitude}&key=${this.apiKey}`,
-				{ responseType: 'arraybuffer' }
-			)
-			.then((res) => {
-				// Res.data is the buffer itself
-				return res.data;
-			});
+    const res = await axios.get(
+      `https://maps.googleapis.com/maps/api/streetview?size=1600x1600&fov=120&heading=${heading}&location=${latitude},${longitude}&key=${this.apiKey}`,
+      {responseType: 'arraybuffer'}
+    )
 
-		const base64: string = Buffer.from(data).toString('base64');
+    if (res.data.status != 'OK') {
+      return {
+        response: {
+          error: 'Error fetching data from Google.'
+        },
+        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR
+      }
+    }
 
-		return {
-			httpResponse: {
-				base64,
-			},
-			error: false,
-			httpStatusCode: HttpStatusCode.OK,
-		};
-	};
+    const base64: string = Buffer.from(res.data).toString('base64')
+
+    return base64
+  }
 }
 
-export const googleStreetView = new GoogleStreetView();
+export const googleStreetView = new GoogleStreetView()
