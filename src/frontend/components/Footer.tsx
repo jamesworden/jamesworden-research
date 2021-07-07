@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import {Container} from './Container'
-import {FOOTER_HEIGHT} from '../StyleConstants'
+import {FOOTER_HEIGHT} from '../style-constants'
 
 interface Footer {
   children: JSX.Element | JSX.Element[]

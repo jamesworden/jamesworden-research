@@ -1,4 +1,7 @@
 {
-  "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "airbnb"]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "exclude": []
 }

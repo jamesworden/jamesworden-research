@@ -1,6 +1,19 @@
+/**
+ * Used by node script => env:<ENV_NAME>
+ * This sets the environment for running tests.
+ */
+
+type fileConfig = {
+  name: string
+  dir: string
+}
+
+/**
+ * Node script argument
+ */
 const args: string[] | undefined = process.argv.slice(1)
 
-;(() => {
+function setEnv() {
   if (!args) {
     console.error('Please provide an environment.')
     return
@@ -18,11 +31,7 @@ const args: string[] | undefined = process.argv.slice(1)
   const fileConfigs: fileConfig[] = [
     {
       name: 'cypress.env.json',
-      dir: './tests/e2e/'
-    },
-    {
-      name: 'env.json',
-      dir: './tests/unit/'
+      dir: './test/ui/'
     }
   ]
 
@@ -38,9 +47,6 @@ const args: string[] | undefined = process.argv.slice(1)
   })
 
   console.log(`${environment} environment was set.`)
-})()
-
-type fileConfig = {
-  name: string
-  dir: string
 }
+
+setEnv()

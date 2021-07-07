@@ -15,3 +15,8 @@ GoogleServiceCredentials.json
 
 # Testing
 coverage/
+**/*testfile.ts
+**/*testfile.js
+
+# Tesseract
+**/*.traineddata
