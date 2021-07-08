@@ -6,17 +6,17 @@ import sampleRouteJSON from './sample-route.json'
 export const sampleRoute = new Route(
   sampleRouteJSON.origin,
   sampleRouteJSON.destination,
-  sampleRouteJSON.points,
+  sampleRouteJSON.distance,
   sampleRouteJSON.increment,
-  sampleRouteJSON.distance
+  sampleRouteJSON.points
 )
 
 export const sampleDetour = new Route(
   sampleDetourJSON.origin,
   sampleDetourJSON.destination,
-  sampleDetourJSON.points,
+  sampleDetourJSON.distance,
   sampleDetourJSON.increment,
-  sampleDetourJSON.distance
+  sampleDetourJSON.points
 )
 
 /**

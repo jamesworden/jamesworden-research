@@ -18,26 +18,17 @@ class App {
   directionsProvider: DirectionsProvider = googleMaps
   panoramaImageProvider: PanoramaImageProvider = googleStreetView
   ocrProvider: OcrProvider = googleCloudVision
-
   routeFactory: RouteFactory
   pointFactory: PointFactory
-
   server: Express
   port: number
+  env: string
 
   constructor() {
-    const server: Express = express()
+    this.initServer()
 
-    server.set('views', path.join(__dirname, '/frontend/views'))
-    server.set('view engine', 'js')
-
-    server.engine('js', require('express-react-views').createEngine())
-
-    server.use('/api/v1/report', reportRouter)
-    server.use('/api/v1/route', routeRouter)
-    server.use('/api/v1/point', pointRouter)
-
-    server.use('/', viewRouter)
+    this.env = __prod__ ? 'prod' : 'dev'
+    this.port = 3000
 
     this.routeFactory = new RouteFactory(this.directionsProvider)
 
@@ -45,21 +36,25 @@ class App {
       this.panoramaImageProvider,
       this.ocrProvider
     )
-
-    this.server = server
-    this.port = 3000
   }
 
-  run(port?: number) {
-    let env: string = this.getEnvironmentString()
+  initServer(fileType = 'js') {
+    this.server = express()
+    this.server.set('views', path.join(__dirname, '/frontend/views'))
+    this.server.set('view engine', fileType)
 
-    this.server.listen(port, () => {
-      console.log(`Application running in ${env} on port ${port || this.port}`)
+    this.server.engine(fileType, require('express-react-views').createEngine())
+
+    this.server.use('/api/v1/report', reportRouter)
+    this.server.use('/api/v1/route', routeRouter)
+    this.server.use('/api/v1/point', pointRouter)
+    this.server.use('/', viewRouter)
+  }
+
+  run() {
+    this.server.listen(this.port, () => {
+      console.log(`Application running in ${this.env} on port ${this.port}`)
     })
-  }
-
-  getEnvironmentString(): string {
-    return __prod__ ? 'production' : 'development'
   }
 }
 

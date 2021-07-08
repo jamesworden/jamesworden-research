@@ -6,8 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "run:sls": "serverless offline --noPrependStageInUrl --dontPrintOutput",
-    "run:ts": "ts-node src/index.ts",
-    "run:node": "node .build/index.js",
+    "run:ts-node": "ts-node src/index.ts ts",
+    "run:node": "node .build/index.js js",
     "watch": "tsc -w",
     "env:local": "ts-node env.ts local",
     "env:prod": "ts-node env.ts prod",

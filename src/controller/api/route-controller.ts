@@ -49,15 +49,17 @@ routeRouter.get('/', async function (req: Request, res: Response) {
     options.push(Option.PANORAMA_TEXT)
   }
 
-  const locationsRes: LatLngLiteralVerbose[] | Failure =
-    parser.getLocationsFromString(waypointString)
+  let waypoints: LatLngLiteralVerbose[] = []
 
-  if (isFailure(locationsRes)) {
-    res.status(locationsRes.statusCode).send(locationsRes.response)
-    return
+  if (waypointString) {
+    const locationsRes: LatLngLiteralVerbose[] | Failure =
+      parser.getLocationsFromString(waypointString)
+
+    if (isFailure(locationsRes)) {
+      res.status(locationsRes.statusCode).send(locationsRes.response)
+      return
+    }
   }
-
-  const waypoints: LatLngLiteralVerbose[] = locationsRes
 
   const routeRes: Route | Failure = await app.routeFactory.createRoute(
     origin,

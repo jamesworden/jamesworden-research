@@ -4,25 +4,24 @@ import {calculations} from '../calculations'
 class CoordinateUtils {
   /**
    *
-   * @param coordinates array of gps coordinate pairs
+   * @param originalCoordinates array of gps coordinate pairs
    * @param increment distance to increment returned array of coordinates by
    * @returns array incrementally spaced coordinates
    */
   getIncrementalCoordinates(
-    coordinates: LatLngLiteralVerbose[],
+    originalCoordinates: LatLngLiteralVerbose[],
     increment: number
   ): LatLngLiteralVerbose[] {
+    const indexOfLastOriginalCoordinate = originalCoordinates.length - 1
     let validPoints: LatLngLiteralVerbose[] = []
     let distanceUntilNextPoint: number = 0
-    let i: number = 1
+    let originalCoordinatesTranscended: number = 0
 
-    let currentPoint: LatLngLiteralVerbose = {
-      latitude: coordinates[0].latitude,
-      longitude: coordinates[0].longitude
-    }
+    let currentPoint: LatLngLiteralVerbose = originalCoordinates[0]
 
-    while (i < coordinates.length - 1) {
-      const decodedNextPoint = coordinates[i + 1]
+    while (originalCoordinatesTranscended < indexOfLastOriginalCoordinate) {
+      const decodedNextPoint =
+        originalCoordinates[originalCoordinatesTranscended + 1]
 
       const nextPoint: LatLngLiteralVerbose = {
         latitude: decodedNextPoint.latitude,
@@ -35,7 +34,7 @@ class CoordinateUtils {
       if (distanceBetweenPoints < distanceUntilNextPoint) {
         distanceUntilNextPoint -= distanceBetweenPoints
         currentPoint = nextPoint
-        i++
+        originalCoordinatesTranscended++
       }
 
       const newPoint: LatLngLiteralVerbose = calculations.getIntermediatePoint(

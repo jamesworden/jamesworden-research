@@ -25,7 +25,7 @@ class RouteFactory {
     waypoints: LatLngLiteralVerbose[],
     options: Option[]
   ): Promise<Route | Failure> {
-    this._origin
+    this._origin = origin
     this._destination = destination
     this._waypoints = waypoints
     this._options = options
@@ -59,18 +59,17 @@ class RouteFactory {
       return pointsRes
     }
 
+    const origin: string = this._origin
+    const destination: string = this._destination
     const distance: number = directions.distance
+    const increment: number = this._increment
+    const points: Point[] = pointsRes
+    const waypoints: LatLngLiteralVerbose[] = this._waypoints
+    const options: Option[] = this._options
 
-    const route = new Route(
-      this._origin,
-      this._destination,
-      pointsRes,
-      this._increment,
-      distance
-    )
-
-    route.addWaypoints(this._waypoints)
-    route.addOptions(this._options)
+    const route = new Route(origin, destination, distance, increment, points)
+    route.addWaypoints(waypoints)
+    route.addOptions(options)
 
     return route
   }

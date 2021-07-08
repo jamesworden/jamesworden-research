@@ -95,15 +95,6 @@ class GoogleMaps implements DirectionsProvider {
       this._increment
     )
 
-    if (incrementalCoordinates.length < decodedLatLngCoords.length) {
-      return {
-        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
-        response: {
-          error: 'There was an error with the incremental coordinate algorithm.'
-        }
-      }
-    }
-
     const snappedIncrementalCoordinates: LatLngLiteralVerbose[] =
       await this.getSnappedCoordinates(incrementalCoordinates)
 

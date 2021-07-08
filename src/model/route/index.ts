@@ -6,34 +6,41 @@ class Route {
   origin: string
   destination: string
   distance: number
-  points: Point[]
   increment: number
+  points: Point[]
   options: Option[]
   waypoints: LatLngLiteralVerbose[]
 
   constructor(
     origin: string,
     destination: string,
-    points: Point[],
+    distance: number,
     increment: number,
-    distance: number
+    points: Point[]
   ) {
     this.origin = origin
     this.destination = destination
-    this.points = points
-    this.increment = increment
     this.distance = distance
+    this.increment = increment
+    this.points = points
   }
 
   addOptions(options: Option[]) {
+    if (!this.options) {
+      this.options = options
+    }
+
     this.options.concat(options)
   }
 
   addWaypoints(waypoints: LatLngLiteralVerbose[]) {
+    if (!this.waypoints) {
+      this.waypoints = waypoints
+    }
+
     this.waypoints.concat(waypoints)
   }
 
-  // Created specifically for report generation
   containsPanoramaText(): boolean {
     if (!this.options) {
       return false
