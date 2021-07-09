@@ -11,8 +11,8 @@ import {
   DirectionsResponse
 } from '@googlemaps/google-maps-services-js/dist/directions'
 import {Failure, HttpStatusCode, coordinateUtils, isFailure} from '../../util'
+import {MAX_POINTS_PER_ROUTE, MAX_WAYPOINTS_PER_ROUTE} from '../../config'
 
-import {MAX_POINTS_PER_ROUTE} from '../../config'
 import {decode} from 'polyline'
 
 class GoogleMaps implements DirectionsProvider {
@@ -94,6 +94,16 @@ class GoogleMaps implements DirectionsProvider {
       decodedLatLngCoords,
       this._increment
     )
+
+    if (incrementalCoordinates.length > MAX_POINTS_PER_ROUTE) {
+      return {
+        response: {
+          error: `Too many points (${MAX_POINTS_PER_ROUTE} max).`,
+          message: `Your route had ${decodedLatLngCoords.length} raw points which converted to ${incrementalCoordinates.length} snapped incremental points.`
+        },
+        statusCode: HttpStatusCode.NOT_ACCEPTABLE
+      }
+    }
 
     const snappedIncrementalCoordinates: LatLngLiteralVerbose[] =
       await this.getSnappedCoordinates(incrementalCoordinates)

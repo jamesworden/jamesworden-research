@@ -12,20 +12,17 @@ class CoordinateUtils {
     originalCoordinates: LatLngLiteralVerbose[],
     increment: number
   ): LatLngLiteralVerbose[] {
-    const indexOfLastOriginalCoordinate = originalCoordinates.length - 1
+    let currentPoint: LatLngLiteralVerbose = originalCoordinates[0]
     let validPoints: LatLngLiteralVerbose[] = []
     let distanceUntilNextPoint: number = 0
-    let originalCoordinatesTranscended: number = 0
+    let originalCoordinatesPassed: number = 0
 
-    let currentPoint: LatLngLiteralVerbose = originalCoordinates[0]
+    while (originalCoordinatesPassed < originalCoordinates.length) {
+      const nextPoint: LatLngLiteralVerbose =
+        originalCoordinates[originalCoordinatesPassed + 1]
 
-    while (originalCoordinatesTranscended < indexOfLastOriginalCoordinate) {
-      const decodedNextPoint =
-        originalCoordinates[originalCoordinatesTranscended + 1]
-
-      const nextPoint: LatLngLiteralVerbose = {
-        latitude: decodedNextPoint.latitude,
-        longitude: decodedNextPoint.longitude
+      if (!nextPoint) {
+        break
       }
 
       const distanceBetweenPoints: number =
@@ -34,18 +31,19 @@ class CoordinateUtils {
       if (distanceBetweenPoints < distanceUntilNextPoint) {
         distanceUntilNextPoint -= distanceBetweenPoints
         currentPoint = nextPoint
-        originalCoordinatesTranscended++
+        originalCoordinatesPassed++
+      } else {
+        const newPoint: LatLngLiteralVerbose =
+          calculations.getIntermediatePoint(
+            currentPoint,
+            nextPoint,
+            distanceUntilNextPoint
+          )
+
+        validPoints.push(newPoint)
+        currentPoint = newPoint // Set current position to newly added point
+        distanceUntilNextPoint = increment // Point added, reset distance
       }
-
-      const newPoint: LatLngLiteralVerbose = calculations.getIntermediatePoint(
-        currentPoint,
-        nextPoint,
-        distanceUntilNextPoint
-      )
-
-      validPoints.push(newPoint)
-      currentPoint = newPoint // Set current position to newly added point
-      distanceUntilNextPoint = increment // Point added, reset distance
     }
 
     return validPoints
