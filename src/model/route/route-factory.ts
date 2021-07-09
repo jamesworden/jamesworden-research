@@ -52,6 +52,7 @@ class RouteFactory {
     directions: Directions
   ): Promise<Route | Failure> {
     const coordinates: LatLngLiteralVerbose[] = directions.coordinates
+    const options: Option[] = this._options
 
     let pointsRes: Point[] | Failure = await this.createPoints(coordinates)
 
@@ -65,7 +66,6 @@ class RouteFactory {
     const increment: number = this._increment
     const points: Point[] = pointsRes
     const waypoints: LatLngLiteralVerbose[] = this._waypoints
-    const options: Option[] = this._options
 
     const route = new Route(origin, destination, distance, increment, points)
     route.addWaypoints(waypoints)
@@ -91,21 +91,21 @@ class RouteFactory {
   }
 
   private async getPotentialPoints(locations: LatLngLiteralVerbose[]) {
-    const pointPromises: Promise<void>[] = []
-    const points: Array<Point | Failure> = []
+    const pointPromises: Promise<Point | Failure>[] = []
 
     for (let location of locations) {
-      pointPromises.push(
-        app.pointFactory
-          .createPoint(location, this._options)
-          .then((pointRes) => {
-            points.push(pointRes)
-          })
-      )
+      pointPromises.push(app.pointFactory.createPoint(location, this._options))
     }
 
-    Promise.all(pointPromises)
-    return points
+    return Promise.all(pointPromises).then((points) => {
+      for (let point of points) {
+        if (isFailure(point)) {
+          return points
+        }
+      }
+
+      return points
+    })
   }
 
   private getFailureFromPoints(

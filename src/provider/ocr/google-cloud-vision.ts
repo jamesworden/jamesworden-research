@@ -7,7 +7,7 @@ class GoogleCloudVision implements OcrProvider {
   client: ImageAnnotatorClient = new vision.ImageAnnotatorClient()
 
   getTextFromImage = async (base64: string): Promise<string[]> => {
-    return await this.client
+    return this.client
       .textDetection(this.getImageOptions(base64))
       .then(([result]) =>
         this.getTextFromTextAnnotations(result.textAnnotations)
@@ -51,7 +51,7 @@ class GoogleCloudVision implements OcrProvider {
   isValidAnnotationDescription(
     description: TextAnnotationDescription
   ): boolean {
-    return !!description && this.textContainsGoogleWatermark(description)
+    return !!description && !this.textContainsGoogleWatermark(description)
   }
 }
 
