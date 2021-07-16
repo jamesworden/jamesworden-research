@@ -44,7 +44,7 @@ describe('Coordinate Utilities', () => {
     )
   })
 
-  it('Increment distance longer than route distance', () => {
+  it('Increment distance longer than route distance yields appropriate length', () => {
     const increment: number = 100
 
     const coordinates: LatLngLiteralVerbose[] = [
@@ -55,6 +55,6 @@ describe('Coordinate Utilities', () => {
     const incCoords: LatLngLiteralVerbose[] =
       coordinateUtils.getIncrementalCoordinates(coordinates, increment)
 
-    expect(incCoords.length).toBeLessThan(coordinates.length)
+    expect(incCoords.length).toBeLessThanOrEqual(coordinates.length)
   })
 })

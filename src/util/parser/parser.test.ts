@@ -16,14 +16,12 @@ describe('Parse coordinate string correctly', () => {
       return
     }
 
-    expect(res).toStrictEqual({
-      coordinates: [
-        {
-          latitude: 40,
-          longitude: -70
-        }
-      ]
-    })
+    expect(res).toStrictEqual([
+      {
+        latitude: 40,
+        longitude: -70
+      }
+    ])
   })
 
   it('Invalid pair', () => {
@@ -46,18 +44,16 @@ describe('Parse coordinate string correctly', () => {
       return
     }
 
-    expect(res).toStrictEqual({
-      coordinates: [
-        {
-          latitude: 40,
-          longitude: -70.01
-        },
-        {
-          latitude: 30.91,
-          longitude: 0
-        }
-      ]
-    })
+    expect(res).toStrictEqual([
+      {
+        latitude: 40,
+        longitude: -70.01
+      },
+      {
+        latitude: 30.91,
+        longitude: 0
+      }
+    ])
   })
 
   it('Invalid pairs', () => {
@@ -91,18 +87,23 @@ describe('Parse coordinate string correctly', () => {
 
   it('Invalid values', () => {
     str = 'value,9'
+    res = parser.getLocationsFromString(str)
     expect(isFailure(res)).toBe(true)
 
     str = '0,900'
+    res = parser.getLocationsFromString(str)
     expect(isFailure(res)).toBe(true)
 
     str = '78,9.32|test,9'
+    res = parser.getLocationsFromString(str)
     expect(isFailure(res)).toBe(true)
 
     str = '-91,3|3,181'
+    res = parser.getLocationsFromString(str)
     expect(isFailure(res)).toBe(true)
 
     str = '91,3|3,-181'
+    res = parser.getLocationsFromString(str)
     expect(isFailure(res)).toBe(true)
   })
 })
