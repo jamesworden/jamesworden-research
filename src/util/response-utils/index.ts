@@ -8,9 +8,13 @@ export type Failure = {
   }
 }
 
-export function isFailure(object: any): object is Failure {
-  const containsStatusCode: boolean = 'statusCode' in object
-  const containsResponse: boolean = 'response' in object
+export function isFailure(value: any): value is Failure {
+  if (value instanceof Object) {
+    const containsStatusCode: boolean = 'statusCode' in value
+    const containsResponse: boolean = 'response' in value
 
-  return containsStatusCode && containsResponse
+    return containsStatusCode && containsResponse
+  }
+
+  return false
 }

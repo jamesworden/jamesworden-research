@@ -4,29 +4,25 @@ import {calculations} from '../calculations'
 class CoordinateUtils {
   /**
    *
-   * @param coordinates array of gps coordinate pairs
+   * @param originalCoordinates array of gps coordinate pairs
    * @param increment distance to increment returned array of coordinates by
    * @returns array incrementally spaced coordinates
    */
   getIncrementalCoordinates(
-    coordinates: LatLngLiteralVerbose[],
+    originalCoordinates: LatLngLiteralVerbose[],
     increment: number
   ): LatLngLiteralVerbose[] {
+    let currentPoint: LatLngLiteralVerbose = originalCoordinates[0]
     let validPoints: LatLngLiteralVerbose[] = []
     let distanceUntilNextPoint: number = 0
-    let i: number = 1
+    let originalCoordinatesPassed: number = 0
 
-    let currentPoint: LatLngLiteralVerbose = {
-      latitude: coordinates[0].latitude,
-      longitude: coordinates[0].longitude
-    }
+    while (originalCoordinatesPassed < originalCoordinates.length) {
+      const nextPoint: LatLngLiteralVerbose =
+        originalCoordinates[originalCoordinatesPassed + 1]
 
-    while (i < coordinates.length - 1) {
-      const decodedNextPoint = coordinates[i + 1]
-
-      const nextPoint: LatLngLiteralVerbose = {
-        latitude: decodedNextPoint.latitude,
-        longitude: decodedNextPoint.longitude
+      if (!nextPoint) {
+        break
       }
 
       const distanceBetweenPoints: number =
@@ -35,18 +31,19 @@ class CoordinateUtils {
       if (distanceBetweenPoints < distanceUntilNextPoint) {
         distanceUntilNextPoint -= distanceBetweenPoints
         currentPoint = nextPoint
-        i++
+        originalCoordinatesPassed++
+      } else {
+        const newPoint: LatLngLiteralVerbose =
+          calculations.getIntermediatePoint(
+            currentPoint,
+            nextPoint,
+            distanceUntilNextPoint
+          )
+
+        validPoints.push(newPoint)
+        currentPoint = newPoint // Set current position to newly added point
+        distanceUntilNextPoint = increment // Point added, reset distance
       }
-
-      const newPoint: LatLngLiteralVerbose = calculations.getIntermediatePoint(
-        currentPoint,
-        nextPoint,
-        distanceUntilNextPoint
-      )
-
-      validPoints.push(newPoint)
-      currentPoint = newPoint // Set current position to newly added point
-      distanceUntilNextPoint = increment // Point added, reset distance
     }
 
     return validPoints

@@ -11,8 +11,8 @@ import {
   DirectionsResponse
 } from '@googlemaps/google-maps-services-js/dist/directions'
 import {Failure, HttpStatusCode, coordinateUtils, isFailure} from '../../util'
+import {MAX_DISTANCE_PER_ROUTE, MAX_POINTS_PER_ROUTE} from '../../config'
 
-import {MAX_POINTS_PER_ROUTE} from '../../config'
 import {decode} from 'polyline'
 
 class GoogleMaps implements DirectionsProvider {
@@ -46,12 +46,24 @@ class GoogleMaps implements DirectionsProvider {
   ): Promise<Directions | Failure> {
     const route: DirectionsRoute = directionsResponse.data.routes[0]
     const distance = this.getDistance(route)
-    const numPoints = distance / this._increment
+
+    if (distance > MAX_DISTANCE_PER_ROUTE) {
+      return {
+        response: {
+          error: `This route is too long!`,
+          message: `Your route: ${distance} meters, max: ${MAX_DISTANCE_PER_ROUTE} meters`
+        },
+        statusCode: HttpStatusCode.NOT_ACCEPTABLE
+      }
+    }
+
+    const numPoints = Math.ceil(distance / this._increment)
 
     if (numPoints > MAX_POINTS_PER_ROUTE) {
       return {
         response: {
-          error: `There were too many points for this route! Your route: ${numPoints}, max: ${MAX_POINTS_PER_ROUTE} `
+          error: `There were too many points for this route!`,
+          message: `Your route: ${numPoints} points, max: ${MAX_POINTS_PER_ROUTE} points`
         },
         statusCode: HttpStatusCode.NOT_ACCEPTABLE
       }
@@ -95,12 +107,13 @@ class GoogleMaps implements DirectionsProvider {
       this._increment
     )
 
-    if (incrementalCoordinates.length < decodedLatLngCoords.length) {
+    if (incrementalCoordinates.length > MAX_POINTS_PER_ROUTE) {
       return {
-        statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
         response: {
-          error: 'There was an error with the incremental coordinate algorithm.'
-        }
+          error: `Too many points (${MAX_POINTS_PER_ROUTE} max).`,
+          message: `Your route had ${decodedLatLngCoords.length} raw points which converted to ${incrementalCoordinates.length} snapped incremental points.`
+        },
+        statusCode: HttpStatusCode.NOT_ACCEPTABLE
       }
     }
 

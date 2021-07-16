@@ -1,0 +1,1474 @@
+{
+  "matchingText": [
+    {
+      "text": "Gorgle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67584468414655,
+          "longitude": -73.94527953855712
+        },
+        "panoramaText": ["Gorgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67584468414655,
+          "longitude": -73.94527953855712
+        },
+        "panoramaText": ["Gorgle"]
+      }
+    },
+    {
+      "text": "Gorgle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.6758647845679,
+          "longitude": -73.94563428851086
+        },
+        "panoramaText": ["Gorgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.6758647845679,
+          "longitude": -73.94563428851086
+        },
+        "panoramaText": ["Gorgle"]
+      }
+    },
+    {
+      "text": "1Gogle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      }
+    },
+    {
+      "text": "00",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      }
+    },
+    {
+      "text": "E",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      }
+    },
+    {
+      "text": "EE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67587483437143,
+          "longitude": -73.94581166356794
+        },
+        "panoramaText": ["1Gogle", "00", "E", "EE"]
+      }
+    },
+    {
+      "text": "10110g",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67588488390353,
+          "longitude": -73.94598903867849
+        },
+        "panoramaText": ["10110g"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67588488390353,
+          "longitude": -73.94598903867849
+        },
+        "panoramaText": ["10110g"]
+      }
+    },
+    {
+      "text": "STAIR",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      }
+    },
+    {
+      "text": "COM",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      }
+    },
+    {
+      "text": "(719)",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      }
+    },
+    {
+      "text": "937-1400",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      }
+    },
+    {
+      "text": "EL",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67589493316419,
+          "longitude": -73.94616641384253
+        },
+        "panoramaText": ["STAIR", "COM", "(719)", "937-1400", "EL"]
+      }
+    },
+    {
+      "text": "n",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      }
+    },
+    {
+      "text": "gle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      }
+    },
+    {
+      "text": "L",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      }
+    },
+    {
+      "text": "an",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675913863916904,
+          "longitude": -73.94652128455873
+        },
+        "panoramaText": ["n", "gle", "L", "an"]
+      }
+    },
+    {
+      "text": "2",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      }
+    },
+    {
+      "text": "Ggle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      }
+    },
+    {
+      "text": "Ggle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675923272155316,
+          "longitude": -73.94669871648624
+        },
+        "panoramaText": ["2", "Ggle", "Ggle"]
+      }
+    },
+    {
+      "text": "ARISTA",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675932680122116,
+          "longitude": -73.94687614846382
+        },
+        "panoramaText": ["ARISTA"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675932680122116,
+          "longitude": -73.94687614846382
+        },
+        "panoramaText": ["ARISTA"]
+      }
+    },
+    {
+      "text": "C",
+      "routePoint": {
+        "location": {
+          "latitude": 40.675942087817305,
+          "longitude": -73.94705358049148
+        },
+        "panoramaText": ["C"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675942087817305,
+          "longitude": -73.94705358049148
+        },
+        "panoramaText": ["C"]
+      }
+    },
+    {
+      "text": "202",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676011228945384,
+          "longitude": -73.94714401236332
+        },
+        "panoramaText": ["202"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676011228945384,
+          "longitude": -73.94714401236332
+        },
+        "panoramaText": ["202"]
+      }
+    },
+    {
+      "text": "EFE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      }
+    },
+    {
+      "text": "EEF",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      }
+    },
+    {
+      "text": "EF",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      }
+    },
+    {
+      "text": "EF",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      }
+    },
+    {
+      "text": "110",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67628034835093,
+          "longitude": -73.94711884566274
+        },
+        "panoramaText": ["EFE", "EEF", "EF", "EF", "110"]
+      }
+    },
+    {
+      "text": "LINION",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "INITD",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "METI",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "ELE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "FFE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "FFE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "ESP",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      }
+    },
+    {
+      "text": "New",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676684202905264,
+          "longitude": -73.94708438878078
+        },
+        "panoramaText": ["New"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676684202905264,
+          "longitude": -73.94708438878078
+        },
+        "panoramaText": ["New"]
+      }
+    },
+    {
+      "text": "EE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      }
+    },
+    {
+      "text": "田田",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      }
+    },
+    {
+      "text": "Goc",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676721221046954,
+          "longitude": -73.94696320430207
+        },
+        "panoramaText": ["EE", "田田", "Goc"]
+      }
+    },
+    {
+      "text": "113",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676711747557604,
+          "longitude": -73.94678578383551
+        },
+        "panoramaText": ["113"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676711747557604,
+          "longitude": -73.94678578383551
+        },
+        "panoramaText": ["113"]
+      }
+    },
+    {
+      "text": "Gog",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67670229943186,
+          "longitude": -73.94660836223464
+        },
+        "panoramaText": ["Gog"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67670229943186,
+          "longitude": -73.94660836223464
+        },
+        "panoramaText": ["Gog"]
+      }
+    },
+    {
+      "text": "METR",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      }
+    },
+    {
+      "text": "ROLP",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      }
+    },
+    {
+      "text": "INe.",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      }
+    },
+    {
+      "text": "Goc",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67669260506071,
+          "longitude": -73.9464309458105
+        },
+        "panoramaText": ["METR", "ROLP", "INe.", "Goc"]
+      }
+    },
+    {
+      "text": "718-40-11R",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "HIGH",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "QUALTBu",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "ecoer",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "P",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "the",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "tenen",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67668290443221,
+          "longitude": -73.94625353470904
+        },
+        "panoramaText": ["718-40-11R", "HIGH", "QUALTBu", "ecoer", "P", "the", "tenen"]
+      }
+    },
+    {
+      "text": "SALIY",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      }
+    },
+    {
+      "text": "ELECTRIC",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      }
+    },
+    {
+      "text": "Gbs",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      }
+    },
+    {
+      "text": "laoctor",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67667320353218,
+          "longitude": -73.9460761236592
+        },
+        "panoramaText": ["SALIY", "ELECTRIC", "Gbs", "laoctor"]
+      }
+    },
+    {
+      "text": "Goc",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67666350236059,
+          "longitude": -73.94589871266102
+        },
+        "panoramaText": ["Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67666350236059,
+          "longitude": -73.94589871266102
+        },
+        "panoramaText": ["Goc"]
+      }
+    },
+    {
+      "text": "Go",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67664409920278,
+          "longitude": -73.94554389081952
+        },
+        "panoramaText": ["Go"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67664409920278,
+          "longitude": -73.94554389081952
+        },
+        "panoramaText": ["Go"]
+      }
+    },
+    {
+      "text": "EEE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      }
+    },
+    {
+      "text": "21",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      }
+    },
+    {
+      "text": "Go",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      }
+    },
+    {
+      "text": "EFT",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67662469495878,
+          "longitude": -73.94518906918458
+        },
+        "panoramaText": ["EFT", "FT"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67662469495878,
+          "longitude": -73.94518906918458
+        },
+        "panoramaText": ["EFT", "FT"]
+      }
+    },
+    {
+      "text": "FT",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67662469495878,
+          "longitude": -73.94518906918458
+        },
+        "panoramaText": ["EFT", "FT"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67662469495878,
+          "longitude": -73.94518906918458
+        },
+        "panoramaText": ["EFT", "FT"]
+      }
+    },
+    {
+      "text": "OP",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      }
+    },
+    {
+      "text": "6an2",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      }
+    },
+    {
+      "text": "Goo",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67660528962861,
+          "longitude": -73.94483424775618
+        },
+        "panoramaText": ["OP", "6an2", "Goo"]
+      }
+    },
+    {
+      "text": "111",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      }
+    },
+    {
+      "text": "DE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      }
+    },
+    {
+      "text": "21",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      }
+    },
+    {
+      "text": "Goc",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67658588321226,
+          "longitude": -73.94447942653436
+        },
+        "panoramaText": ["111", "DE", "21", "Goc"]
+      }
+    },
+    {
+      "text": "EE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67656627061578,
+          "longitude": -73.94432349691446
+        },
+        "panoramaText": ["EE", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67656627061578,
+          "longitude": -73.94432349691446
+        },
+        "panoramaText": ["EE", "EE"]
+      }
+    },
+    {
+      "text": "EE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67656627061578,
+          "longitude": -73.94432349691446
+        },
+        "panoramaText": ["EE", "EE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67656627061578,
+          "longitude": -73.94432349691446
+        },
+        "panoramaText": ["EE", "EE"]
+      }
+    },
+    {
+      "text": "Brogkiyn",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67643168822482,
+          "longitude": -73.94433566140506
+        },
+        "panoramaText": ["Brogkiyn", "ONE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67643168822482,
+          "longitude": -73.94433566140506
+        },
+        "panoramaText": ["Brogkiyn", "ONE"]
+      }
+    },
+    {
+      "text": "ONE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67643168822482,
+          "longitude": -73.94433566140506
+        },
+        "panoramaText": ["Brogkiyn", "ONE"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67643168822482,
+          "longitude": -73.94433566140506
+        },
+        "panoramaText": ["Brogkiyn", "ONE"]
+      }
+    },
+    {
+      "text": "ler",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676297105832575,
+          "longitude": -73.94434782584652
+        },
+        "panoramaText": ["ler"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676297105832575,
+          "longitude": -73.94434782584652
+        },
+        "panoramaText": ["ler"]
+      }
+    },
+    {
+      "text": "60",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67616252343906,
+          "longitude": -73.94435999023887
+        },
+        "panoramaText": ["60"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67616252343906,
+          "longitude": -73.94435999023887
+        },
+        "panoramaText": ["60"]
+      }
+    },
+    {
+      "text": "201",
+      "routePoint": {
+        "location": {
+          "latitude": 40.6758933586482,
+          "longitude": -73.94438431887625
+        },
+        "panoramaText": ["201"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.6758933586482,
+          "longitude": -73.94438431887625
+        },
+        "panoramaText": ["201"]
+      }
+    },
+    {
+      "text": "rile",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675817581920796,
+          "longitude": -73.94479978971383
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "77021",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675817581920796,
+          "longitude": -73.94479978971383
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "Gocgle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675817581920796,
+          "longitude": -73.94479978971383
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "rile",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675810670373444,
+          "longitude": -73.94467479032079
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "77021",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675810670373444,
+          "longitude": -73.94467479032079
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "Gocgle",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67581758224191,
+          "longitude": -73.94479979552136
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.675810670373444,
+          "longitude": -73.94467479032079
+        },
+        "panoramaText": ["rile", "77021", "Gocgle"]
+      }
+    },
+    {
+      "text": "Go",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67663439721655,
+          "longitude": -73.94536647997623
+        },
+        "panoramaText": ["EEE", "21", "Go"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.67664123405061,
+          "longitude": -73.94549149802951
+        },
+        "panoramaText": ["Go"]
+      }
+    },
+    {
+      "text": "New",
+      "routePoint": {
+        "location": {
+          "latitude": 40.676684202905264,
+          "longitude": -73.94708438878078
+        },
+        "panoramaText": ["New"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676589331208255,
+          "longitude": -73.94709225242654
+        },
+        "panoramaText": ["New"]
+      }
+    },
+    {
+      "text": "FFE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676320086381125,
+          "longitude": -73.9471151295437
+        },
+        "panoramaText": ["DIST", "CHURCH", "EEE", "FFE", "t", "FFEFE", "FE", "TR"]
+      }
+    },
+    {
+      "text": "FFE",
+      "routePoint": {
+        "location": {
+          "latitude": 40.67641494151955,
+          "longitude": -73.94710670703452
+        },
+        "panoramaText": ["LINION", "INITD", "METI", "ELE", "FFE", "FFE", "ESP"]
+      },
+      "detourPoint": {
+        "location": {
+          "latitude": 40.676320086381125,
+          "longitude": -73.9471151295437
+        },
+        "panoramaText": ["DIST", "CHURCH", "EEE", "FFE", "t", "FFEFE", "FE", "TR"]
+      }
+    }
+  ],
+  "divergencePoint": {
+    "location": {
+      "latitude": 40.67584468414655,
+      "longitude": -73.94527953855712
+    },
+    "panoramaText": ["Gorgle"]
+  },
+  "status": "There route and detour do not seem to diverge from one another based on their text data."
+}

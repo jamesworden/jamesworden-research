@@ -25,7 +25,7 @@ class RouteFactory {
     waypoints: LatLngLiteralVerbose[],
     options: Option[]
   ): Promise<Route | Failure> {
-    this._origin
+    this._origin = origin
     this._destination = destination
     this._waypoints = waypoints
     this._options = options
@@ -52,6 +52,7 @@ class RouteFactory {
     directions: Directions
   ): Promise<Route | Failure> {
     const coordinates: LatLngLiteralVerbose[] = directions.coordinates
+    const options: Option[] = this._options
 
     let pointsRes: Point[] | Failure = await this.createPoints(coordinates)
 
@@ -59,20 +60,15 @@ class RouteFactory {
       return pointsRes
     }
 
-    const distance: number = directions.distance
-
-    const route = new Route(
-      this._origin,
-      this._destination,
-      pointsRes,
-      this._increment,
-      distance
-    )
-
-    route.addWaypoints(this._waypoints)
-    route.addOptions(this._options)
-
-    return route
+    return {
+      origin: this._origin,
+      destination: this._destination,
+      distance: directions.distance,
+      increment: this._increment,
+      points: pointsRes,
+      waypoints: this._waypoints,
+      options
+    }
   }
 
   private async createPoints(
@@ -92,21 +88,21 @@ class RouteFactory {
   }
 
   private async getPotentialPoints(locations: LatLngLiteralVerbose[]) {
-    const pointPromises: Promise<void>[] = []
-    const points: Array<Point | Failure> = []
+    const pointPromises: Promise<Point | Failure>[] = []
 
     for (let location of locations) {
-      pointPromises.push(
-        app.pointFactory
-          .createPoint(location, this._options)
-          .then((pointRes) => {
-            points.push(pointRes)
-          })
-      )
+      pointPromises.push(app.pointFactory.createPoint(location, this._options))
     }
 
-    Promise.all(pointPromises)
-    return points
+    return Promise.all(pointPromises).then((points) => {
+      for (let point of points) {
+        if (isFailure(point)) {
+          return points
+        }
+      }
+
+      return points
+    })
   }
 
   private getFailureFromPoints(

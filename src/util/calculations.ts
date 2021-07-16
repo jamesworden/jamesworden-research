@@ -2,7 +2,9 @@ import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
 
 class Calculations {
   /**
-   * https://www.movable-type.co.uk/scripts/latlong.html
+   *
+   * @see {@link https://www.movable-type.co.uk/scripts/latlong.html}
+   *
    * @returns distance in meters
    */
   getDistanceBetweenPoints(
@@ -30,6 +32,10 @@ class Calculations {
     return d
   }
 
+  /**
+   *
+   * @param distance in meters
+   */
   getIntermediatePoint(
     pointA: LatLngLiteralVerbose,
     pointB: LatLngLiteralVerbose,
@@ -40,7 +46,8 @@ class Calculations {
   }
 
   /**
-   * https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
+   *
+   * @see {@link https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript}
    */
   getBearingFromPoints(
     pointA: LatLngLiteralVerbose,
@@ -61,49 +68,50 @@ class Calculations {
   }
 
   /**
-   * https://stackoverflow.com/a/46410871/13549
    *
-   * TODO: Gives super inaccurate answer when calculating large distances horizontally
+   * @see {@link https://stackoverflow.com/questions/2637023/how-to-calculate-the-latlng-of-a-point-a-certain-distance-away-from-another}
+   *
+   * @param distance in meters
    */
   getPointFromDistance(
     point: LatLngLiteralVerbose,
     distance: number,
     bearing: number
   ): LatLngLiteralVerbose {
-    distance /= 1000 // Convert distance from M to KM
-    bearing = (bearing * Math.PI) / 180 // Convert bearing to radian
-    let radius = 6378.1, // Radius of the Earth
-      radianLatitude = (point.latitude * Math.PI) / 180, // Current coords to radians
-      radianLongitude = (point.longitude * Math.PI) / 180
+    distance = distance / 6371000
+    bearing = this.toRadians(bearing)
 
-    radianLatitude = Math.asin(
-      Math.sin(radianLatitude) * Math.cos(distance / radius) +
-        Math.cos(radianLatitude) *
-          Math.sin(distance / radius) *
-          Math.cos(bearing)
-    )
-    radianLongitude += Math.atan2(
-      Math.sin(bearing) *
-        Math.sin(distance / radius) *
-        Math.cos(radianLongitude),
-      Math.cos(distance / radius) -
-        Math.sin(radianLongitude) * Math.sin(radianLongitude)
+    let lat1: number = this.toRadians(point.latitude)
+    let lon1: number = this.toRadians(point.longitude)
+
+    let lat2: number = Math.asin(
+      Math.sin(lat1) * Math.cos(distance) +
+        Math.cos(lat1) * Math.sin(distance) * Math.cos(bearing)
     )
 
-    // Coords back to degrees and return
-    const latitude = (radianLatitude * 180) / Math.PI
-    const longitude = (radianLongitude * 180) / Math.PI
+    let lon2: number =
+      lon1 +
+      Math.atan2(
+        Math.sin(bearing) * Math.sin(distance) * Math.cos(lat1),
+        Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2)
+      )
 
     return {
-      latitude,
-      longitude
+      latitude: this.toDegrees(lat2),
+      longitude: this.toDegrees(lon2)
     }
   }
 
-  // Converts from degrees to radians
+  /**
+   *
+   * Converts from degrees to radians
+   */
   toRadians = (degrees: number): number => (degrees * Math.PI) / 180
 
-  // Converts from radians to degrees
+  /**
+   *
+   * Converts from radians to degrees
+   */
   toDegrees = (radians: number): number => (radians * 180) / Math.PI
 }
 

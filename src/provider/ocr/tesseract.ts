@@ -20,7 +20,7 @@ class Tesseract implements OcrProvider {
   }
 
   getTextFromImage = async (base64: string): Promise<string[]> => {
-    const imageBuffer = Buffer.from(base64)
+    const imageBuffer = Buffer.from(base64, 'base64')
     await this.initWorker()
 
     const {

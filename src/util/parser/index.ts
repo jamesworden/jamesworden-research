@@ -5,7 +5,7 @@ import {isFailure} from '../response-utils'
 
 class Parser {
   getLocationsFromString(input: string): LatLngLiteralVerbose[] | Failure {
-    const locationStrings: string[] = input.split(',')
+    const locationStrings: string[] = input.split('|')
 
     let locations: LatLngLiteralVerbose[] = []
 

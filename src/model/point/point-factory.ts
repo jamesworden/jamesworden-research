@@ -21,12 +21,6 @@ class PointFactory {
     location: LatLngLiteralVerbose,
     options: Option[]
   ): Promise<Point | Failure> {
-    const lat: number = location.latitude
-    const lng: number = location.longitude
-
-    let panoramaText: string[] | undefined = undefined
-    let panoramaId: string | undefined = undefined
-
     const optionRes: OptionData | Failure = await this.getOptionData(
       location,
       options
@@ -36,16 +30,10 @@ class PointFactory {
       return optionRes
     }
 
-    panoramaText = optionRes.panoramaText
-    panoramaId = optionRes.panoramaId
-
     const point: Point = {
-      location: {
-        latitude: lat,
-        longitude: lng
-      },
-      panoramaId,
-      panoramaText
+      location,
+      panoramaId: optionRes.panoramaId,
+      panoramaText: optionRes.panoramaText
     }
 
     return point
@@ -90,7 +78,7 @@ class PointFactory {
   private async getPanoramaText(
     location: LatLngLiteralVerbose
   ): Promise<Failure | string[]> {
-    const text: string[] = []
+    let text: string[] = []
 
     // Gather text from three different images to simulate a panorama image
     for (let heading = 0; heading < 360; heading += 120) {
@@ -101,7 +89,7 @@ class PointFactory {
         return textRes
       }
 
-      text.concat(textRes)
+      text = text.concat(textRes)
     }
 
     return text
