@@ -13,7 +13,7 @@ let points: any
  * This is a hacky way to run it client side because we
  * are server side rendering with react.
  */
-export function callback() {
+export function callback(): void {
   let map
 
   map = new google.maps.Map(document.getElementById('map'), {
