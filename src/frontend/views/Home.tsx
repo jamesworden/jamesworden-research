@@ -4,7 +4,7 @@ import {A} from '../components/A'
 import {Header} from '../components/Header'
 import {Hr} from '../components/Hr'
 import {Layout} from '../Layout'
-import {Map} from '../components/map/Map'
+import {Map} from '../components/Map'
 import {Route} from '../../model/route'
 import {Section} from '../components/Section'
 
