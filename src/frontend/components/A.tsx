@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {BLACK} from '../colors'
+import {BLACK} from '../style-constants'
 
 interface A {
   children: string | string[]

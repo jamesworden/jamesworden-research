@@ -1,4 +1,4 @@
-import {BLACK} from '../colors'
+import {BLACK} from '../style-constants'
 import {NavIcon} from './NavIcon'
 import React from 'react'
 
