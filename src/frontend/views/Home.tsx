@@ -2,10 +2,26 @@ import * as React from 'react'
 
 import {A} from '../components/A'
 import {Header} from '../components/Header'
+import {Hr} from '../components/Hr'
 import {Layout} from '../Layout'
+import {Map} from '../components/map/Map'
+import {Route} from '../../model/route'
 import {Section} from '../components/Section'
 
-interface Home {}
+interface Home {
+  route: Route
+}
+
+const horizontalFlex: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+}
+
+const verticalFlex: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column'
+}
 
 export default class extends React.Component<Home> {
   render() {
@@ -68,10 +84,35 @@ export default class extends React.Component<Home> {
             Google Streetview images allows us to extract text from the street
             view at any relevant GPS coordinate. Below is a map that displays
             real text data at points along a given route. This 'Route' was
-            obtained from our <A href="/docs#route">Route API</A>. Click the
-            points along the map to observe the text found at each point.
+            obtained from our <A href="/docs#route">Route API</A>. Hover over
+            the points along the map to observe the text found at each point.
           </p>
-          {/* <Map /> */}
+          <Hr />
+        </Section>
+        <Section paddingTop={true}>
+          <div style={verticalFlex}>
+            <div style={horizontalFlex}>
+              <span>
+                <strong>Origin:</strong> {this.props.route.origin}
+              </span>
+              <span>
+                <strong>Destination:</strong> {this.props.route.destination}
+              </span>
+            </div>
+            <div style={horizontalFlex}>
+              <span>
+                <strong>Distance:</strong>{' '}
+                {`${this.props.route.distance} meters`}
+              </span>
+              <span>
+                <strong>Increment distance:</strong>{' '}
+                {`${this.props.route.increment} meters`}
+              </span>
+            </div>
+          </div>
+        </Section>
+        <Section paddingTop={true}>
+          <Map points={this.props.route.points} />
         </Section>
       </Layout>
     )
