@@ -1,8 +1,8 @@
-import {Failure} from '../response-utils'
-import {HttpStatusCode} from '..'
+import {Failure} from './response-utils'
+import {HttpStatusCode} from '.'
 import {Response} from 'express'
 
-class QueryValidatior {
+class QueryValidator {
   response: Response
 
   constructor(response: Response) {
@@ -76,4 +76,4 @@ class QueryValidatior {
   }
 }
 
-export {QueryValidatior}
+export {QueryValidator}

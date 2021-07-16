@@ -58,4 +58,18 @@ class GoogleStreetView implements PanoramaImageProvider {
   }
 }
 
+export function textContainsGoogleWatermark(text: string): boolean {
+  return (
+    text.includes('©') ||
+    text.includes('@') ||
+    text.includes('Google') ||
+    text.includes('360') ||
+    text.includes('Threshold') ||
+    text.includes('Gaogle') ||
+    text.includes('2021') ||
+    text.includes('Gcogls') ||
+    text.includes('google')
+  )
+}
+
 export const googleStreetView = new GoogleStreetView()

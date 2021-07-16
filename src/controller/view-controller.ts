@@ -1,6 +1,6 @@
 import {Request, Response} from 'express'
 
-import {QueryValidatior} from '../util'
+import {QueryValidator} from '../util'
 import express from 'express'
 
 const viewRouter = express.Router({mergeParams: true})
@@ -17,7 +17,7 @@ viewRouter.get('/', async function (req: Request, res: Response) {
   const key: string = req.query.key as string
   const location: string = req.query.origin as string
 
-  const queryValidator = new QueryValidatior(res)
+  const queryValidator = new QueryValidator(res)
   if (queryValidator.containsUndefinedValues({location})) return
   if (queryValidator.containsInvalidKey(key)) return
 

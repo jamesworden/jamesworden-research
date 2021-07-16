@@ -19,3 +19,7 @@ export function getOptions(
 
   return options
 }
+
+export function containsPanoramaText(options: Option[]) {
+  return options.includes(Option.PANORAMA_TEXT)
+}

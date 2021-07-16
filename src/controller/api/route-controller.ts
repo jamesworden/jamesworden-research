@@ -1,6 +1,6 @@
 import {
   Failure,
-  QueryValidatior,
+  QueryValidator,
   isFailure,
   parser,
   validation
@@ -19,18 +19,15 @@ routeRouter.get('/', async function (req: Request, res: Response) {
   /**
    * Is Sample
    */
-
   const sample: string = req.query.sample as string
 
   if (validation.equalsTrue(sample)) {
-    res.status(200).send({route: sampleRoute})
+    res.status(200).send(sampleRoute)
     return
   }
-
   /**
    * Get params
    */
-
   const key: string = req.query.key as string
   const origin: string = req.query.origin as string
   const destination: string = req.query.destination as string
@@ -44,19 +41,15 @@ routeRouter.get('/', async function (req: Request, res: Response) {
   const increment: number = req.query.increment
     ? parseInt(req.query.increment as string)
     : DEFAULT_INCREMENT_DISTANCE
-
   /**
    * Validate
    */
-
-  const queryValidator = new QueryValidatior(res)
+  const queryValidator = new QueryValidator(res)
   if (queryValidator.containsInvalidKey(key)) return
   if (queryValidator.containsUndefinedValues({origin, destination})) return
-
   /**
    * Build and return
    */
-
   const options: Option[] = getOptions(panoramaId, panoramaText)
 
   let waypoints: LatLngLiteralVerbose[] = []

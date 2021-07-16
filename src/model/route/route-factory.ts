@@ -60,18 +60,15 @@ class RouteFactory {
       return pointsRes
     }
 
-    const origin: string = this._origin
-    const destination: string = this._destination
-    const distance: number = directions.distance
-    const increment: number = this._increment
-    const points: Point[] = pointsRes
-    const waypoints: LatLngLiteralVerbose[] = this._waypoints
-
-    const route = new Route(origin, destination, distance, increment, points)
-    route.addWaypoints(waypoints)
-    route.addOptions(options)
-
-    return route
+    return {
+      origin: this._origin,
+      destination: this._destination,
+      distance: directions.distance,
+      increment: this._increment,
+      points: pointsRes,
+      waypoints: this._waypoints,
+      options
+    }
   }
 
   private async createPoints(
