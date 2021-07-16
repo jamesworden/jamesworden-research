@@ -1,4 +1,4 @@
-import {LIGHT_GREY, WHITE} from '../colors'
+import {LIGHT_GREY, WHITE} from '../style-constants'
 import React, {ReactElement} from 'react'
 
 import {Container} from './Container'
