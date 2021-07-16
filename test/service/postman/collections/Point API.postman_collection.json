@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "37d06ce7-506d-4a34-bcb0-2ed027199be8",
+		"name": "Point API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Missing key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires API key message\", function () {\r",
+							"  pm.expect(response.error).to.contain('API key')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/point",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"point"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing query parameters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"  pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires query parameters message\", function () {\r",
+							"  pm.expect(response.error).to.contain('query parameter')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/point?key={{key}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"point"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get point",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test('Point',function () {\r",
+							"    pm.expect(response.location).to.have.keys('latitude', 'longitude')\r",
+							"    pm.expect(response.location.latitude).to.equal(40.760032)\r",
+							"    pm.expect(response.location.longitude).to.equal(-73.980740)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/point?key={{key}}&location=40.760032, -73.980740",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"point"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "location",
+							"value": "40.760032, -73.980740"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Options",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test('Point',function () {\r",
+							"    pm.expect(response.location).to.have.keys('latitude', 'longitude')\r",
+							"    pm.expect(response.location.latitude).to.equal(40.760032)\r",
+							"    pm.expect(response.location.longitude).to.equal(-73.980740)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Options\", function () {\r",
+							"  pm.expect(response.panoramaId).to.be.a('string')\r",
+							"  pm.expect(response.panoramaText).to.be.an('array')\r",
+							"  pm.expect(response.panoramaText[0]).to.be.a('string')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/point?key={{key}}&location=40.760032, -73.980740&panoramaText=true&panoramaId=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"point"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "location",
+							"value": "40.760032, -73.980740"
+						},
+						{
+							"key": "panoramaText",
+							"value": "true"
+						},
+						{
+							"key": "panoramaId",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test('Point',function () {\r",
+							"    pm.expect(response.location).to.have.keys('latitude', 'longitude')\r",
+							"    pm.expect(response.location.latitude).to.equal(40.760032)\r",
+							"    pm.expect(response.location.longitude).to.equal(-73.980740)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Options\", function () {\r",
+							"  pm.expect(response.panoramaId).to.be.a('string')\r",
+							"  pm.expect(response.panoramaText).to.be.an('array')\r",
+							"  pm.expect(response.panoramaText[0]).to.be.a('string')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/point?key={{key}}&sample=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"point"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "sample",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

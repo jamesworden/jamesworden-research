@@ -1,79 +1,417 @@
 {
-  "info": {
-    "_postman_id": "2f4d5861-8954-4edd-8edf-a58d18feca6d",
-    "name": "Route API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Missing key",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 401\", function () {\r",
-              "  pm.response.to.have.status(401);\r",
-              "});\r",
-              "\r",
-              "const response = pm.response.json();\r",
-              "\r",
-              "pm.test(\"Requires API key message\", function () {\r",
-              "  pm.expect(response.error).to.contain('API key')\r",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{url}}/api/v1/route",
-          "host": ["{{url}}"],
-          "path": ["api", "v1", "route"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Missing query parameters",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 406\", function () {\r",
-              "  pm.response.to.have.status(406);\r",
-              "});\r",
-              "\r",
-              "const response = pm.response.json();\r",
-              "\r",
-              "pm.test(\"Requires query parameters message\", function () {\r",
-              "  pm.expect(response.error).to.contain('query parameters')\r",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{url}}/api/v1/route?key={{key}}",
-          "host": ["{{url}}"],
-          "path": ["api", "v1", "route"],
-          "query": [
-            {
-              "key": "key",
-              "value": "{{key}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "2f4d5861-8954-4edd-8edf-a58d18feca6d",
+		"name": "Route API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Missing key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires API key message\", function () {\r",
+							"  pm.expect(response.error).to.contain('API key')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing query parameters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"  pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires query parameters message\", function () {\r",
+							"  pm.expect(response.error).to.contain('query parameter')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get route",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Route\", function () {\r",
+							"  pm.expect(response.origin).contains('40.760032, -73.980740')\r",
+							"  pm.expect(response.destination).contains('40.759923, -73.980480')\r",
+							"  pm.expect(response.distance).to.equal(25)\r",
+							"  pm.expect(response.increment).to.equal(5)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Points\", function () {\r",
+							"  pm.expect(response.points).to.be.an('array')\r",
+							"  pm.expect(response.points[0]).to.have.key('location')\r",
+							"  pm.expect(response.points[0]).to.not.have.keys('panoramaId', 'panoramaText')\r",
+							"  pm.expect(response.points.length).to.be.lte((response.distance / response.increment) + 1)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}&origin=40.760032, -73.980740&destination=40.759923, -73.980480&increment=5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.760032, -73.980740"
+						},
+						{
+							"key": "destination",
+							"value": "40.759923, -73.980480"
+						},
+						{
+							"key": "increment",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Options",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Route\", function () {\r",
+							"  pm.expect(response.origin).contains('40.760032, -73.980740')\r",
+							"  pm.expect(response.destination).contains('40.759923, -73.980480')\r",
+							"  pm.expect(response.distance).to.equal(25)\r",
+							"  pm.expect(response.increment).to.equal(26)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Options\", function () {\r",
+							"  pm.expect(response.points).to.be.an('array')\r",
+							"  pm.expect(response.options).to.be.an('array')\r",
+							"  pm.expect(response.options.length).to.equal(2)\r",
+							"  pm.expect(response.points.length).to.be.lt((response.distance / response.increment) + 1)\r",
+							"\r",
+							"  pm.expect(response.points[0]).to.have.keys('panoramaId', 'panoramaText', 'location')\r",
+							"  pm.expect(response.points[0].panoramaId).to.be.a('string')\r",
+							"  pm.expect(response.points[0].panoramaText).to.be.an('array')\r",
+							"  pm.expect(response.points[0].panoramaText[0]).to.be.a('string')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}&origin=40.760032, -73.980740&destination=40.759923, -73.980480&increment=26&panoramaId=true&panoramaText=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.760032, -73.980740"
+						},
+						{
+							"key": "destination",
+							"value": "40.759923, -73.980480"
+						},
+						{
+							"key": "increment",
+							"value": "26"
+						},
+						{
+							"key": "panoramaId",
+							"value": "true"
+						},
+						{
+							"key": "panoramaText",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Route\", function () {\r",
+							"  pm.expect(response.origin).contains('40.758091, -73.996619')\r",
+							"  pm.expect(response.destination).contains('40.759290, -73.995755')\r",
+							"  pm.expect(response.distance).to.equal(152)\r",
+							"  pm.expect(response.increment).to.equal(5)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Options\", function () {\r",
+							"  pm.expect(response.points).to.be.an('array')\r",
+							"  pm.expect(response.options).to.be.an('array')\r",
+							"  pm.expect(response.options.length).to.equal(2)\r",
+							"  pm.expect(response.points.length).to.be.lt((response.distance / response.increment) + 1)\r",
+							"\r",
+							"  pm.expect(response.points[0]).to.have.keys('panoramaId', 'panoramaText', 'location')\r",
+							"  pm.expect(response.points[0].panoramaId).to.be.a('string')\r",
+							"  pm.expect(response.points[0].panoramaText).to.be.an('array')\r",
+							"  pm.expect(response.points[0].panoramaText[0]).to.be.a('string')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}&sample=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "sample",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Too long",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"  pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Route too long error\", function () {\r",
+							"  pm.expect(response.error).to.contain('too long')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}&origin=40.738059, -74.004254&destination=40.712991, -73.965728&increment=5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.738059, -74.004254"
+						},
+						{
+							"key": "destination",
+							"value": "40.712991, -73.965728"
+						},
+						{
+							"key": "increment",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Too many points",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"  pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Too many points error\", function () {\r",
+							"  pm.expect(response.error).to.contain('too many points')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/route?key={{key}}&origin=40.715940, -73.979544&destination=40.723859, -74.000114&increment=5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"route"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.715940, -73.979544"
+						},
+						{
+							"key": "destination",
+							"value": "40.723859, -74.000114"
+						},
+						{
+							"key": "increment",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }

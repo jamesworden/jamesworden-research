@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "904c4482-182c-4318-8fba-f031d662d2b7",
+		"name": "Report API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Missing key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"  pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires API key message\", function () {\r",
+							"  pm.expect(response.error).to.contain('API key')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/report",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"report"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing query parameters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {\r",
+							"  pm.response.to.have.status(406);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Requires query parameters message\", function () {\r",
+							"  pm.expect(response.error).to.contain('query parameter')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/report?key={{key}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"report"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get report (different routes)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Report\", function () {\r",
+							"  pm.expect(response.status).to.contain('The route and detor seem to diverge from one another based on the text data'\r",
+							"  )\r",
+							"  pm.expect(response.matchingText).to.be.an('array')\r",
+							"  pm.expect(response.convergencePoint).to.have.keys('location', 'panoramaText')\r",
+							"  pm.expect(response.divergencePoint).to.have.keys('location', 'panoramaText')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/report?key={{key}}&origin=40.708510,-74.079795&destination=40.707811,-74.076989&waypoints=40.708630,-74.078486&increment=10",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"report"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.708510,-74.079795"
+						},
+						{
+							"key": "destination",
+							"value": "40.707811,-74.076989"
+						},
+						{
+							"key": "waypoints",
+							"value": "40.708630,-74.078486"
+						},
+						{
+							"key": "increment",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get report (same routes)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Report\", function () {\r",
+							"  pm.expect(response.status).to.contain('There route and detour do not seem to diverge from one another based on their text data.'\r",
+							"  )\r",
+							"  pm.expect(response.matchingText).to.be.an('array')\r",
+							"  pm.expect(response).to.not.have.keys('convergencePoint', 'divergencePoint')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/report?key={{key}}&origin=40.675843, -73.945284&destination=40.675817, -73.944795&waypoints=40.675837, -73.945015&increment=15",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"report"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "origin",
+							"value": "40.675843, -73.945284"
+						},
+						{
+							"key": "destination",
+							"value": "40.675817, -73.944795"
+						},
+						{
+							"key": "waypoints",
+							"value": "40.675837, -73.945015"
+						},
+						{
+							"key": "increment",
+							"value": "15"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sample",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Sample report\", function () {\r",
+							"  pm.expect(response.status).to.contain('There route and detour do not seem to diverge from one another based on their text data.'\r",
+							"  )\r",
+							"  pm.expect(response.matchingText).to.be.an('array')\r",
+							"  pm.expect(response).to.not.have.keys('convergencePoint', 'divergencePoint')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/report?key={{key}}&sample=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"report"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{key}}"
+						},
+						{
+							"key": "sample",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
