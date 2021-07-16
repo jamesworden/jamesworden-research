@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
+    "module": "commonjs",
     "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
     "skipLibCheck": true,
     "sourceMap": true,
@@ -20,7 +20,8 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "jsx": "react",
-    "noImplicitReturns": false
+    "noImplicitReturns": false,
+    "allowJs": true
   },
   "include": ["./src/**/*.tsx", "./src/**/*.ts"]
 }
