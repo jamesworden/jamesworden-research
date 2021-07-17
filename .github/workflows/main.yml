@@ -37,7 +37,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm test
+        run: npm run test:automation:unit
 
       - name: Inject enviornment variables with GitHub secrets
         run: |

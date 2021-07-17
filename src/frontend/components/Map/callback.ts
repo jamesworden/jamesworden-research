@@ -5,14 +5,7 @@ let center: string
 let zoom: number
 let points: any
 
-/**
- *
- * This function isn't meant for execution in the backend. It just
- * gets stringified and injected into the HTML as vanilla javascript.
- *
- * This is a hacky way to run it client side because we
- * are server side rendering with react.
- */
+/** Injected */
 export function callback(): void {
   let map
 
@@ -42,14 +35,25 @@ export function callback(): void {
       })
     })
 
+    // For mobile accessibility
+    marker.addListener('click', () => {
+      infowindow.open({
+        anchor: marker,
+        map,
+        shouldFocus: true
+      })
+
+      setTimeout(() => {
+        infowindow.close()
+      }, 2500)
+    })
+
     marker.addListener('mouseout', () => {
       infowindow.close()
     })
   }
 
   function triggerPointPlotting() {
-    // console.log('Plotting points...')
-
     let index = 0
     let length = points.length
 
@@ -59,8 +63,7 @@ export function callback(): void {
       if (index < length) {
         const point = points[index]
 
-        // console.log(`Plotting point at: ${JSON.stringify(point.location)}`)
-        createMarker(points[index])
+        createMarker(point)
         index++
 
         setTimeout(() => {
