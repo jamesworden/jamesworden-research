@@ -15,10 +15,7 @@ const mapStyles: React.CSSProperties = {
 }
 
 export const Map: React.FC<Map> = ({points}) => {
-  /**
-   *
-   * @returns string to be injected into the HTML javascript
-   */
+  /** Injected */
   const center = (): string => {
     const index = Math.floor(points.length / 2)
     const midpoint = points[index].location
@@ -26,6 +23,7 @@ export const Map: React.FC<Map> = ({points}) => {
     return `{ lat: ${midpoint.latitude}, lng: ${midpoint.longitude} }`
   }
 
+  /** Injected */
   const zoom: number = 18
 
   function injectPoints() {
@@ -49,13 +47,16 @@ export const Map: React.FC<Map> = ({points}) => {
   return (
     <div style={mapStyles} id="map">
       <Safe.script
-        async
         defer
         src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_FRONTEND_KEY}&callback=${callback.name}`}></Safe.script>
       {injectPoints()}
       {injectCenter()}
       {injectZoom()}
       {injectCallback()}
+      <span>
+        <h2>Loading map...</h2>
+        {/** This should get overidden when the google maps callback function is executed */}
+      </span>
     </div>
   )
 }

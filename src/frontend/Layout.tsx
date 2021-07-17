@@ -5,7 +5,7 @@ import {Container} from './components/Container'
 import {FOOTER_HEIGHT} from './style-constants'
 import {Footer} from './components/Footer'
 import {NavLink} from './components/NavLink'
-import {Navbar} from './components/Navbar'
+import {Navbar} from './components/Navbar/Navbar'
 
 interface Layout {
   title: string
