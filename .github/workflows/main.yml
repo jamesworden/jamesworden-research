@@ -44,8 +44,12 @@ jobs:
           touch .env
           echo "GOOGLE_MAPS_FRONTEND_KEY=${{ secrets.GOOGLE_MAPS_FRONTEND_KEY }}" >> .env
           echo "GOOGLE_MAPS_BACKEND_KEY=${{ secrets.GOOGLE_MAPS_BACKEND_KEY }}" >> .env
-          echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
           echo "GOOGLE_APPLICATION_CREDENTIALS="./GoogleServiceCredentials.json"" >> .env
+
+          echo "MICROSOFT_COMPUTER_VISION_KEY=${{ secrets.MICROSOFT_COMPUTER_VISION_KEY }}" >> .env
+          echo "MICROSOFT_COMPUTER_VISION_ENDPOINT=${{ secrets.MICROSOFT_COMPUTER_VISION_ENDPOINT }}" >> .env
+
+          echo "RESEARCH_API_KEY=${{ secrets.RESEARCH_API_KEY }}" >> .env
           echo "NODE_ENV=production" >> .env
 
           touch GoogleServiceCredentials.json
