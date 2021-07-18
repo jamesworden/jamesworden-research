@@ -54,14 +54,13 @@ jobs:
 
           touch GoogleServiceCredentials.json
           echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
+          echo cat)
 
-      - name: Read Google application credentials
-          id: google-application-credentials
-          uses: juliangruber/read-file-action@v1
-          with:
-            path: ./GoogleServiceCredentials.json
-        - name: Echo GoogleServiceCredentials.json
-          run: echo "${{ steps.package.outputs.content }}"
+      - name: Print Google application credentials
+        id: vars
+        run: |
+          echo ::set-output name=credentials::$(cat ./GoogleServiceCredentials.json)
+          echo ${{ steps.vars.outputs.credentials }}
 
       - name: Deploy with Serverless
         uses: serverless/github-action@master
