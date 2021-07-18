@@ -58,7 +58,10 @@ export const Navbar: React.FC<Navbar> = ({children}) => {
 
   function injectWindowResizeListener() {
     return (
-      <Safe.script>{`window.addEventListener('resize', ${handleResize.toString()})`}</Safe.script>
+      <>
+        <Safe.script>{`window.addEventListener('resize', ${handleResize.toString()})`}</Safe.script>
+        <Safe.script>{`window.addEventListener('load', ${handleResize.toString()})`}</Safe.script>
+      </>
     )
   }
 
