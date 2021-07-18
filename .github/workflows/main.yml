@@ -37,7 +37,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm run test:auto:unit
+        run: npm run test:automation:unit
 
       - name: Inject enviornment variables with GitHub secrets
         run: |
@@ -55,7 +55,13 @@ jobs:
           touch GoogleServiceCredentials.json
           echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
 
-          echo $(cat  GoogleServiceCredentials.json)
+      - name: Read Google application credentials
+          id: google-application-credentials
+          uses: juliangruber/read-file-action@v1
+          with:
+            path: ./GoogleServiceCredentials.json
+        - name: Echo GoogleServiceCredentials.json
+          run: echo "${{ steps.package.outputs.content }}"
 
       - name: Deploy with Serverless
         uses: serverless/github-action@master
