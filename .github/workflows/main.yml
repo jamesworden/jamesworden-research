@@ -57,10 +57,9 @@ jobs:
           echo cat)
 
       - name: Print Google application credentials
-        id: vars
         run: |
-          echo ::set-output name=credentials::$(cat ./GoogleServiceCredentials.json)
-          echo ${{ steps.vars.outputs.credentials }}
+          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          echo cat(GoogleServiceCredentials.json)
 
       - name: Deploy with Serverless
         uses: serverless/github-action@master
