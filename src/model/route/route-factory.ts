@@ -94,15 +94,7 @@ class RouteFactory {
       pointPromises.push(app.pointFactory.createPoint(location, this._options))
     }
 
-    return Promise.all(pointPromises).then((points) => {
-      for (let point of points) {
-        if (isFailure(point)) {
-          return points
-        }
-      }
-
-      return points
-    })
+    return Promise.all(pointPromises)
   }
 
   private getFailureFromPoints(
