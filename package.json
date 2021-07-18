@@ -8,7 +8,7 @@
     "run:local": "concurrently --kill-others-on-fail \"serverless offline --noPrependStageInUrl --dontPrintOutput\" \"tsc -w\"",
     "test:env:local": "ts-node env.ts local",
     "test:env:prod": "ts-node env.ts prod",
-    "test:automation:unit": "npm run jest --collectCoverage",
+    "test:automation:unit": "jest --collectCoverage",
     "test:manual:unit": "jest --coverage",
     "test:manual:ui": "cd test/ui && cypress open",
     "test:manual:github-actions": "act -n",
