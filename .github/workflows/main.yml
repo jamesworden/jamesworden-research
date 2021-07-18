@@ -54,12 +54,6 @@ jobs:
 
           touch GoogleServiceCredentials.json
           echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" >> GoogleServiceCredentials.json
-          echo cat)
-
-      - name: Print Google application credentials
-        run: |
-          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          echo cat(GoogleServiceCredentials.json)
 
       - name: Deploy with Serverless
         uses: serverless/github-action@master
