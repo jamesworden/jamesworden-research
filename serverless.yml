@@ -27,10 +27,6 @@ functions:
           method: get
           cors: false
       - http:
-          path: /image
-          method: get
-          cors: true
-      - http:
           path: /api/v1/route
           method: get
           cors: true
