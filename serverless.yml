@@ -28,9 +28,13 @@ functions:
           method: get
           cors: false
       - http:
+          path: /map
+          method: get
+          cors: false
+      - http:
           path: /api/v1/route
           method: get
-          cors: true
+          cors: false
       - http:
           path: /api/v1/report
           method: get

@@ -11,13 +11,10 @@
     "test:automation:unit": "jest --collectCoverage",
     "test:manual:unit": "jest --coverage",
     "test:manual:ui": "cd test/ui && cypress open",
-    "test:manual:dry:github-actions": "act -n",
-    "test:manual:build:github-actions": "act -v",
-    "test:file": "ts-node src/testfile.ts",
+    "test:manual:github-actions": "act -n",
     "build": "npm-run-all clean tsc",
     "clean": "rimraf .build/*",
-    "tsc": "tsc",
-    "lint": "tslint -c tslint.json -p tsconfig.json --fix"
+    "tsc": "tsc"
   },
   "author": "James Worden",
   "license": "ISC",

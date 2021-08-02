@@ -7,12 +7,18 @@ import {
   googleStreetView
 } from './provider'
 import {PointFactory, RouteFactory} from './model'
+import {
+  docsRouter,
+  homeRouter,
+  mapRouter,
+  pointRouter,
+  reportRouter,
+  routeRouter
+} from './controller'
 import express, {Express} from 'express'
-import {reportRouter, routeRouter, viewRouter} from './controller'
 
 import {__prod__} from './config'
 import path from 'path'
-import {pointRouter} from './controller/api'
 
 class App {
   directionsProvider: DirectionsProvider = googleMaps
@@ -48,13 +54,9 @@ class App {
     this.server.use('/api/v1/report', reportRouter)
     this.server.use('/api/v1/route', routeRouter)
     this.server.use('/api/v1/point', pointRouter)
-    this.server.use('/', viewRouter)
-  }
-
-  run() {
-    this.server.listen(this.port, () => {
-      console.log(`Application running in ${this.env} on port ${this.port}`)
-    })
+    this.server.use('/docs', docsRouter)
+    this.server.use('/map', mapRouter)
+    this.server.use('/', homeRouter)
   }
 }
 

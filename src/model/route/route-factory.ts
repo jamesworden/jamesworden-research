@@ -1,9 +1,10 @@
 import {Directions, DirectionsProvider} from '../../provider'
 import {Failure, isFailure} from '../../util'
-import {Option, Point} from '..'
 
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {Route} from '.'
+import {Option} from '../option'
+import {Point} from '../point'
+import {Route} from './route'
 import {app} from '../../app'
 
 class RouteFactory {
@@ -54,7 +55,10 @@ class RouteFactory {
     const coordinates: LatLngLiteralVerbose[] = directions.coordinates
     const options: Option[] = this._options
 
-    let pointsRes: Point[] | Failure = await this.createPoints(coordinates)
+    let pointsRes: Point[] | Failure = await this.createPoints(
+      coordinates,
+      this._options
+    )
 
     if (isFailure(pointsRes)) {
       return pointsRes
@@ -71,11 +75,12 @@ class RouteFactory {
     }
   }
 
-  private async createPoints(
-    locations: LatLngLiteralVerbose[]
+  async createPoints(
+    locations: LatLngLiteralVerbose[],
+    options: Option[]
   ): Promise<Point[] | Failure> {
     const potentialPoints: Array<Point | Failure> =
-      await this.getPotentialPoints(locations)
+      await this.getPotentialPoints(locations, options)
 
     const failure: Failure | undefined =
       this.getFailureFromPoints(potentialPoints)
@@ -87,11 +92,14 @@ class RouteFactory {
     return potentialPoints as Point[]
   }
 
-  private async getPotentialPoints(locations: LatLngLiteralVerbose[]) {
+  private async getPotentialPoints(
+    locations: LatLngLiteralVerbose[],
+    options: Option[]
+  ) {
     const pointPromises: Promise<Point | Failure>[] = []
 
     for (let location of locations) {
-      pointPromises.push(app.pointFactory.createPoint(location, this._options))
+      pointPromises.push(app.pointFactory.createPoint(location, options))
     }
 
     return Promise.all(pointPromises)

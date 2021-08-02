@@ -1,9 +1,14 @@
+import {Point, Region, Route} from '../../../model'
+
 // Define external variables in stringified function so VSCode doesn't throw errors
 let google: any
 let document: any
 let center: string
 let zoom: number
-let points: any
+let route: Route
+let detour: Route
+let region: Region
+let points: Point[]
 
 /** Injected */
 export function callback(): void {
@@ -14,75 +19,102 @@ export function callback(): void {
     zoom
   })
 
-  function createMarker(point) {
+  if (region) {
+    let regionCoords: any = []
+
+    for (let point of region.points) {
+      createMarker(point, 'blue')
+      regionCoords.push({
+        lat: point.location.latitude,
+        lng: point.location.longitude
+      })
+    }
+
+    const mapRegion = new google.maps.Polygon({
+      paths: regionCoords,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35
+    })
+
+    mapRegion.setMap(map)
+  }
+
+  if (route) {
+    for (let point of route.points) {
+      createMarker(point, 'green')
+    }
+  }
+
+  if (detour) {
+    for (let point of detour.points) {
+      createMarker(point, 'red')
+    }
+  }
+
+  if (points) {
+    for (let point of points) {
+      createMarker(point, 'yellow')
+    }
+  }
+
+  function createMarker(point: Point, color: string) {
     const marker = new google.maps.Marker({
       position: {
         lat: point.location.latitude,
         lng: point.location.longitude
       },
+      icon: `http://maps.google.com/mapfiles/ms/icons/${color}-dot.png`,
       map
     })
 
-    const infowindow = new google.maps.InfoWindow({
-      content: JSON.stringify(point.panoramaText)
+    addInfoWindow(marker, `<pre>${JSON.stringify(point, null, 2)}</pre>`)
+  }
+
+  function addInfoWindow(marker, content) {
+    const infoWindow = new google.maps.InfoWindow({
+      content
     })
 
-    marker.addListener('mouseover', () => {
-      infowindow.open({
-        anchor: marker,
-        map,
-        shouldFocus: true
-      })
-    })
-
-    // For mobile accessibility
+    // Map view info window
     marker.addListener('click', () => {
-      infowindow.open({
+      infoWindow.open({
         anchor: marker,
         map,
         shouldFocus: true
       })
-
-      setTimeout(() => {
-        infowindow.close()
-      }, 2500)
     })
 
-    marker.addListener('mouseout', () => {
-      infowindow.close()
-    })
-  }
+    // Street view info window
+    marker.addListener('click', function () {
+      let streetViewPanorama = map.getStreetView()
 
-  function triggerPointPlotting() {
-    let index = 0
-    let length = points.length
-
-    plotPoint()
-
-    function plotPoint() {
-      if (index < length) {
-        const point = points[index]
-
-        createMarker(point)
-        index++
-
-        setTimeout(() => {
-          plotPoint()
-        }, 200)
+      if (streetViewPanorama.getVisible() == true) {
+        infoWindow.open(streetViewPanorama)
+        return
       }
-    }
+
+      infoWindow.open(map)
+    })
   }
 
-  document.addEventListener('scroll', checkToPlotPoints)
-
-  function checkToPlotPoints() {
-    var currentScrollY = window.scrollY
-    var mapHeightY = document.getElementById('map').scrollHeight
-
-    if (currentScrollY > mapHeightY) {
-      triggerPointPlotting()
-
-      document.removeEventListener('scroll', checkToPlotPoints)
-    }
+  const styles = {
+    default: [],
+    hide: [
+      {
+        featureType: 'transit',
+        elementType: 'labels.icon',
+        stylers: [{visibility: 'off'}]
+      },
+      {
+        featureType: 'poi',
+        elementType: 'labels.icon',
+        stylers: [{visibility: 'off'}]
+      }
+    ]
   }
+
+  map.setOptions({styles: styles['hide']})
 }

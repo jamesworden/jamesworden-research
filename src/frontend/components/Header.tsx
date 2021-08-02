@@ -8,8 +8,7 @@ interface Header {
 const headerStyle: React.CSSProperties = {
   width: '100%',
   overflow: 'hidden',
-  marginTop: '6rem',
-  marginBottom: '6rem'
+  marginTop: '6rem'
 }
 
 const h1Style: React.CSSProperties = {

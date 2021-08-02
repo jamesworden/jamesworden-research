@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 interface Container {
-  children: JSX.Element | Array<JSX.Element>
+  children: JSX.Element | JSX.Element[]
 }
 
 const containerStyle: React.CSSProperties = {
