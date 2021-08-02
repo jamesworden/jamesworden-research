@@ -7,7 +7,7 @@ interface Docs {}
 export default class extends React.Component<Docs> {
   render() {
     return (
-      <Layout title="Mitigate GPS Spoofing">
+      <Layout title="Docs">
         <p>Under Construction</p>
       </Layout>
     )

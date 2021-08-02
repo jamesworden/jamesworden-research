@@ -51,18 +51,14 @@ export const Layout: React.FC<Layout> = ({children, title}) => {
       </head>
       <body style={bodyStyle}>
         <Navbar>
-          <NavLink href="/">Home</NavLink>
-          <NavLink href="/docs">Docs</NavLink>
-          <NavLink href="https://github.com/users/jamesworden/projects/5">
-            Backlog
-          </NavLink>
           <NavLink href="https://github.com/jamesworden/jamesworden-research">
-            Source Code
+            💻 Code
           </NavLink>
+          <NavLink href="/docs">📝 Docs</NavLink>
+          <NavLink href="/">🏠 Home</NavLink>
+          <NavLink href="/map">🗺️ Map</NavLink>
         </Navbar>
-        <div style={contentStyle}>
-          <Container>{children}</Container>
-        </div>
+        <div style={contentStyle}>{children}</div>
         <Footer>
           <A href="https://www.jamesworden.com/">
             James Worden &copy; {new Date().getFullYear().toString()}
