@@ -93,7 +93,7 @@ export default class extends React.Component<MapLoader> {
               </div>
             </form>
           </Section>
-          <Section paddingTop={true}>
+          <Section paddingTop>
             {this.props.error ? <span>{this.props.error}</span> : <div />}
             <Map
               route={this.props.route}
@@ -106,7 +106,7 @@ export default class extends React.Component<MapLoader> {
             />
           </Section>
           {this.props.points ? (
-            <Section paddingTop={true}>
+            <Section paddingTop>
               <h3>Points response as JSON output:</h3>
               <pre>{JSON.stringify(this.props.points, null, '\t')}</pre>
             </Section>

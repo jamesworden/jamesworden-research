@@ -10,9 +10,11 @@ interface Docs {}
 
 export default class extends React.Component<Docs> {
   render() {
-    const mapId1 = 'test1'
-    const mapId2 = 'test2'
-    const mapId3 = 'test3'
+    enum MapIds {
+      POINT_API = 'PointApi',
+      REPORT_API = 'ReportApi',
+      ROUTE_API = 'RouteApi'
+    }
 
     return (
       <Layout title="Docs">
@@ -20,8 +22,8 @@ export default class extends React.Component<Docs> {
           <Header title="Docs">
             <span>
               Add a <strong>sample</strong> query parameter to fetch a sample
-              response for any API. Note that GPS coordinates should be written
-              in the format{' '}
+              response for any API. Click on markers in each map to see point
+              data. Note that GPS coordinates should be written in the format:
               <strong>Latitude,Longitude|Latitude,Longitude|...</strong>.
             </span>
           </Header>
@@ -54,8 +56,8 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
-            <Section>
-              <Map id={mapId1} points={[samplePoint]} zoom={18} />
+            <Section paddingTop>
+              <Map id={MapIds.POINT_API} points={[samplePoint]} zoom={18} />
             </Section>
           </Section>
           <Section paddingTop>
@@ -93,8 +95,13 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
-            <Section>
-              <Map id={mapId2} report={sampleReport} />
+            <Section paddingTop>
+              <Map id={MapIds.REPORT_API} report={sampleReport} />
+              <code>
+                Purple markers represent points where text between the route and
+                detour match. Green markers represent the route and red markers
+                represent the detour.
+              </code>
             </Section>
           </Section>
           <Section paddingTop>
@@ -142,10 +149,12 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
-            <Map id={mapId3} route={sampleRoute} />
+            <Section paddingTop>
+              <Map id={MapIds.ROUTE_API} route={sampleRoute} />
+            </Section>
           </Section>
         </Container>
-        <MapLoader mapIds={[mapId1, mapId2, mapId3]} />
+        <MapLoader mapIds={Object.values(MapIds)} />
       </Layout>
     )
   }
