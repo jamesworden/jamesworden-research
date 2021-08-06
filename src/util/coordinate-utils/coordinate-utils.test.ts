@@ -1,5 +1,5 @@
 import {LatLngLiteralVerbose} from '@googlemaps/google-maps-services-js'
-import {coordinateUtils} from '.'
+import {coordinateUtils} from './coordinate-utils'
 
 describe('Coordinate Utilities', () => {
   const numArr: number[][] = [
