@@ -4,7 +4,7 @@ import {Point, Region, Route} from '../../../model'
 
 import {DEFAULT_MAP_CENTER_LOCATION} from '../../../config'
 import Safe from 'react-safe'
-import {callback} from './callback'
+import {init} from './callback'
 
 export const GOOGLE_MAPS_FRONTEND_KEY = process.env
   .GOOGLE_MAPS_FRONTEND_KEY as string
@@ -77,38 +77,31 @@ export const Map: React.FC<Map> = ({
     return 4 // No points specified, zoom out
   }
 
-  function injectRoute() {
-    return <Safe.script>{`const route = ${JSON.stringify(route)}`}</Safe.script>
-  }
-
-  function injectDetour() {
-    return (
-      <Safe.script>{`const detour = ${JSON.stringify(detour)}`}</Safe.script>
-    )
-  }
-
-  function injectRegion() {
-    return (
-      <Safe.script>{`const region = ${JSON.stringify(region)}`}</Safe.script>
-    )
-  }
-
-  function injectPoints() {
-    return (
-      <Safe.script>{`const points = ${JSON.stringify(points)}`}</Safe.script>
-    )
-  }
-
-  function injectCenter() {
-    return <Safe.script>{`const center = ${getCenter()}`}</Safe.script>
-  }
-
-  function injectZoom() {
-    return <Safe.script>{`const zoom = ${getZoom()}`}</Safe.script>
-  }
+  const mapId: string = 'Test'
+  const mapFunctionName: string = `callback${mapId}`
 
   function injectCallback() {
-    return <Safe.script>{callback.toString()}</Safe.script>
+    return (
+      <Safe.script>{`
+
+      ${init.toString()}
+
+      const mapData = {
+        route: ${JSON.stringify(route)},
+        detour: ${JSON.stringify(detour)},
+        region: ${JSON.stringify(region)},
+        points: ${JSON.stringify(points)},
+        center: ${getCenter()},
+        zoom: ${getZoom()},
+        mapId: '${mapId}'
+      }
+
+      function ${mapFunctionName}() {
+        ${init.name}(mapData)
+      }
+
+    `}</Safe.script>
+    )
   }
 
   return (
@@ -117,17 +110,11 @@ export const Map: React.FC<Map> = ({
         width,
         height
       }}
-      id="map">
+      id={mapId}>
+      {injectCallback()}
       <Safe.script
         defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_FRONTEND_KEY}&callback=${callback.name}`}></Safe.script>
-      {injectRoute()}
-      {injectRegion()}
-      {injectDetour()}
-      {injectPoints()}
-      {injectCenter()}
-      {injectZoom()}
-      {injectCallback()}
+        src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_FRONTEND_KEY}&callback=${mapFunctionName}`}></Safe.script>
       <span>
         <h2>Loading map...</h2>
         {/** This should get overidden when the google maps callback function is executed */}

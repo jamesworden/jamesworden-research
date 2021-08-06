@@ -1,20 +1,20 @@
-import {Point, Region, Route} from '../../../model'
-
 // Define external variables in stringified function so VSCode doesn't throw errors
 let google: any
 let document: any
-let center: string
-let zoom: number
-let route: Route
-let detour: Route
-let region: Region
-let points: Point[]
 
 /** Injected */
-export function callback(): void {
+export function init({
+  route,
+  detour,
+  region,
+  points,
+  center,
+  zoom,
+  mapId
+}): void {
   let map
 
-  map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById(mapId), {
     center,
     zoom
   })
@@ -60,7 +60,7 @@ export function callback(): void {
     }
   }
 
-  function createMarker(point: Point, color: string) {
+  function createMarker(point, color) {
     const marker = new google.maps.Marker({
       position: {
         lat: point.location.latitude,
