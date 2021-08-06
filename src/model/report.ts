@@ -4,8 +4,8 @@ import {containsPanoramaText} from './option'
 
 export class Report {
   status: ReportStatus
-  convergencePoint: Point
-  divergencePoint: Point
+  convergencePoint?: Point
+  divergencePoint?: Point
   matchingText: {
     text: string
     routePoint: Point
@@ -15,6 +15,9 @@ export class Report {
   detour: Route
 
   constructor(route: Route, detour: Route) {
+    this.route = route
+    this.detour = detour
+
     if (
       !containsPanoramaText(route.options) ||
       !containsPanoramaText(detour.options)

@@ -1,13 +1,10 @@
 import * as React from 'react'
 
-import {Point, Region, Route} from '../../../model'
+import {Point, Region, Report, Route} from '../../../model'
 
 import {DEFAULT_MAP_CENTER_LOCATION} from '../../../config'
 import Safe from 'react-safe'
-import {callback} from './callback'
-
-export const GOOGLE_MAPS_FRONTEND_KEY = process.env
-  .GOOGLE_MAPS_FRONTEND_KEY as string
+import {init} from './callback'
 
 interface Map {
   route?: Route
@@ -17,6 +14,8 @@ interface Map {
   width?: string
   height?: string
   zoom?: number
+  id: string
+  report?: Report
 }
 
 export const Map: React.FC<Map> = ({
@@ -26,7 +25,9 @@ export const Map: React.FC<Map> = ({
   points,
   zoom,
   width = '100%',
-  height = '32rem'
+  height = '32rem',
+  id,
+  report
 }) => {
   function getCenter(): string {
     if (route) {
@@ -43,6 +44,10 @@ export const Map: React.FC<Map> = ({
 
     if (points) {
       return getStringifiedMidpoint(points)
+    }
+
+    if (report) {
+      return getStringifiedMidpoint(report.route.points)
     }
 
     const {latitude, longitude} = DEFAULT_MAP_CENTER_LOCATION
@@ -70,68 +75,52 @@ export const Map: React.FC<Map> = ({
       return zoom
     }
 
-    if (region || detour || route || points) {
-      return 16 // If any points are specified, zoom in
+    if (region || detour || route || points || report) {
+      return 17 // If any points are specified, zoom in
     }
 
     return 4 // No points specified, zoom out
   }
 
-  function injectRoute() {
-    return <Safe.script>{`const route = ${JSON.stringify(route)}`}</Safe.script>
-  }
-
-  function injectDetour() {
-    return (
-      <Safe.script>{`const detour = ${JSON.stringify(detour)}`}</Safe.script>
-    )
-  }
-
-  function injectRegion() {
-    return (
-      <Safe.script>{`const region = ${JSON.stringify(region)}`}</Safe.script>
-    )
-  }
-
-  function injectPoints() {
-    return (
-      <Safe.script>{`const points = ${JSON.stringify(points)}`}</Safe.script>
-    )
-  }
-
-  function injectCenter() {
-    return <Safe.script>{`const center = ${getCenter()}`}</Safe.script>
-  }
-
-  function injectZoom() {
-    return <Safe.script>{`const zoom = ${getZoom()}`}</Safe.script>
-  }
-
   function injectCallback() {
-    return <Safe.script>{callback.toString()}</Safe.script>
+    return (
+      <Safe.script>{`
+
+      ${init.toString()}
+
+      const mapData${id} = {
+        route: ${JSON.stringify(route)},
+        detour: ${JSON.stringify(detour)},
+        region: ${JSON.stringify(region)},
+        points: ${JSON.stringify(points)},
+        center: ${getCenter()},
+        zoom: ${getZoom()},
+        mapId: '${id}',
+        report: ${JSON.stringify(report)},
+      }
+
+      function ${id}() {
+        ${init.name}(mapData${id})
+      }
+
+    `}</Safe.script>
+    )
   }
 
   return (
-    <div
-      style={{
-        width,
-        height
-      }}
-      id="map">
-      <Safe.script
-        defer
-        src={`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_FRONTEND_KEY}&callback=${callback.name}`}></Safe.script>
-      {injectRoute()}
-      {injectRegion()}
-      {injectDetour()}
-      {injectPoints()}
-      {injectCenter()}
-      {injectZoom()}
+    <>
       {injectCallback()}
-      <span>
-        <h2>Loading map...</h2>
-        {/** This should get overidden when the google maps callback function is executed */}
-      </span>
-    </div>
+      <div
+        style={{
+          width,
+          height
+        }}
+        id={id}>
+        <h2>
+          Loading map...
+          {/** This should get overidden when the google maps callback function is executed */}
+        </h2>
+      </div>
+    </>
   )
 }
