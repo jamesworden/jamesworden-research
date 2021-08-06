@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {A, Container, Header, Hr, Map, Section} from '../components'
+import {A, Container, Header, Map, MapLoader, Section} from '../components'
 
 import {Layout} from '../Layout'
 import {Route} from '../../model/route/route'
@@ -22,6 +22,8 @@ const verticalFlex: React.CSSProperties = {
 
 export default class extends React.Component<Home> {
   render() {
+    const mapId: string = 'mapId'
+
     return (
       <Layout title="Environmental Text Extraction">
         <Container>
@@ -68,7 +70,8 @@ export default class extends React.Component<Home> {
             </div>
           </Section>
           <Section paddingTop={true}>
-            <Map route={this.props.route} zoom={17} />
+            <Map route={this.props.route} id={mapId} />
+            <MapLoader mapIds={[mapId]} />
           </Section>
         </Container>
       </Layout>

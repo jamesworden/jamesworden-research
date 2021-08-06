@@ -10,7 +10,8 @@ export function init({
   points,
   center,
   zoom,
-  mapId
+  mapId,
+  report
 }): void {
   let map
 
@@ -51,6 +52,24 @@ export function init({
   if (detour) {
     for (let point of detour.points) {
       createMarker(point, 'red')
+    }
+  }
+
+  if (report) {
+    if (report.route) {
+      for (let point of report.route.points) {
+        createMarker(point, 'green')
+      }
+    }
+
+    if (report.detour) {
+      for (let point of report.detour.points) {
+        createMarker(point, 'red')
+      }
+    }
+
+    for (let text of report.matchingText) {
+      createMarker(text.routePoint, 'purple')
     }
   }
 

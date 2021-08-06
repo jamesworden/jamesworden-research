@@ -1,18 +1,19 @@
 import * as React from 'react'
 
 import {BLUE_GREEN, WHITE} from '../style-constants'
-import {Container, Header, Map, Section} from '../components'
-import {Point, Region, Route} from '../../model'
+import {Container, Header, Map, MapLoader, Section} from '../components'
+import {Point, Region, Report, Route} from '../../model'
 
 import {Layout} from '../Layout'
 
-interface Map {
+interface MapLoader {
   route: Route
   detour: Route
   region: Region
   points: Point[]
   error: string
   userInput: string
+  report: Report
 }
 
 const Field = ({children}) => (
@@ -27,8 +28,10 @@ const Field = ({children}) => (
   </div>
 )
 
-export default class extends React.Component<Map> {
+export default class extends React.Component<MapLoader> {
   render() {
+    const mapId = 'mapId'
+
     return (
       <Layout title="Map Playground">
         <Container>
@@ -97,7 +100,9 @@ export default class extends React.Component<Map> {
               detour={this.props.detour}
               region={this.props.region}
               points={this.props.points}
+              report={this.props.report}
               zoom={15}
+              id={mapId}
             />
           </Section>
           {this.props.points ? (
@@ -109,6 +114,7 @@ export default class extends React.Component<Map> {
             <div />
           )}
         </Container>
+        <MapLoader mapIds={[mapId]} />
       </Layout>
     )
   }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 
-import {Container, Header, Section} from '../components'
+import {Container, Header, Map, MapLoader, Section} from '../components'
+import {samplePoint, sampleReport, sampleRoute} from '../../json'
 
 import {Layout} from '../Layout'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -9,6 +10,10 @@ interface Docs {}
 
 export default class extends React.Component<Docs> {
   render() {
+    const mapId1 = 'test1'
+    const mapId2 = 'test2'
+    const mapId3 = 'test3'
+
     return (
       <Layout title="Docs">
         <Container>
@@ -49,6 +54,9 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
+            <Section>
+              <Map id={mapId1} points={[samplePoint]} zoom={18} />
+            </Section>
           </Section>
           <Section paddingTop>
             <h2>Report API</h2>
@@ -85,6 +93,9 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
+            <Section>
+              <Map id={mapId2} report={sampleReport} />
+            </Section>
           </Section>
           <Section paddingTop>
             <h2>Route API</h2>
@@ -131,8 +142,10 @@ export default class extends React.Component<Docs> {
                 </li>
               </ul>
             </p>
+            <Map id={mapId3} route={sampleRoute} />
           </Section>
         </Container>
+        <MapLoader mapIds={[mapId1, mapId2, mapId3]} />
       </Layout>
     )
   }
