@@ -1,6 +1,6 @@
 ### Mitigate GPS Spoofing
 
-# Can we verify we are at a certain location using photos of the world around us?
+# Can we verify one is at a certain location using photos of the outside world?
 
 This project has three API's that aim to answer this question:
 
